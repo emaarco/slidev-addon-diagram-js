@@ -81,6 +81,34 @@ describe('renderStaticSvg', () => {
     expect(svg).not.toContain('300px')
   })
 
+  it('renames ids so two diagrams on one page never share a filter or marker', async () => {
+    const svgWithSharedIds = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
+      + '<defs><filter id="sticky-shadow"/><marker id="arrow"/></defs>'
+      + '<rect filter="url(#sticky-shadow)"/>'
+      + '<path style="marker-end: url(\'#arrow\')"/>'
+      + '<use href="#arrow"/>'
+      + '</svg>'
+
+    const first = new DOMParser().parseFromString(await renderStaticSvg(async () => svgWithSharedIds), 'image/svg+xml')
+    const second = new DOMParser().parseFromString(await renderStaticSvg(async () => svgWithSharedIds), 'image/svg+xml')
+
+    const firstFilterId = first.querySelector('filter')!.id
+    const firstMarkerId = first.querySelector('marker')!.id
+    expect(firstFilterId).not.toBe('sticky-shadow')
+    expect(second.querySelector('filter')!.id).not.toBe(firstFilterId)
+    expect(first.querySelector('rect')!.getAttribute('filter')).toBe(`url(#${firstFilterId})`)
+    expect(first.querySelector('path')!.getAttribute('style')).toContain(`#${firstMarkerId}`)
+    expect(first.querySelector('use')!.getAttribute('href')).toBe(`#${firstMarkerId}`)
+  })
+
+  it('leaves references to ids outside the diagram untouched', async () => {
+    const svg = await renderStaticSvg(async () => (
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="shadow"/></defs><rect fill="url(#page-gradient)" filter="url(#shadow)"/></svg>'
+    ))
+
+    expect(svg).toContain('url(#page-gradient)')
+  })
+
   it('leaves an SVG without a viewBox unpadded', async () => {
     const svg = await renderStaticSvg(async () => (
       '<svg xmlns="http://www.w3.org/2000/svg"><rect width="50" height="50"/></svg>'

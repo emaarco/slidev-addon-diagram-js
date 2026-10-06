@@ -2,6 +2,8 @@ const OFFSCREEN_WIDTH = '1920px'
 const OFFSCREEN_HEIGHT = '1080px'
 const VIEWBOX_PADDING_RATIO = 0.02
 
+let renderedSvgCount = 0
+
 export async function renderStaticSvg(
   exportSvg: (container: HTMLElement) => Promise<string>,
 ): Promise<string> {
@@ -28,6 +30,7 @@ function toEmbeddableSvg(exportedSvg: string): string {
   const svgElement = svgDocument.documentElement
 
   svgDocument.querySelectorAll('script, foreignObject').forEach(el => el.remove())
+  makeIdsUniqueInPage(svgElement)
   padViewBoxAndPinIntrinsicSize(svgElement)
   svgElement.style.removeProperty('width')
   svgElement.style.removeProperty('height')
@@ -50,4 +53,25 @@ function padViewBoxAndPinIntrinsicSize(svgElement: HTMLElement): void {
   svgElement.setAttribute('viewBox', `${x - pad} ${y - pad} ${paddedWidth} ${paddedHeight}`)
   svgElement.setAttribute('width', String(paddedWidth))
   svgElement.setAttribute('height', String(paddedHeight))
+}
+
+// Renderers reuse fixed ids for filters and markers. A second diagram on the page
+// would resolve url(#id) to the first one, which stops rendering once its slide is hidden.
+function makeIdsUniqueInPage(svgElement: HTMLElement): void {
+  const suffix = `-static-${++renderedSvgCount}`
+  const renamedIds = new Map<string, string>()
+  svgElement.querySelectorAll('[id]').forEach((el) => {
+    renamedIds.set(el.id, el.id + suffix)
+    el.id += suffix
+  })
+  if (renamedIds.size === 0) return
+
+  const renamed = (id: string) => renamedIds.get(id) ?? id
+  svgElement.querySelectorAll('*').forEach((el) => {
+    for (const attribute of [...el.attributes]) {
+      attribute.value = attribute.value
+        .replace(/url\((['"]?)#([^'")]+)\1\)/g, (_, quote, id) => `url(${quote}#${renamed(id)}${quote})`)
+        .replace(/^#(.+)$/, (_, id) => `#${renamed(id)}`)
+    }
+  })
 }
