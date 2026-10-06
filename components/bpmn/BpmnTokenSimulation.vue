@@ -71,14 +71,14 @@ import 'bpmn-js/dist/assets/bpmn-js.css'
 import tokenSimulation from 'bpmn-js-token-simulation/lib/viewer'
 import { onSlideEnter } from '@slidev/client'
 import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
-import { useBpmn } from '../../composables/useBpmn'
+import { useDiagramFile } from '../../shared/lib/useDiagramFile'
 import { fitDiagram } from '../../shared/lib/fitDiagram'
 import ToolbarButton from '../../shared/ui/ToolbarButton.vue'
 
 const margin = 5
 const containerWaitTimeout = 5000
 
-const { loading, error, fetchBpmnXml, withLoading } = useBpmn()
+const { loading, error, fetchDiagramFile, withLoading } = useDiagramFile('BPMN')
 const containerRef = ref<HTMLDivElement | null>(null)
 const fullscreenContainerRef = ref<HTMLDivElement | null>(null)
 const isRendered = ref(false)
@@ -152,7 +152,7 @@ async function renderBpmn() {
 
   const result = await withLoading(async () => {
     if (!currentXml.value) {
-      currentXml.value = await fetchBpmnXml(props.bpmnFilePath)
+      currentXml.value = await fetchDiagramFile(props.bpmnFilePath)
     }
 
     viewer = createSimulationViewer(containerRef.value!)

@@ -14,7 +14,6 @@ const config: KnipConfig = {
   entry: ['setup/main.ts', 'components/**/*.vue'],
   project: [
     'components/**/*.{ts,vue}',
-    'composables/**/*.ts',
     'plugins/**/*.ts',
     'shared/**/*.{ts,vue}',
     'setup/**/*.ts',

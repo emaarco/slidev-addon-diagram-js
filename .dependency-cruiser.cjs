@@ -2,9 +2,8 @@
  * Architecture guardrail for the addon's source modules.
  *
  * Layering (imports only ever point "down"):
- *   components/<modeler>/ -> plugins/<modeler>/, composables/, shared/   (the public component surface)
+ *   components/<modeler>/ -> plugins/<modeler>/, shared/   (the public component surface)
  *   plugins/<modeler>/    -> shared/
- *   composables/          -> shared/
  *   shared/               -> (leaf; imports nothing from the layers above)
  *
  * A modeler (bpmn, dmn, ...) never imports another modeler; they only meet in shared/.
@@ -28,17 +27,10 @@ module.exports = {
       to: { path: '^(components|plugins)/[^/]+/', pathNot: '^(components|plugins)/$2/' },
     },
     {
-      name: 'plugins-not-to-ui',
-      comment: 'Plugins hold engine wiring and must not know about the UI (components/composables).',
+      name: 'plugins-not-to-components',
+      comment: 'Plugins hold engine wiring and must not know about the UI.',
       severity: 'error',
       from: { path: '^plugins/' },
-      to: { path: '^(components|composables)/' },
-    },
-    {
-      name: 'composables-not-to-components',
-      comment: 'Composables are lower-level than components and must not import them.',
-      severity: 'error',
-      from: { path: '^composables/' },
       to: { path: '^components/' },
     },
     {
@@ -46,12 +38,12 @@ module.exports = {
       comment: 'shared/ holds reusable UI atoms + helpers; it must not import upward.',
       severity: 'error',
       from: { path: '^shared/' },
-      to: { path: '^(components|composables|plugins)/' },
+      to: { path: '^(components|plugins)/' },
     },
   ],
   options: {
     doNotFollow: { path: 'node_modules' },
-    includeOnly: '^(components|composables|plugins|shared)/',
+    includeOnly: '^(components|plugins|shared)/',
     enhancedResolveOptions: {
       extensions: ['.ts', '.js', '.vue'],
     },

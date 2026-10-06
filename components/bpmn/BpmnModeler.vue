@@ -112,7 +112,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
 import '@bpmn-io/properties-panel/dist/assets/properties-panel.css'
 import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
 import { onSlideEnter } from '@slidev/client'
-import { useBpmn } from '../../composables/useBpmn'
+import { useDiagramFile } from '../../shared/lib/useDiagramFile'
 import { zeebeEngine } from '../../plugins/bpmn/engines/zeebe'
 import { camunda7Engine } from '../../plugins/bpmn/engines/camunda7'
 import type { Engine } from '../../plugins/bpmn/engines/types'
@@ -122,7 +122,7 @@ import ToolbarButton from '../../shared/ui/ToolbarButton.vue'
 const margin = 5
 const containerWaitTimeout = 5000
 
-const { loading, error, fetchBpmnXml, withLoading } = useBpmn()
+const { loading, error, fetchDiagramFile, withLoading } = useDiagramFile('BPMN')
 const viewerContainerRef = ref<HTMLDivElement | null>(null)
 const modelerContainerRef = ref<HTMLDivElement | null>(null)
 const propertiesPanelRef = ref<HTMLDivElement | null>(null)
@@ -198,7 +198,7 @@ async function renderViewer(): Promise<boolean> {
 
   if (!currentXml.value) {
     if (props.bpmnFilePath) {
-      currentXml.value = await fetchBpmnXml(props.bpmnFilePath)
+      currentXml.value = await fetchDiagramFile(props.bpmnFilePath)
     } else {
       const tempModeler = new BpmnModeler({ container: document.createElement('div') })
       await tempModeler.createDiagram()
