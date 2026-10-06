@@ -11,6 +11,7 @@ import { onMounted, ref } from 'vue'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import { useDiagramFile } from '../../shared/lib/useDiagramFile'
+import { renderStaticSvg } from '../../shared/lib/renderStaticSvg'
 
 const { loading, error, fetchDiagramFile, withLoading } = useDiagramFile('BPMN')
 const svg = ref<string | null>(null)
@@ -30,51 +31,15 @@ onMounted(() => {
 
 async function loadAndRenderBpmn(path: string): Promise<void> {
   const bpmnXml = await fetchDiagramFile(path)
+  svg.value = await renderStaticSvg(container => exportBpmnSvg(bpmnXml, container))
+}
 
-  const container = document.createElement('div')
-  container.style.width = '1920px'
-  container.style.height = '1080px'
-  container.style.position = 'absolute'
-  container.style.left = '-9999px'
-  document.body.appendChild(container)
-
-  try {
-    const viewer = new BpmnViewer({ container })
-    await viewer.importXML(bpmnXml)
-
-    const { svg: svgContent } = await viewer.saveSVG()
-
-    const parser = new DOMParser()
-    const svgDoc = parser.parseFromString(svgContent, 'image/svg+xml')
-    const svgElement = svgDoc.documentElement
-
-    // Strip potentially dangerous elements from the SVG
-    svgDoc.querySelectorAll('script, foreignObject').forEach(el => el.remove())
-
-    // Pad the viewBox and pin the SVG's intrinsic size so the scoped
-    // max-width/max-height only scale it down. height:100% would collapse
-    // to 0 inside a flex parent (e.g. the toolkit's DiagramFrame).
-    const viewBox = svgElement.getAttribute('viewBox')
-    if (viewBox) {
-      const [x, y, w, h] = viewBox.split(' ').map(Number)
-      const pad = Math.max(w, h) * 0.02
-      const paddedW = w + pad * 2
-      const paddedH = h + pad * 2
-      svgElement.setAttribute('viewBox', `${x - pad} ${y - pad} ${paddedW} ${paddedH}`)
-      svgElement.setAttribute('width', String(paddedW))
-      svgElement.setAttribute('height', String(paddedH))
-    }
-
-    svgElement.style.removeProperty('width')
-    svgElement.style.removeProperty('height')
-    svgElement.setAttribute('preserveAspectRatio', 'xMidYMid meet')
-
-    svg.value = svgElement.outerHTML
-
-    viewer.destroy()
-  } finally {
-    document.body.removeChild(container)
-  }
+async function exportBpmnSvg(bpmnXml: string, container: HTMLElement): Promise<string> {
+  const viewer = new BpmnViewer({ container })
+  await viewer.importXML(bpmnXml)
+  const { svg: exportedSvg } = await viewer.saveSVG()
+  viewer.destroy()
+  return exportedSvg
 }
 </script>
 
