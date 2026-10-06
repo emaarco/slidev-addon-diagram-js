@@ -2,21 +2,6 @@
   "name": "slidev-addon-diagram-js",
   "version": "2.1.1",
   "description": "Display BPMN, DMN and other diagram-js based models in Slidev presentations",
-  "keywords": [
-    "slidev",
-    "slidev-addon",
-    "diagram-js",
-    "bpmn",
-    "bpmn-js",
-    "bpmn-io",
-    "dmn",
-    "dmn-js",
-    "team-topologies",
-    "wardley-maps",
-    "event-storming",
-    "presentation",
-    "slides"
-  ],
   "type": "module",
   "scripts": {
     "dev": "portless",
