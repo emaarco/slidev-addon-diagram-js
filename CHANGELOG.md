@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.1.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.0.0...v2.1.0) (2026-10-06)
+
+
+### Features
+
+* add Team Topologies, Wardley Maps and Event Storming support ([#124](https://github.com/emaarco/slidev-addon-diagram-js/issues/124)) ([b507f02](https://github.com/emaarco/slidev-addon-diagram-js/commit/b507f023fe5fa6cbea142b83f0f7de296b191805))
+
 ## [2.0.0](https://github.com/emaarco/slidev-addon-bpmn/compare/v1.10.2...v2.0.0) (2026-10-06)
 
 
