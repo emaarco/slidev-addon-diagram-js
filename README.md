@@ -84,11 +84,20 @@ Component names, props and defaults are unchanged, so your slides need no edits.
 - **`<DmnSimulate>`** - Decision Table with an input form: evaluate the decision live and highlight the matching rule (DMN's answer to BPMN token simulation)
 - **`<DmnModeler>`** - Interactive DMN modeler for live editing during workshops and trainings, with an optional Camunda properties panel
 
-**More modelers**
+**Team Topologies**
 
 - **`<TeamTopologies>`** - Static rendering of a Team Topologies diagram
+- **`<TeamTopologiesModeler>`** - Interactive modeler for live editing
+
+**Wardley Maps**
+
 - **`<WardleyMap>`** - Static rendering of a Wardley Map
+- **`<WardleyMapModeler>`** - Interactive modeler for live editing
+
+**Event Storming**
+
 - **`<EventStorming>`** - Static rendering of an Event Storming board
+- **`<EventStormingModeler>`** - Interactive modeler for live editing
 
 ## 🔧 BPMN Component Reference
 
@@ -254,7 +263,7 @@ Use the **Fullscreen** button next to the form to blow the whole simulation up t
 
 > **Hit policies:** the full DMN set is supported — `UNIQUE`, `ANY`, `PRIORITY`, `FIRST`, `COLLECT` (incl. `SUM`/`MIN`/`MAX`/`COUNT` aggregation), `RULE ORDER` and `OUTPUT ORDER`. The rule(s) the policy actually reports are highlighted strongly; rules that merely matched but were dropped (e.g. under `FIRST`/`PRIORITY`) are shown as faint candidates. `PRIORITY` and `OUTPUT ORDER` use the output's `<outputValues>` list as the priority order. `UNIQUE`/`ANY` show a violation badge when their constraint is broken. Input cells are evaluated as FEEL unary tests via [feelin](https://github.com/nikku/feelin); an empty cell matches any value.
 >
-> The [`example.md`](./example.md) deck includes one slide per hit policy (`public/hit-policies/*.dmn`) demonstrating each behaviour live.
+> The appendix of the [`example.md`](./example.md) deck includes one slide per hit policy (`public/hit-policies/*.dmn`) demonstrating each behaviour live.
 
 ### DmnModeler Component
 
@@ -291,9 +300,19 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `height` | `string` | `'500px'` | Height of the modeler container |
 | `engine` | `'camunda'` | — | Optional engine. Mounts a `dmn-js-properties-panel` configured for Camunda. Omit for a panel-less modeler. |
 
-## 🔧 More Modelers
+## 🔧 Team Topologies, Wardley Maps and Event Storming
 
-These three components render their source file as a static SVG, the same way `<Bpmn>` does, so they also work in PDF and PNG exports. They share the same props apart from the name of the file path.
+Each of these three notations comes with a static viewer and a modeler. Both take the same file, and the props only differ in the name of the file path.
+
+| Notation | Components | File path prop | File format |
+|----------|------------|----------------|-------------|
+| Team Topologies | `<TeamTopologies>`, `<TeamTopologiesModeler>` | `teamTopologiesFilePath` | Team Topologies document (`.tt`, JSON) from the [Team Topologies Modeler](https://github.com/Miragon/team-topologies-modeler) |
+| Wardley Maps | `<WardleyMap>`, `<WardleyMapModeler>` | `wardleyMapFilePath` | Wardley Map in OWM text syntax (`.owm`, `.wmap`) from the [Wardley Maps Modeler](https://github.com/Miragon/wardley-maps-modeler) |
+| Event Storming | `<EventStorming>`, `<EventStormingModeler>` | `eventStormingFilePath` | Event Storming board (`.storm`) from the [Event Storming Modeler](https://github.com/Miragon/event-storming-modeler) |
+
+### Static viewers
+
+Render the file as a static SVG, the same way `<Bpmn>` does, so they also work in PDF and PNG exports.
 
 ```vue
 <TeamTopologies teamTopologiesFilePath="./my-teams.tt" height="400px" />
@@ -303,12 +322,6 @@ These three components render their source file as a static SVG, the same way `<
 <EventStorming eventStormingFilePath="./my-board.storm" height="400px" />
 ```
 
-| Component | File path prop | File format |
-|-----------|----------------|-------------|
-| `<TeamTopologies>` | `teamTopologiesFilePath` | Team Topologies document (`.tt`, JSON) from the [Team Topologies Modeler](https://github.com/Miragon/team-topologies-modeler) |
-| `<WardleyMap>` | `wardleyMapFilePath` | Wardley Map in OWM text syntax (`.owm`, `.wmap`) from the [Wardley Maps Modeler](https://github.com/Miragon/wardley-maps-modeler) |
-| `<EventStorming>` | `eventStormingFilePath` | Event Storming board (`.storm`) from the [Event Storming Modeler](https://github.com/Miragon/event-storming-modeler) |
-
 **Props:**
 
 | Name | Type | Default | Description |
@@ -316,6 +329,32 @@ These three components render their source file as a static SVG, the same way `<
 | *file path prop* | `string` | *required* | Path to the file (relative to `public/`) |
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
+
+### Modelers
+
+Show a preview of the diagram in the slide. Clicking **Edit** opens the full modeler of the notation fullscreen, with its palette, context pad, label editing and undo/redo. On **Close**, your changes are reflected back in the preview. Changes live in the running presentation only; they are not written back to the file.
+
+```vue
+<TeamTopologiesModeler teamTopologiesFilePath="./my-teams.tt" height="400px" />
+
+<WardleyMapModeler wardleyMapFilePath="./my-map.owm" height="400px" />
+
+<EventStormingModeler eventStormingFilePath="./my-board.storm" height="400px" />
+```
+
+Or start with a blank canvas:
+
+```vue
+<EventStormingModeler height="400px" />
+```
+
+**Props:**
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| *file path prop* | `string` | — | Optional path to the file (relative to `public/`). Omit for a blank diagram. |
+| `width` | `string` | `'100%'` | Width of the modeler container |
+| `height` | `string` | `'500px'` | Height of the modeler container |
 
 The renderers draw their labels in the Geist typeface when your deck provides it and fall back to a system sans-serif font otherwise.
 
@@ -327,9 +366,9 @@ The addon is structured so that further diagram-js based modelers can sit next t
 |---------|--------|
 | BPMN | Supported: static viewer, token simulation, modeler |
 | DMN | Supported: static DRD, decision table, simulation, modeler |
-| Team Topologies | Supported: static viewer, via [`@miragon/team-topologies-renderer`](https://www.npmjs.com/package/@miragon/team-topologies-renderer) |
-| Wardley Maps | Supported: static viewer, via [`@miragon/wardley-renderer`](https://www.npmjs.com/package/@miragon/wardley-renderer) |
-| Event Storming | Supported: static viewer, via [`@miragon/event-storming-renderer`](https://www.npmjs.com/package/@miragon/event-storming-renderer) |
+| Team Topologies | Supported: static viewer, modeler, via [`@miragon/team-topologies-renderer`](https://www.npmjs.com/package/@miragon/team-topologies-renderer) |
+| Wardley Maps | Supported: static viewer, modeler, via [`@miragon/wardley-renderer`](https://www.npmjs.com/package/@miragon/wardley-renderer) |
+| Event Storming | Supported: static viewer, modeler, via [`@miragon/event-storming-renderer`](https://www.npmjs.com/package/@miragon/event-storming-renderer) |
 | Context Maps | Not yet. The renderer is still at an early stage. |
 | Egon.io | Not supported. Its diagram-js plugin is not published to npm, and the upstream project is GPL-3.0 while this addon is MIT. |
 | form-js | Out of scope. It is not built on diagram-js. |

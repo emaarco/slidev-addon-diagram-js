@@ -7,9 +7,9 @@ layout: cover
 eyebrow: Slidev Addon
 ---
 
-# BPMN and DMN in **Slidev**
+# Diagrams in **Slidev**
 
-Drop your `.bpmn` and `.dmn` files straight into the deck. No screenshots, no manual exports.
+Drop your model files straight into the deck. No screenshots, no manual exports.
 
 ---
 layout: hero
@@ -19,7 +19,24 @@ accent: blue
 
 # Model once, embed the **real** diagram.
 
-Static SVG, live simulation, or an editable modeler; all from the same `.bpmn` and `.dmn` files.
+Static SVG, live simulation, or an editable modeler; rendered from the file your modeler saves.
+
+---
+layout: content
+title: One addon, five notations
+eyebrow: Overview
+accent: blue
+---
+
+Every notation is rendered from its source file. Pick the component that fits the moment.
+
+| Notation | Static | Simulation | Modeler |
+|---|---|---|---|
+| BPMN | `Bpmn` | `BpmnTokenSimulation` | `BpmnModeler` |
+| DMN | `DmnDrd`, `DmnTable` | `DmnSimulate` | `DmnModeler` |
+| Team Topologies | `TeamTopologies` | | `TeamTopologiesModeler` |
+| Wardley Maps | `WardleyMap` | | `WardleyMapModeler` |
+| Event Storming | `EventStorming` | | `EventStormingModeler` |
 
 ---
 layout: section
@@ -261,11 +278,197 @@ A full modeler canvas for workshops. Omit the file for a blank canvas, or set an
 
 ---
 layout: section
-eyebrow: Dmn-Simulate
+eyebrow: Teams
+accent: blue
+---
+
+# Team Topologies
+
+A static diagram or a live modeler for your teams and how they interact.
+
+---
+layout: content
+title: Static Team Topologies diagrams
+eyebrow: Team-Topologies
+accent: blue
+---
+
+<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="340px" />
+
+---
+layout: content
+title: The TeamTopologies component
+eyebrow: Team-Topologies
+accent: blue
+---
+
+Renders a Team Topologies document as a static, inline SVG. Ideal for print and PDF export.
+
+| Prop | Type | Description |
+|---|---|---|
+| `teamTopologiesFilePath` | string | Path to the file (required) |
+| `width` | string | Canvas width (default 100%) |
+| `height` | string | Canvas height (default auto) |
+
+`<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="340px" />`
+
+---
+layout: content
+title: Live Team Topologies modeler
+eyebrow: Team-Topologies-Modeler
+accent: blue
+---
+
+<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="340px" />
+
+---
+layout: content
+title: The TeamTopologiesModeler component
+eyebrow: Team-Topologies-Modeler
+accent: blue
+---
+
+A preview in the slide and a full modeler behind the Edit button. Edits show up in the preview once you close it.
+
+| Prop | Type | Description |
+|---|---|---|
+| `teamTopologiesFilePath` | string | Path to the file (omit for a blank canvas) |
+| `width` | string | Canvas width (default 100%) |
+| `height` | string | Canvas height (default 500px) |
+
+`<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="340px" />`
+
+---
+layout: section
+eyebrow: Strategy
+accent: blue
+---
+
+# Wardley Maps
+
+A static map or a live modeler for your value chain and how it evolves.
+
+---
+layout: content
+title: Static Wardley Maps
+eyebrow: Wardley-Map
+accent: blue
+---
+
+<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="340px" />
+
+---
+layout: content
+title: The WardleyMap component
+eyebrow: Wardley-Map
+accent: blue
+---
+
+Renders a Wardley Map written in OWM text as a static, inline SVG. Ideal for print and PDF export.
+
+| Prop | Type | Description |
+|---|---|---|
+| `wardleyMapFilePath` | string | Path to the file (required) |
+| `width` | string | Canvas width (default 100%) |
+| `height` | string | Canvas height (default auto) |
+
+`<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="340px" />`
+
+---
+layout: content
+title: Live Wardley Map modeler
+eyebrow: Wardley-Map-Modeler
+accent: blue
+---
+
+<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="340px" />
+
+---
+layout: content
+title: The WardleyMapModeler component
+eyebrow: Wardley-Map-Modeler
+accent: blue
+---
+
+A preview in the slide and a full modeler behind the Edit button. Edits show up in the preview once you close it.
+
+| Prop | Type | Description |
+|---|---|---|
+| `wardleyMapFilePath` | string | Path to the file (omit for a blank canvas) |
+| `width` | string | Canvas width (default 100%) |
+| `height` | string | Canvas height (default 500px) |
+
+`<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="340px" />`
+
+---
+layout: section
+eyebrow: Domains
+accent: blue
+---
+
+# Event Storming
+
+A static board or a live modeler for the events, commands and policies of your domain.
+
+---
+layout: content
+title: Static Event Storming boards
+eyebrow: Event-Storming
+accent: blue
+---
+
+<EventStorming eventStormingFilePath="/order-checkout.storm" height="340px" />
+
+---
+layout: content
+title: The EventStorming component
+eyebrow: Event-Storming
+accent: blue
+---
+
+Renders an Event Storming board as a static, inline SVG. Ideal for print and PDF export.
+
+| Prop | Type | Description |
+|---|---|---|
+| `eventStormingFilePath` | string | Path to the file (required) |
+| `width` | string | Canvas width (default 100%) |
+| `height` | string | Canvas height (default auto) |
+
+`<EventStorming eventStormingFilePath="/order-checkout.storm" height="340px" />`
+
+---
+layout: content
+title: Live Event Storming modeler
+eyebrow: Event-Storming-Modeler
+accent: blue
+---
+
+<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="340px" />
+
+---
+layout: content
+title: The EventStormingModeler component
+eyebrow: Event-Storming-Modeler
+accent: blue
+---
+
+A preview in the slide and a full modeler behind the Edit button. Edits show up in the preview once you close it.
+
+| Prop | Type | Description |
+|---|---|---|
+| `eventStormingFilePath` | string | Path to the file (omit for a blank canvas) |
+| `width` | string | Canvas width (default 100%) |
+| `height` | string | Canvas height (default 500px) |
+
+`<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="340px" />`
+
+---
+layout: section
+eyebrow: Appendix
 accent: green
 ---
 
-# Hit policies
+# DMN hit policies
 
 How does a table decide which rule wins when several match? DmnSimulate implements the full DMN set.
 
@@ -372,43 +575,6 @@ fontSize: 10px
 ---
 
 All matches, sorted by output priority. A Temp of 40 flips to Extreme Heat, then Heat.
-
----
-layout: section
-eyebrow: Beyond BPMN and DMN
-accent: blue
----
-
-# More modelers
-
-Team Topologies, Wardley Maps and Event Storming boards, rendered straight from their source files.
-
----
-layout: content
-title: Team Topologies
-eyebrow: Team-Topologies
-accent: blue
----
-
-<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="340px" />
-
----
-layout: content
-title: Wardley Maps
-eyebrow: Wardley-Map
-accent: blue
----
-
-<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="340px" />
-
----
-layout: content
-title: Event Storming
-eyebrow: Event-Storming
-accent: blue
----
-
-<EventStorming eventStormingFilePath="/order-checkout.storm" height="340px" />
 
 ---
 layout: person
