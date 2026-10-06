@@ -13,6 +13,9 @@ here becomes usable in any `.md` slide **without an import**:
 <DmnTable dmnFilePath="/decision.dmn" />
 <DmnSimulate dmnFilePath="/decision.dmn" />
 <DmnModeler engine="camunda" />
+<TeamTopologies teamTopologiesFilePath="/teams.tt" />
+<WardleyMap wardleyMapFilePath="/map.owm" />
+<EventStorming eventStormingFilePath="/board.storm" />
 ```
 
 That makes this folder the addon's **public API** — put a component here only if
@@ -20,8 +23,9 @@ end users should mount it directly.
 
 ## Consequences
 
-- **One subfolder per modeler.** `components/bpmn/` and `components/dmn/` group
-  the components of one modeler; a new modeler gets its own subfolder.
+- **One subfolder per modeler.** `components/bpmn/`, `components/dmn/`,
+  `components/team-topologies/` and so on group the components of one modeler;
+  a new modeler gets its own subfolder.
 - **Registered by filename, not path.** The subfolder is not part of the name:
   `components/bpmn/Bpmn.vue` is the global `<Bpmn>`. A helper placed here
   (`components/ui/Button.vue`, or any `.ts` file) would leak into every deck as
@@ -43,3 +47,6 @@ end users should mount it directly.
 | `dmn/DmnTable.vue` | Renders a DMN decision table directly in the DOM |
 | `dmn/DmnSimulate.vue` | Renders a decision table with an input form; evaluates it with FEEL and highlights the matched rule (DMN's answer to BPMN token simulation) |
 | `dmn/DmnModeler.vue` | Live DMN modeler; optional `engine` prop mounts a properties panel |
+| `team-topologies/TeamTopologies.vue` | Static SVG rendering of a Team Topologies document |
+| `wardley-maps/WardleyMap.vue` | Static SVG rendering of a Wardley Map |
+| `event-storming/EventStorming.vue` | Static SVG rendering of an Event Storming board |

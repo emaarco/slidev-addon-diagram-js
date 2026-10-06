@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Slidev addon that displays diagram-js based models in presentations: BPMN 2.0 processes (via bpmn-js) and DMN decisions (via dmn-js). It replaces the former `slidev-addon-bpmn` and `slidev-addon-dmn` packages and is laid out so further diagram-js modelers can be added next to them.
+This is a Slidev addon that displays diagram-js based models in presentations: BPMN 2.0 processes (via bpmn-js), DMN decisions (via dmn-js), and Team Topologies, Wardley Maps and Event Storming boards (via the Miragon renderers). It replaces the former `slidev-addon-bpmn` and `slidev-addon-dmn` packages and is laid out so further diagram-js modelers can be added next to them.
 
 ## Development Commands
 
@@ -57,6 +57,8 @@ plugins/<modeler>/      modeler-specific logic that is not a component (engine w
 shared/                 diagram-js infrastructure used by every modeler
   lib/fitDiagram.ts       pads, clamps and centres a diagram-js canvas viewbox
   lib/useDiagramFile.ts   fetches a diagram file + loading/error state
+  lib/renderStaticSvg.ts  off-screen render: container, SVG clean-up, padding, sizing
+  ui/StaticDiagram.vue    file loading + static SVG display for viewer-only modelers
   ui/ToolbarButton.vue    toolbar button used by the interactive components
 setup/main.ts           registers the BPMN components for this repo's own demo deck
 tests/                  mirrors the layout above
@@ -73,7 +75,9 @@ dependency-cruiser enforces that imports only point "down" (`components/` → `p
 
 **Adding a modeler** = a `components/<name>/` folder for its components, a `plugins/<name>/`
 folder if it needs non-component logic, its entries in `vite.config.ts` `optimizeDeps.include`,
-and tests under `tests/`. The isolation rule covers the new folder without changes.
+and tests under `tests/`. The isolation rule covers the new folder without changes. A modeler
+that only needs a static viewer wraps `shared/ui/StaticDiagram.vue` and passes it an
+`exportSvg(source, container)` function — see `components/wardley-maps/WardleyMap.vue`.
 
 ### BPMN components (`components/bpmn/`)
 
@@ -95,9 +99,25 @@ and tests under `tests/`. The isolation rule covers the new folder without chang
 - **`DmnSimulate.vue`** — Decision table plus an input form. Parses the table with `parseDecisionModelFromXml` and evaluates it with `evaluateDecision`, both from the external [`@emaarco/dmn-js-simulation`](https://github.com/emaarco/dmn-simulation) package (FEEL via `feelin`, full DMN hit-policy set). Reported rules get the `sim-match` class, rules that matched but were dropped by the hit policy get `sim-candidate`. One demo slide per hit policy lives in `example.md` (`public/hit-policies/*.dmn`).
 - **`DmnModeler.vue`** — Read-only DRD thumbnail in the slide plus a fullscreen `dmn-js/lib/Modeler` in a `<Teleport>` overlay. On close, `saveXML()` is compared to the loaded XML and the thumbnail re-renders if it changed. With `engine="camunda"` it mounts `dmn-js-properties-panel`; the config from `plugins/dmn/engines/camunda.ts` is nested under the modeler's **`drd:` key** (dmn-js modelers are composed of per-view editors), with `moddleExtensions` at the top level. Without a `dmnFilePath` it imports a blank DMN template.
 
+### Static viewers for further modelers
+
+`components/team-topologies/TeamTopologies.vue`, `components/wardley-maps/WardleyMap.vue` and
+`components/event-storming/EventStorming.vue` each wrap `shared/ui/StaticDiagram.vue` and only
+contribute the modeler-specific export: create the renderer's read-only `Viewer` in the off-screen
+container, import the file, return `saveSVG()`, destroy the viewer.
+
+- **Team Topologies** files are JSON. They are validated with `parseDocument` from
+  `@miragon/team-topologies-schema-model` before `viewer.importDocument()`.
+- **Wardley Maps** (OWM text) and **Event Storming** boards (`.storm` text) go through
+  `viewer.importDSL()`.
+- The read-only `Viewer` of `@miragon/wardley-renderer` 0.6.2 and
+  `@miragon/event-storming-renderer` 0.2.2 clears a `commandStack` on import without registering
+  one, so both components pass diagram-js's command module via `additionalModules`. Drop that
+  once the renderers register it themselves; each component has a test guarding it.
+
 ### Key Implementation Details
 
-- `Bpmn.vue` and `DmnDrd.vue` use an **off-screen rendering approach** because bpmn-js and dmn-js require a DOM element to render
+- `Bpmn.vue`, `DmnDrd.vue` and the three static viewers use an **off-screen rendering approach** because diagram-js requires a DOM element to render. All but `DmnDrd.vue` share `shared/lib/renderStaticSvg.ts`
 - The off-screen container has a **fixed 1920x1080 size** — this may clip large diagrams or waste space for small ones
 - SVG sizing is controlled via `maxWidth` and `height` style properties with `preserveAspectRatio="xMidYMid meet"` for responsive scaling
 - Diagram file paths are resolved relative to `window.location.origin + import.meta.env.BASE_URL` (`shared/lib/useDiagramFile.ts`)
@@ -106,21 +126,21 @@ and tests under `tests/`. The isolation rule covers the new folder without chang
 
 ### Vite Configuration
 
-The `vite.config.ts` file is **critical** for this addon to work. It lists the bpmn-js and dmn-js entry points (viewer, modeler, properties panels, simulation) in Vite's dependency optimization to prevent runtime module resolution issues in Slidev projects.
+The `vite.config.ts` file is **critical** for this addon to work. It lists the bpmn-js and dmn-js entry points (viewer, modeler, properties panels, simulation) and the Miragon renderers in Vite's dependency optimization to prevent runtime module resolution issues in Slidev projects.
 
 ## Package Distribution
 
 The npm package includes only:
-- `components/` directory (`bpmn/*.vue`, `dmn/*.vue`)
+- `components/` directory (`bpmn/*.vue`, `dmn/*.vue`, `team-topologies/*.vue`, `wardley-maps/*.vue`, `event-storming/*.vue`)
 - `plugins/` directory (`bpmn/engines/*`, `dmn/engines/*`)
-- `shared/` directory (`ui/ToolbarButton.vue`, `lib/fitDiagram.ts`, `lib/useDiagramFile.ts`)
+- `shared/` directory (`ui/ToolbarButton.vue`, `ui/StaticDiagram.vue`, `lib/fitDiagram.ts`, `lib/useDiagramFile.ts`, `lib/renderStaticSvg.ts`)
 - `vite.config.ts` (required Vite configuration)
 
 Everything else (`example.md`, `public/`, `docs/`, `setup/`, `tests/`) is excluded via the `files` field in package.json.
 
 ## Testing
 
-`npm test` runs the vitest suites under `tests/`. Use `example.md` as the manual test deck — it demonstrates every component with sample diagrams (`public/newsletter.bpmn`, `public/example.dmn`, `public/hit-policies/*.dmn`).
+`npm test` runs the vitest suites under `tests/`. Use `example.md` as the manual test deck — it demonstrates every component with sample diagrams (`public/newsletter.bpmn`, `public/example.dmn`, `public/hit-policies/*.dmn`, `public/online-shop.tt`, `public/tea-shop.owm`, `public/order-checkout.storm`).
 
 ## Development Process
 - When working with this repository, always use semantic commit-messages (e.g. feat: add bpmn component)
