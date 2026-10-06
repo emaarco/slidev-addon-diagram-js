@@ -1,0 +1,156 @@
+{
+  "version": 3,
+  "title": "Online shop — team topology",
+  "nodes": [
+    {
+      "id": "team_checkout",
+      "type": "stream-aligned",
+      "label": "Checkout & Payments",
+      "position": {
+        "x": 560,
+        "y": 202
+      },
+      "size": {
+        "width": 240,
+        "height": 96
+      },
+      "description": "Owns the checkout and payment journey end-to-end."
+    },
+    {
+      "id": "team_discovery",
+      "type": "stream-aligned",
+      "label": "Product Discovery",
+      "position": {
+        "x": 240,
+        "y": 202
+      },
+      "size": {
+        "width": 240,
+        "height": 96
+      },
+      "description": "Owns search, browsing and product pages end-to-end."
+    },
+    {
+      "id": "team_fraud",
+      "type": "complicated-subsystem",
+      "label": "Fraud Detection",
+      "position": {
+        "x": 870,
+        "y": 175
+      },
+      "size": {
+        "width": 170,
+        "height": 150
+      },
+      "description": "Specialists for the real-time fraud scoring model."
+    },
+    {
+      "id": "team_platform",
+      "type": "platform",
+      "label": "Cloud Platform",
+      "position": {
+        "x": 240,
+        "y": 352
+      },
+      "size": {
+        "width": 560,
+        "height": 110
+      },
+      "description": "Self-service CI/CD, runtime and observability for all teams."
+    },
+    {
+      "id": "team_test_automation",
+      "type": "enabling",
+      "label": "Test Automation",
+      "position": {
+        "x": 60,
+        "y": 150
+      },
+      "size": {
+        "width": 120,
+        "height": 200
+      },
+      "description": "Coaches stream-aligned teams in test automation, then steps back."
+    }
+  ],
+  "interactions": [
+    {
+      "id": "int_checkout_fraud",
+      "mode": "collaboration",
+      "position": {
+        "x": 779,
+        "y": 214
+      },
+      "size": {
+        "width": 112,
+        "height": 72
+      },
+      "label": "fraud rules"
+    },
+    {
+      "id": "int_platform_checkout",
+      "mode": "x-as-a-service",
+      "position": {
+        "x": 636,
+        "y": 286
+      },
+      "size": {
+        "width": 88,
+        "height": 78
+      }
+    },
+    {
+      "id": "int_platform_discovery",
+      "mode": "x-as-a-service",
+      "position": {
+        "x": 316,
+        "y": 286
+      },
+      "size": {
+        "width": 88,
+        "height": 78
+      }
+    },
+    {
+      "id": "int_testing_discovery",
+      "mode": "facilitating",
+      "position": {
+        "x": 168,
+        "y": 208
+      },
+      "size": {
+        "width": 84,
+        "height": 84
+      }
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow_main",
+      "position": {
+        "x": 60,
+        "y": 60
+      },
+      "size": {
+        "width": 980,
+        "height": 56
+      },
+      "label": "Flow of change"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "ann_fraud_handover",
+      "text": "Collaboration until the fraud rules are stable (Q3), then X-as-a-Service",
+      "position": {
+        "x": 830,
+        "y": 350
+      },
+      "size": {
+        "width": 200,
+        "height": 64
+      },
+      "attachedTo": "int_checkout_fraud"
+    }
+  ]
+}
