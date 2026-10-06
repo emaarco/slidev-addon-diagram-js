@@ -4,16 +4,16 @@
 [![license](https://img.shields.io/npm/l/slidev-addon-diagram-js)](https://github.com/emaarco/slidev-addon-diagram-js/blob/main/LICENSE)
 [![demo](https://img.shields.io/badge/demo-live-blue)](https://emaarco.github.io/slidev-addon-diagram-js/)
 
-Display BPMN 2.0 processes and DMN decisions in your [Slidev](https://sli.dev/) presentations. Whether you're presenting workflow designs, explaining business rules, or teaching BPMN and DMN concepts — this addon has you covered! 💡
+Display BPMN 2.0 processes, DMN decisions, Team Topologies, Wardley Maps and Event Storming boards in your [Slidev](https://sli.dev/) presentations. Whether you're presenting workflow designs, explaining business rules, or teaching BPMN and DMN concepts — this addon has you covered! 💡
 
-Powered by [bpmn-js](https://bpmn.io/toolkit/bpmn-js/) and [dmn-js](https://bpmn.io/toolkit/dmn-js/) from bpmn.io, both built on [diagram-js](https://github.com/bpmn-io/diagram-js).
+Powered by [bpmn-js](https://bpmn.io/toolkit/bpmn-js/) and [dmn-js](https://bpmn.io/toolkit/dmn-js/) from bpmn.io and the Miragon modeler renderers, all built on [diagram-js](https://github.com/bpmn-io/diagram-js).
 
 > **Coming from `slidev-addon-bpmn` or `slidev-addon-dmn`?** This package replaces both. See [Migrating](#-migrating-from-slidev-addon-bpmn--slidev-addon-dmn).
 
 ## 🚀 Quick Start
 
 1. Install the addon in your Slidev project
-2. Place your `.bpmn` and `.dmn` files in the `public/` folder
+2. Place your diagram files (`.bpmn`, `.dmn`, `.tt`, `.owm`, `.storm`) in the `public/` folder
 3. Use the components in your slides, for example `<Bpmn>` or `<DmnTable>`
 
 That's it — your diagrams are ready to present!
@@ -83,6 +83,21 @@ Component names, props and defaults are unchanged, so your slides need no edits.
 - **`<DmnTable>`** - Decision Table rendering for visualizing business rules
 - **`<DmnSimulate>`** - Decision Table with an input form: evaluate the decision live and highlight the matching rule (DMN's answer to BPMN token simulation)
 - **`<DmnModeler>`** - Interactive DMN modeler for live editing during workshops and trainings, with an optional Camunda properties panel
+
+**Team Topologies**
+
+- **`<TeamTopologies>`** - Static rendering of a Team Topologies diagram
+- **`<TeamTopologiesModeler>`** - Interactive modeler for live editing
+
+**Wardley Maps**
+
+- **`<WardleyMap>`** - Static rendering of a Wardley Map
+- **`<WardleyMapModeler>`** - Interactive modeler for live editing
+
+**Event Storming**
+
+- **`<EventStorming>`** - Static rendering of an Event Storming board
+- **`<EventStormingModeler>`** - Interactive modeler for live editing
 
 ## 🔧 BPMN Component Reference
 
@@ -248,7 +263,7 @@ Use the **Fullscreen** button next to the form to blow the whole simulation up t
 
 > **Hit policies:** the full DMN set is supported — `UNIQUE`, `ANY`, `PRIORITY`, `FIRST`, `COLLECT` (incl. `SUM`/`MIN`/`MAX`/`COUNT` aggregation), `RULE ORDER` and `OUTPUT ORDER`. The rule(s) the policy actually reports are highlighted strongly; rules that merely matched but were dropped (e.g. under `FIRST`/`PRIORITY`) are shown as faint candidates. `PRIORITY` and `OUTPUT ORDER` use the output's `<outputValues>` list as the priority order. `UNIQUE`/`ANY` show a violation badge when their constraint is broken. Input cells are evaluated as FEEL unary tests via [feelin](https://github.com/nikku/feelin); an empty cell matches any value.
 >
-> The [`example.md`](./example.md) deck includes one slide per hit policy (`public/hit-policies/*.dmn`) demonstrating each behaviour live.
+> The appendix of the [`example.md`](./example.md) deck includes one slide per hit policy (`public/hit-policies/*.dmn`) demonstrating each behaviour live.
 
 ### DmnModeler Component
 
@@ -285,28 +300,86 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `height` | `string` | `'500px'` | Height of the modeler container |
 | `engine` | `'camunda'` | — | Optional engine. Mounts a `dmn-js-properties-panel` configured for Camunda. Omit for a panel-less modeler. |
 
+## 🔧 Team Topologies, Wardley Maps and Event Storming
+
+Each of these three notations comes with a static viewer and a modeler. Both take the same file, and the props only differ in the name of the file path.
+
+| Notation | Components | File path prop | File format |
+|----------|------------|----------------|-------------|
+| Team Topologies | `<TeamTopologies>`, `<TeamTopologiesModeler>` | `teamTopologiesFilePath` | Team Topologies document (`.tt`, JSON) from the [Team Topologies Modeler](https://github.com/Miragon/team-topologies-modeler) |
+| Wardley Maps | `<WardleyMap>`, `<WardleyMapModeler>` | `wardleyMapFilePath` | Wardley Map in OWM text syntax (`.owm`, `.wmap`) from the [Wardley Maps Modeler](https://github.com/Miragon/wardley-maps-modeler) |
+| Event Storming | `<EventStorming>`, `<EventStormingModeler>` | `eventStormingFilePath` | Event Storming board (`.storm`) from the [Event Storming Modeler](https://github.com/Miragon/event-storming-modeler) |
+
+### Static viewers
+
+Render the file as a static SVG, the same way `<Bpmn>` does, so they also work in PDF and PNG exports.
+
+```vue
+<TeamTopologies teamTopologiesFilePath="./my-teams.tt" height="400px" />
+
+<WardleyMap wardleyMapFilePath="./my-map.owm" height="400px" />
+
+<EventStorming eventStormingFilePath="./my-board.storm" height="400px" />
+```
+
+**Props:**
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| *file path prop* | `string` | *required* | Path to the file (relative to `public/`) |
+| `width` | `string` | `'100%'` | Maximum width of the diagram |
+| `height` | `string` | `'auto'` | Height of the diagram |
+
+### Modelers
+
+Show a preview of the diagram in the slide. Clicking **Edit** opens the full modeler of the notation fullscreen, with its palette, context pad, label editing and undo/redo. On **Close**, your changes are reflected back in the preview. Changes live in the running presentation only; they are not written back to the file.
+
+```vue
+<TeamTopologiesModeler teamTopologiesFilePath="./my-teams.tt" height="400px" />
+
+<WardleyMapModeler wardleyMapFilePath="./my-map.owm" height="400px" />
+
+<EventStormingModeler eventStormingFilePath="./my-board.storm" height="400px" />
+```
+
+Or start with a blank canvas:
+
+```vue
+<EventStormingModeler height="400px" />
+```
+
+**Props:**
+
+| Name | Type | Default | Description |
+|------|------|---------|-------------|
+| *file path prop* | `string` | — | Optional path to the file (relative to `public/`). Omit for a blank diagram. |
+| `width` | `string` | `'100%'` | Width of the modeler container |
+| `height` | `string` | `'500px'` | Height of the modeler container |
+
+The renderers draw their labels in the Geist typeface when your deck provides it and fall back to a system sans-serif font otherwise.
+
 ## 🗺️ Modeler Support
 
 The addon is structured so that further diagram-js based modelers can sit next to BPMN and DMN.
 
 | Modeler | Status |
 |---------|--------|
-| BPMN | Supported |
-| DMN | Supported |
-| Team Topologies | Planned, via [`@miragon/team-topologies-renderer`](https://www.npmjs.com/package/@miragon/team-topologies-renderer) |
-| Wardley Maps | Planned, via [`@miragon/wardley-renderer`](https://www.npmjs.com/package/@miragon/wardley-renderer) |
-| Event Storming | Planned, via [`@miragon/event-storming-renderer`](https://www.npmjs.com/package/@miragon/event-storming-renderer) |
+| BPMN | Supported: static viewer, token simulation, modeler |
+| DMN | Supported: static DRD, decision table, simulation, modeler |
+| Team Topologies | Supported: static viewer, modeler, via [`@miragon/team-topologies-renderer`](https://www.npmjs.com/package/@miragon/team-topologies-renderer) |
+| Wardley Maps | Supported: static viewer, modeler, via [`@miragon/wardley-renderer`](https://www.npmjs.com/package/@miragon/wardley-renderer) |
+| Event Storming | Supported: static viewer, modeler, via [`@miragon/event-storming-renderer`](https://www.npmjs.com/package/@miragon/event-storming-renderer) |
 | Context Maps | Not yet. The renderer is still at an early stage. |
 | Egon.io | Not supported. Its diagram-js plugin is not published to npm, and the upstream project is GPL-3.0 while this addon is MIT. |
 | form-js | Out of scope. It is not built on diagram-js. |
 
 ## 💡 Tips
 
-- **File location**: `.bpmn` and `.dmn` files must be placed in the `public/` folder
+- **File location**: diagram files must be placed in the `public/` folder
 - **Supported formats**: Standard BPMN 2.0 and DMN 1.3 XML files (exported from Camunda Modeler, bpmn.io, etc.)
 - **Multiple decisions**: Use the `decisionId` prop to select a specific decision table when your DMN file contains multiple decisions
 - **Styling**: Use Tailwind classes on the component element to control sizing
-- **Export**: `<Bpmn>` and `<DmnDrd>` work seamlessly with Slidev's PDF/PNG export features
+- **Export**: `<Bpmn>`, `<DmnDrd>`, `<TeamTopologies>`, `<WardleyMap>` and `<EventStorming>` work seamlessly with Slidev's PDF/PNG export features
 
 ## 🤝 Contributing
 
@@ -331,4 +404,5 @@ npm run dev:app    # or run the Slidev server directly, without portless
 ## 🙏 Credits
 
 - [bpmn-js](https://github.com/bpmn-io/bpmn-js), [dmn-js](https://github.com/bpmn-io/dmn-js) and [diagram-js](https://github.com/bpmn-io/diagram-js) by [bpmn.io](https://bpmn.io/)
+- The Team Topologies, Wardley Maps and Event Storming renderers by [Miragon](https://github.com/Miragon)
 - Inspired by [slidev-addon-excalidraw](https://github.com/haydenull/slidev-addon-excalidraw)

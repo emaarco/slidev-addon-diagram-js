@@ -1,0 +1,24 @@
+title Order Checkout
+
+actor Customer [80, 300]
+command Place Order [240, 300]
+aggregate Order [420, 290] (id agg_order)
+event Order Placed [620, 300]
+policy When order placed, ship it [800, 300]
+command Ship Order [980, 300]
+aggregate Order [1160, 290] (id agg_order_2)
+event Order Shipped [1340, 300]
+readmodel Order Status [620, 120]
+external Payment Provider [420, 520]
+hotspot Double payment on retry? [620, 520]
+note Design-level session: checkout flow [80, 80]
+
+Customer -> Place Order
+Place Order -> #agg_order
+Place Order -> Payment Provider
+#agg_order -> Order Placed
+Order Placed -> Order Status
+Order Placed -> When order placed, ship it
+When order placed, ship it -> Ship Order
+Ship Order -> #agg_order_2
+#agg_order_2 -> Order Shipped

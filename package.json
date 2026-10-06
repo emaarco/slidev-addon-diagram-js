@@ -1,7 +1,7 @@
 {
   "name": "slidev-addon-diagram-js",
   "version": "2.0.0",
-  "description": "Display BPMN and DMN diagrams in Slidev presentations, built on bpmn.io and diagram-js",
+  "description": "Display BPMN, DMN and other diagram-js based models in Slidev presentations",
   "type": "module",
   "scripts": {
     "dev": "portless",
@@ -21,6 +21,10 @@
   "dependencies": {
     "@bpmn-io/properties-panel": "3.55.0",
     "@emaarco/dmn-js-simulation": "0.3.1",
+    "@miragon/event-storming-renderer": "0.2.2",
+    "@miragon/team-topologies-renderer": "0.8.0",
+    "@miragon/team-topologies-schema-model": "0.8.0",
+    "@miragon/wardley-renderer": "0.6.2",
     "bpmn-js": "18.30.1",
     "bpmn-js-properties-panel": "5.65.1",
     "bpmn-js-token-simulation": "0.40.0",
@@ -28,6 +32,7 @@
     "camunda-bpmn-moddle": "8.0.1",
     "camunda-dmn-moddle": "1.3.1",
     "camunda-transaction-boundaries": "1.1.2",
+    "diagram-js": "15.27.1",
     "dmn-js": "17.12.0",
     "dmn-js-properties-panel": "3.12.0",
     "zeebe-bpmn-moddle": "2.0.0"
@@ -58,7 +63,10 @@
     "workflow",
     "process",
     "decision-table",
-    "drd"
+    "drd",
+    "team-topologies",
+    "wardley-maps",
+    "event-storming"
   ],
   "files": [
     "components",
