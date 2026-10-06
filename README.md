@@ -4,11 +4,13 @@
 [![license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/emaarco/slidev-addon-diagram-js/blob/main/LICENSE)
 [![demo](https://img.shields.io/badge/demo-live-blue)](https://emaarco.github.io/slidev-addon-diagram-js/)
 
-One [Slidev](https://sli.dev/) addon for [diagram-js](https://github.com/bpmn-io/diagram-js) based models: BPMN 2.0 processes, DMN decisions, Team Topologies, Wardley Maps and Event Storming boards. Render them as static SVGs for clean PDF/PNG exports, or drop in a live modeler to build and edit diagrams in front of your audience. 💡
+Stop pasting flat screenshots of your diagrams into slides. 🎯 This [Slidev](https://sli.dev/) addon embeds the **real** models — BPMN processes, DMN decisions, Team Topologies, Wardley Maps and Event Storming boards — rendered live from their source files.
 
-![Example BPMN diagram in Slidev](./docs/bpmn-example.png)
+Present them as crisp static SVGs that survive PDF and PNG export, or open a **live modeler** and build the diagram in front of your audience, mid-talk. ✨
 
-> **Coming from `slidev-addon-bpmn` or `slidev-addon-dmn`?** This package replaces both. See [Migrating](#-migrating-from-slidev-addon-bpmn--slidev-addon-dmn).
+![BPMN diagram rendered live in Slidev](./docs/bpmn-example.png)
+
+> **Coming from `slidev-addon-bpmn` or `slidev-addon-dmn`?** This package replaces both — your slides need no changes. See the [migration guide](./docs/migrating.md).
 
 ## 🚀 Quick Start
 
@@ -57,26 +59,6 @@ Five notations, each with a static viewer and an interactive modeler. Follow the
 
 Every static viewer (`<Bpmn>`, `<DmnDrd>`, `<TeamTopologies>`, `<WardleyMap>`, `<EventStorming>`) renders to a self-contained SVG, so it works in Slidev's PDF and PNG export out of the box.
 
-## 🔁 Migrating from slidev-addon-bpmn / slidev-addon-dmn
-
-`slidev-addon-diagram-js` replaces both packages. Swap the dependencies:
-
-```bash
-npm uninstall slidev-addon-bpmn slidev-addon-dmn
-npm install slidev-addon-diagram-js
-```
-
-and list the new addon instead of the two old ones:
-
-```yaml
----
-addons:
-  - slidev-addon-diagram-js
----
-```
-
-Component names, props and defaults are unchanged, so your slides need no edits.
-
 ## 🗺️ Modeler Support
 
 The addon is structured so that further diagram-js based modelers can sit next to the existing ones.
@@ -88,9 +70,6 @@ The addon is structured so that further diagram-js based modelers can sit next t
 | Team Topologies | Supported: static viewer, modeler, via [`@miragon/team-topologies-renderer`](https://www.npmjs.com/package/@miragon/team-topologies-renderer) |
 | Wardley Maps | Supported: static viewer, modeler, via [`@miragon/wardley-renderer`](https://www.npmjs.com/package/@miragon/wardley-renderer) |
 | Event Storming | Supported: static viewer, modeler, via [`@miragon/event-storming-renderer`](https://www.npmjs.com/package/@miragon/event-storming-renderer) |
-| Context Maps | Not yet. The renderer is still at an early stage. |
-| Egon.io | Not supported. Its diagram-js plugin is not published to npm, and the upstream project is GPL-3.0 while this addon is MIT. |
-| form-js | Out of scope. It is not built on diagram-js. |
 
 ## 💡 Tips
 
