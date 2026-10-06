@@ -1,22 +1,21 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 
-const { mockImportDocument, mockSaveSVG, mockDestroy, MockViewer, mockParseDocument } = vi.hoisted(() => ({
+const { mockImportDocument, mockSaveSVG, mockDestroy, MockViewer } = vi.hoisted(() => ({
   mockImportDocument: vi.fn(),
   mockSaveSVG: vi.fn(),
   mockDestroy: vi.fn(),
   MockViewer: vi.fn(),
-  mockParseDocument: vi.fn(),
 }))
 
-vi.mock('@miragon/team-topologies-renderer', () => ({ Viewer: MockViewer }))
-vi.mock('@miragon/team-topologies-schema-model', () => ({ parseDocument: mockParseDocument }))
+vi.mock('@miragon/team-topologies-renderer', () => ({ Viewer: MockViewer, Modeler: vi.fn() }))
 
+import { emptyDocument, serializeDocument } from '@miragon/team-topologies-schema-model'
 import TeamTopologies from '../../../components/team-topologies/TeamTopologies.vue'
 
 const SAMPLE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="50" height="50"/></svg>'
-const DOCUMENT_JSON = '{"version":3,"title":"Online shop","nodes":[]}'
-const PARSED_DOCUMENT = { version: 3, title: 'Online shop', nodes: [] }
+const DOCUMENT_JSON = serializeDocument(emptyDocument('Online shop'))
+const DOCUMENT_WITH_UNKNOWN_TEAM_TYPE_JSON = '{"version":3,"title":"Online shop","nodes":[{"id":"team_a","type":"unknown-type"}]}'
 
 function mockFetchSuccess(source = DOCUMENT_JSON) {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
@@ -27,7 +26,6 @@ function mockFetchSuccess(source = DOCUMENT_JSON) {
 
 describe('TeamTopologies.vue', () => {
   beforeEach(() => {
-    mockParseDocument.mockReturnValue({ ok: true, document: PARSED_DOCUMENT })
     mockSaveSVG.mockReturnValue({ svg: SAMPLE_SVG })
     MockViewer.mockImplementation(function () {
       return {
@@ -64,18 +62,16 @@ describe('TeamTopologies.vue', () => {
     mount(TeamTopologies, { props: { teamTopologiesFilePath: 'teams.tt' } })
     await flushPromises()
 
-    expect(mockParseDocument).toHaveBeenCalledWith(JSON.parse(DOCUMENT_JSON))
-    expect(mockImportDocument).toHaveBeenCalledWith(PARSED_DOCUMENT)
+    expect(mockImportDocument).toHaveBeenCalledWith(expect.objectContaining({ title: 'Online shop', nodes: [] }))
   })
 
-  it('shows the validation error of an invalid document without rendering it', async () => {
-    mockFetchSuccess()
-    mockParseDocument.mockReturnValue({ ok: false, error: 'nodes: expected array' })
+  it('shows a validation error for an invalid document without rendering it', async () => {
+    mockFetchSuccess(DOCUMENT_WITH_UNKNOWN_TEAM_TYPE_JSON)
 
     const wrapper = mount(TeamTopologies, { props: { teamTopologiesFilePath: 'teams.tt' } })
     await flushPromises()
 
-    expect(wrapper.text()).toContain('Failed to load Team Topologies: nodes: expected array')
+    expect(wrapper.text()).toContain('Failed to load Team Topologies: nodes.0.type')
     expect(MockViewer).not.toHaveBeenCalled()
   })
 
@@ -86,7 +82,7 @@ describe('TeamTopologies.vue', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain('Failed to load Team Topologies')
-    expect(mockParseDocument).not.toHaveBeenCalled()
+    expect(MockViewer).not.toHaveBeenCalled()
   })
 
   it('applies default and custom sizes to the wrapper', async () => {

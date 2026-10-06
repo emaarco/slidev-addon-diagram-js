@@ -1,34 +1,40 @@
 <template>
   <div class="static-diagram" :style="{ width: props.width, height: props.height }">
-    <p v-if="loading">Loading {{ props.diagramKind }} diagram...</p>
+    <p v-if="loading && !svg">Loading {{ props.diagramKind }} diagram...</p>
     <p v-if="error" class="text-red-500">{{ error }}</p>
     <div v-if="svg" v-html="svg" class="static-diagram-inner"></div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
+import type { ExportSvg } from '../lib/diagramAdapter'
 import { useDiagramFile } from '../lib/useDiagramFile'
 import { renderStaticSvg } from '../lib/renderStaticSvg'
 
 const props = defineProps<{
-  filePath: string
   diagramKind: string
+  filePath?: string
+  source?: string
   width: string
   height: string
-  exportSvg: (source: string, container: HTMLElement) => Promise<string>
+  exportSvg: ExportSvg
 }>()
+
+const emit = defineEmits<{ rendered: [source: string] }>()
 
 const { loading, error, fetchDiagramFile, withLoading } = useDiagramFile(props.diagramKind)
 const svg = ref<string | null>(null)
 
-onMounted(() => {
-  withLoading(loadAndRender)
-})
+onMounted(render)
+watch(() => props.source, render)
 
-async function loadAndRender(): Promise<void> {
-  const source = await fetchDiagramFile(props.filePath)
-  svg.value = await renderStaticSvg(container => props.exportSvg(source, container))
+function render(): Promise<void | undefined> {
+  return withLoading(async () => {
+    const source = props.source ?? await fetchDiagramFile(props.filePath!)
+    svg.value = await renderStaticSvg(container => props.exportSvg(source, container))
+    emit('rendered', source)
+  })
 }
 </script>
 

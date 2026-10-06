@@ -9,9 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { Viewer } from '@miragon/wardley-renderer'
-import commandStackMissingInReadOnlyViewer from 'diagram-js/lib/command/index.js'
-import '@miragon/wardley-renderer/assets/wardley.css'
+import { exportWardleyMapSvg } from '../../plugins/wardley-maps/wardleyMap'
 import StaticDiagram from '../../shared/ui/StaticDiagram.vue'
 
 const props = withDefaults(defineProps<{
@@ -22,15 +20,4 @@ const props = withDefaults(defineProps<{
   width: '100%',
   height: 'auto',
 })
-
-async function exportWardleyMapSvg(source: string, container: HTMLElement): Promise<string> {
-  const viewer = new Viewer({ container, additionalModules: [commandStackMissingInReadOnlyViewer] })
-  try {
-    await viewer.importDSL(source)
-    const { svg } = await viewer.saveSVG()
-    return svg
-  } finally {
-    viewer.destroy()
-  }
-}
 </script>

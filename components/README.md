@@ -14,8 +14,11 @@ here becomes usable in any `.md` slide **without an import**:
 <DmnSimulate dmnFilePath="/decision.dmn" />
 <DmnModeler engine="camunda" />
 <TeamTopologies teamTopologiesFilePath="/teams.tt" />
+<TeamTopologiesModeler teamTopologiesFilePath="/teams.tt" />
 <WardleyMap wardleyMapFilePath="/map.owm" />
+<WardleyMapModeler wardleyMapFilePath="/map.owm" />
 <EventStorming eventStormingFilePath="/board.storm" />
+<EventStormingModeler eventStormingFilePath="/board.storm" />
 ```
 
 That makes this folder the addon's **public API** — put a component here only if
@@ -48,5 +51,8 @@ end users should mount it directly.
 | `dmn/DmnSimulate.vue` | Renders a decision table with an input form; evaluates it with FEEL and highlights the matched rule (DMN's answer to BPMN token simulation) |
 | `dmn/DmnModeler.vue` | Live DMN modeler; optional `engine` prop mounts a properties panel |
 | `team-topologies/TeamTopologies.vue` | Static SVG rendering of a Team Topologies document |
+| `team-topologies/TeamTopologiesModeler.vue` | Preview plus fullscreen Team Topologies modeler |
 | `wardley-maps/WardleyMap.vue` | Static SVG rendering of a Wardley Map |
+| `wardley-maps/WardleyMapModeler.vue` | Preview plus fullscreen Wardley Map modeler |
 | `event-storming/EventStorming.vue` | Static SVG rendering of an Event Storming board |
+| `event-storming/EventStormingModeler.vue` | Preview plus fullscreen Event Storming modeler |

@@ -9,9 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { Viewer } from '@miragon/team-topologies-renderer'
-import { parseDocument } from '@miragon/team-topologies-schema-model'
-import '@miragon/team-topologies-renderer/assets/team-topologies.css'
+import { exportTeamTopologiesSvg } from '../../plugins/team-topologies/teamTopologiesDiagram'
 import StaticDiagram from '../../shared/ui/StaticDiagram.vue'
 
 const props = withDefaults(defineProps<{
@@ -22,19 +20,4 @@ const props = withDefaults(defineProps<{
   width: '100%',
   height: 'auto',
 })
-
-async function exportTeamTopologiesSvg(source: string, container: HTMLElement): Promise<string> {
-  const parsed = parseDocument(JSON.parse(source))
-  if (!parsed.ok) {
-    throw new Error(parsed.error)
-  }
-
-  const viewer = new Viewer({ container })
-  try {
-    viewer.importDocument(parsed.document)
-    return viewer.saveSVG().svg
-  } finally {
-    viewer.destroy()
-  }
-}
 </script>

@@ -90,6 +90,53 @@ describe('StaticDiagram.vue', () => {
     expect(exportSvg).not.toHaveBeenCalled()
   })
 
+  it('renders a given source without fetching a file', async () => {
+    const fetchSpy = vi.fn()
+    vi.stubGlobal('fetch', fetchSpy)
+    const exportSvg = vi.fn().mockResolvedValue(SAMPLE_SVG)
+
+    const wrapper = mount(StaticDiagram, {
+      props: { source: 'title New Board', diagramKind: 'Event Storming', width: '100%', height: 'auto', exportSvg },
+    })
+    await flushPromises()
+
+    expect(fetchSpy).not.toHaveBeenCalled()
+    expect(exportSvg.mock.calls[0][0]).toBe('title New Board')
+    expect(wrapper.html()).toContain('<svg')
+  })
+
+  it('renders again when the source changes', async () => {
+    const exportSvg = vi.fn().mockResolvedValue(SAMPLE_SVG)
+    const wrapper = mount(StaticDiagram, {
+      props: { source: 'title Before', diagramKind: 'Event Storming', width: '100%', height: 'auto', exportSvg },
+    })
+    await flushPromises()
+
+    await wrapper.setProps({ source: 'title After' })
+    await flushPromises()
+
+    expect(exportSvg).toHaveBeenCalledTimes(2)
+    expect(exportSvg.mock.calls[1][0]).toBe('title After')
+  })
+
+  it('reports the source it rendered', async () => {
+    mockFetchSuccess('title Order Checkout')
+
+    const { wrapper } = mountStaticDiagram()
+    await flushPromises()
+
+    expect(wrapper.emitted('rendered')).toEqual([['title Order Checkout']])
+  })
+
+  it('does not report a source it failed to render', async () => {
+    mockFetchSuccess()
+
+    const { wrapper } = mountStaticDiagram(vi.fn().mockRejectedValue(new Error('unknown sticky kind')))
+    await flushPromises()
+
+    expect(wrapper.emitted('rendered')).toBeUndefined()
+  })
+
   it('shows the exporter error when the diagram cannot be rendered', async () => {
     mockFetchSuccess()
 
