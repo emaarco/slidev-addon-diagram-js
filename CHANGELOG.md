@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.1.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.1.0...v2.1.1) (2026-10-06)
+
+
+### Bug Fixes
+
+* resolve root-relative diagram paths inside the deck's base path ([#128](https://github.com/emaarco/slidev-addon-diagram-js/issues/128)) ([6e0cf0e](https://github.com/emaarco/slidev-addon-diagram-js/commit/6e0cf0e588c7bffa6c8fdcf6b95c47a86903cb4d))
+
 ## [2.1.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.0.0...v2.1.0) (2026-10-06)
 
 
