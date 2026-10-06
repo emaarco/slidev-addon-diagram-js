@@ -287,13 +287,17 @@ accent: blue
 A static diagram or a live modeler for your teams and how they interact.
 
 ---
-layout: content
+layout: mermaid
 title: Static Team Topologies diagrams
 eyebrow: Team-Topologies
 accent: blue
 ---
 
-<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="340px" />
+<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="300px" />
+
+::caption::
+
+Rendered as a clean, static SVG. Best for PDF exports and print.
 
 ---
 layout: content
@@ -310,16 +314,20 @@ Renders a Team Topologies document as a static, inline SVG. Ideal for print and 
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
 
-`<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="340px" />`
+`<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="300px" />`
 
 ---
-layout: content
+layout: mermaid
 title: Live Team Topologies modeler
 eyebrow: Team-Topologies-Modeler
 accent: blue
 ---
 
-<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="340px" />
+<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="300px" />
+
+::caption::
+
+Edit the diagram live in a workshop. The preview picks up your changes when you close the modeler.
 
 ---
 layout: content
@@ -336,7 +344,7 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
 
-`<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="340px" />`
+`<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="300px" />`
 
 ---
 layout: section
@@ -349,13 +357,17 @@ accent: blue
 A static map or a live modeler for your value chain and how it evolves.
 
 ---
-layout: content
+layout: mermaid
 title: Static Wardley Maps
 eyebrow: Wardley-Map
 accent: blue
 ---
 
-<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="340px" />
+<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="300px" />
+
+::caption::
+
+Rendered as a clean, static SVG. Best for PDF exports and print.
 
 ---
 layout: content
@@ -372,16 +384,20 @@ Renders a Wardley Map written in OWM text as a static, inline SVG. Ideal for pri
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
 
-`<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="340px" />`
+`<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="300px" />`
 
 ---
-layout: content
+layout: mermaid
 title: Live Wardley Map modeler
 eyebrow: Wardley-Map-Modeler
 accent: blue
 ---
 
-<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="340px" />
+<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="300px" />
+
+::caption::
+
+Edit the diagram live in a workshop. The preview picks up your changes when you close the modeler.
 
 ---
 layout: content
@@ -398,7 +414,7 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
 
-`<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="340px" />`
+`<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="300px" />`
 
 ---
 layout: section
@@ -411,13 +427,17 @@ accent: blue
 A static board or a live modeler for the events, commands and policies of your domain.
 
 ---
-layout: content
+layout: mermaid
 title: Static Event Storming boards
 eyebrow: Event-Storming
 accent: blue
 ---
 
-<EventStorming eventStormingFilePath="/order-checkout.storm" height="340px" />
+<EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" />
+
+::caption::
+
+Rendered as a clean, static SVG. Best for PDF exports and print.
 
 ---
 layout: content
@@ -434,16 +454,20 @@ Renders an Event Storming board as a static, inline SVG. Ideal for print and PDF
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
 
-`<EventStorming eventStormingFilePath="/order-checkout.storm" height="340px" />`
+`<EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" />`
 
 ---
-layout: content
+layout: mermaid
 title: Live Event Storming modeler
 eyebrow: Event-Storming-Modeler
 accent: blue
 ---
 
-<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="340px" />
+<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="300px" />
+
+::caption::
+
+Edit the diagram live in a workshop. The preview picks up your changes when you close the modeler.
 
 ---
 layout: content
@@ -460,7 +484,7 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
 
-`<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="340px" />`
+`<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="300px" />`
 
 ---
 layout: section

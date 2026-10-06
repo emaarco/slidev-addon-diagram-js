@@ -166,6 +166,8 @@ Everything else (`example.md`, `public/`, `docs/`, `setup/`, `tests/`) is exclud
 
 `npm test` runs the vitest suites under `tests/`. Use `example.md` as the manual test deck — it demonstrates every component with sample diagrams (`public/newsletter.bpmn`, `public/example.dmn`, `public/hit-policies/*.dmn`, `public/online-shop.tt`, `public/tea-shop.owm`, `public/order-checkout.storm`).
 
+The toolkit theme has `bpmn` and `dmn` layouts but none for the other notations. Their demo slides use the toolkit's `mermaid` layout: it puts the default slot into a `DiagramFrame` and takes a `::caption::`, which gives the same framed look.
+
 ## Development Process
 - When working with this repository, always use semantic commit-messages (e.g. feat: add bpmn component)
 
