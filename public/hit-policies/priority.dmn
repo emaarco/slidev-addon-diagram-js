@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_Priority" name="Priority" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_Risk" name="Application Risk">
+    <decisionTable id="DT_Priority" hitPolicy="PRIORITY">
+      <input id="in_score" label="Credit Score">
+        <inputExpression id="ie_score" typeRef="integer"><text>Score</text></inputExpression>
+      </input>
+      <output id="out_risk" label="Decision" name="Decision" typeRef="string">
+        <outputValues id="ov_risk"><text>"Decline","Review","Approve"</text></outputValues>
+      </output>
+      <rule id="p1">
+        <inputEntry id="p1i"><text>&lt; 700</text></inputEntry>
+        <outputEntry id="p1o"><text>"Review"</text></outputEntry>
+      </rule>
+      <rule id="p2">
+        <inputEntry id="p2i"><text>&lt; 600</text></inputEntry>
+        <outputEntry id="p2o"><text>"Decline"</text></outputEntry>
+      </rule>
+      <rule id="p3">
+        <inputEntry id="p3i"><text>&gt;= 0</text></inputEntry>
+        <outputEntry id="p3o"><text>"Approve"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

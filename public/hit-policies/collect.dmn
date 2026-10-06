@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_Collect" name="Collect" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_Promos" name="Applicable Promotions">
+    <decisionTable id="DT_Collect" hitPolicy="COLLECT">
+      <input id="in_cart" label="Cart Value (€)">
+        <inputExpression id="ie_cart" typeRef="integer"><text>Cart</text></inputExpression>
+      </input>
+      <output id="out_promo" label="Promotion" name="Promotion" typeRef="string" />
+      <rule id="c1">
+        <inputEntry id="c1i"><text>&gt;= 50</text></inputEntry>
+        <outputEntry id="c1o"><text>"Free Shipping"</text></outputEntry>
+      </rule>
+      <rule id="c2">
+        <inputEntry id="c2i"><text>&gt;= 100</text></inputEntry>
+        <outputEntry id="c2o"><text>"Gift Wrap"</text></outputEntry>
+      </rule>
+      <rule id="c3">
+        <inputEntry id="c3i"><text>&gt;= 200</text></inputEntry>
+        <outputEntry id="c3o"><text>"10% Voucher"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

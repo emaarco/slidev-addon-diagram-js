@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_First" name="First" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_Discount" name="Order Discount">
+    <decisionTable id="DT_First" hitPolicy="FIRST">
+      <input id="in_total" label="Order Total (€)">
+        <inputExpression id="ie_total" typeRef="integer"><text>OrderTotal</text></inputExpression>
+      </input>
+      <output id="out_discount" label="Discount" name="Discount" typeRef="string" />
+      <rule id="f1">
+        <inputEntry id="f1i"><text>&gt;= 500</text></inputEntry>
+        <outputEntry id="f1o"><text>"20%"</text></outputEntry>
+      </rule>
+      <rule id="f2">
+        <inputEntry id="f2i"><text>&gt;= 200</text></inputEntry>
+        <outputEntry id="f2o"><text>"10%"</text></outputEntry>
+      </rule>
+      <rule id="f3">
+        <inputEntry id="f3i"><text>&gt;= 0</text></inputEntry>
+        <outputEntry id="f3o"><text>"0%"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
