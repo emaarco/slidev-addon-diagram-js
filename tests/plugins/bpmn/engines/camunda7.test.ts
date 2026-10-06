@@ -15,7 +15,7 @@ vi.mock('camunda-transaction-boundaries', () => ({
   default: { default: { __init__: ['transactionBoundaries'], transactionBoundaries: ['type', () => {}] } },
 }))
 
-import { camunda7Engine } from '../../engines/camunda7'
+import { camunda7Engine } from '../../../../plugins/bpmn/engines/camunda7'
 
 describe('camunda7Engine', () => {
   it('registers the four Camunda Platform modules', () => {

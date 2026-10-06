@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_RuleOrder" name="RuleOrder" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_Warnings" name="Weather Warnings">
+    <decisionTable id="DT_RuleOrder" hitPolicy="RULE ORDER">
+      <input id="in_temp" label="Temperature (°C)">
+        <inputExpression id="ie_temp" typeRef="integer"><text>Temp</text></inputExpression>
+      </input>
+      <output id="out_warn" label="Warning" name="Warning" typeRef="string" />
+      <rule id="r1">
+        <inputEntry id="r1i"><text>&gt; 30</text></inputEntry>
+        <outputEntry id="r1o"><text>"Heat"</text></outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="r2i"><text>&gt; 35</text></inputEntry>
+        <outputEntry id="r2o"><text>"Extreme Heat"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

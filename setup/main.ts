@@ -1,7 +1,7 @@
 import { defineAppSetup } from '@slidev/types'
-import Bpmn from '../components/Bpmn.vue'
-import BpmnModeler from '../components/BpmnModeler.vue'
-import BpmnTokenSimulation from '../components/BpmnTokenSimulation.vue'
+import Bpmn from '../components/bpmn/Bpmn.vue'
+import BpmnModeler from '../components/bpmn/BpmnModeler.vue'
+import BpmnTokenSimulation from '../components/bpmn/BpmnTokenSimulation.vue'
 
 // The toolkit theme ships a `bpmn` LAYOUT (layout: bpmn), which Slidev also
 // exposes as a component named `Bpmn` — shadowing this addon's static <Bpmn>

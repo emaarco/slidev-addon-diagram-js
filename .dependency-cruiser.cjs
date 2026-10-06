@@ -1,11 +1,12 @@
 /**
- * Architecture guardrail for the addon's source layers.
+ * Architecture guardrail for the addon's source modules.
  *
  * Layering (imports only ever point "down"):
- *   components/  -> composables/, engines/, shared/   (the public component surface)
- *   composables/ -> shared/
- *   engines/     -> engines/ (self, via types)
- *   shared/      -> (leaf; imports nothing from the layers above)
+ *   components/<modeler>/ -> plugins/<modeler>/, shared/   (the public component surface)
+ *   plugins/<modeler>/    -> shared/
+ *   shared/               -> (leaf; imports nothing from the layers above)
+ *
+ * A modeler (bpmn, dmn, ...) never imports another modeler; they only meet in shared/.
  *
  * See components/README.md for why components/ is the public surface.
  */
@@ -19,17 +20,17 @@ module.exports = {
       to: { circular: true },
     },
     {
-      name: 'engines-not-to-ui',
-      comment: 'Engine adapters must not know about the UI (components/composables).',
+      name: 'modelers-are-isolated',
+      comment: 'A modeler must not import another modeler; code they both need lives in shared/.',
       severity: 'error',
-      from: { path: '^engines/' },
-      to: { path: '^(components|composables)/' },
+      from: { path: '^(components|plugins)/([^/]+)/' },
+      to: { path: '^(components|plugins)/[^/]+/', pathNot: '^(components|plugins)/$2/' },
     },
     {
-      name: 'composables-not-to-components',
-      comment: 'Composables are lower-level than components and must not import them.',
+      name: 'plugins-not-to-components',
+      comment: 'Plugins hold engine wiring and must not know about the UI.',
       severity: 'error',
-      from: { path: '^composables/' },
+      from: { path: '^plugins/' },
       to: { path: '^components/' },
     },
     {
@@ -37,12 +38,12 @@ module.exports = {
       comment: 'shared/ holds reusable UI atoms + helpers; it must not import upward.',
       severity: 'error',
       from: { path: '^shared/' },
-      to: { path: '^(components|composables|engines)/' },
+      to: { path: '^(components|plugins)/' },
     },
   ],
   options: {
     doNotFollow: { path: 'node_modules' },
-    includeOnly: '^(components|composables|engines|shared)/',
+    includeOnly: '^(components|plugins|shared)/',
     enhancedResolveOptions: {
       extensions: ['.ts', '.js', '.vue'],
     },

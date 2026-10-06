@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_Any" name="Any" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_Access" name="Access Check">
+    <decisionTable id="DT_Any" hitPolicy="ANY">
+      <input id="in_age" label="Age">
+        <inputExpression id="ie_age" typeRef="integer"><text>Age</text></inputExpression>
+      </input>
+      <output id="out_access" label="Access" name="Access" typeRef="string" />
+      <rule id="a1">
+        <inputEntry id="a1i"><text>&gt;= 18</text></inputEntry>
+        <outputEntry id="a1o"><text>"Granted"</text></outputEntry>
+      </rule>
+      <rule id="a2">
+        <inputEntry id="a2i"><text>&gt;= 21</text></inputEntry>
+        <outputEntry id="a2o"><text>"Granted"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

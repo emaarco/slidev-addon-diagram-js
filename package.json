@@ -1,7 +1,7 @@
 {
-  "name": "slidev-addon-bpmn",
+  "name": "slidev-addon-diagram-js",
   "version": "1.10.2",
-  "description": "Display BPMN 2.0 diagrams in Slidev presentations",
+  "description": "Display BPMN and DMN diagrams in Slidev presentations, built on bpmn.io and diagram-js",
   "type": "module",
   "scripts": {
     "dev": "portless",
@@ -9,10 +9,10 @@
     "build": "slidev build example.md",
     "export": "slidev export example.md",
     "screenshot": "slidev export example.md --format png",
-    "build:pages": "slidev build example.md --base /slidev-addon-bpmn/ --out dist",
+    "build:pages": "slidev build example.md --base /slidev-addon-diagram-js/ --out dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint:deps": "depcruise components composables engines shared --config .dependency-cruiser.cjs --output-type err",
+    "lint:deps": "depcruise components plugins shared --config .dependency-cruiser.cjs --output-type err",
     "knip": "knip",
     "knip:fix": "knip --fix"
   },
@@ -20,12 +20,16 @@
   "license": "MIT",
   "dependencies": {
     "@bpmn-io/properties-panel": "3.55.0",
+    "@emaarco/dmn-js-simulation": "0.3.1",
     "bpmn-js": "18.30.1",
     "bpmn-js-properties-panel": "5.65.1",
     "bpmn-js-token-simulation": "0.40.0",
     "camunda-bpmn-js-behaviors": "1.18.0",
     "camunda-bpmn-moddle": "8.0.1",
+    "camunda-dmn-moddle": "1.3.1",
     "camunda-transaction-boundaries": "1.1.2",
+    "dmn-js": "17.12.0",
+    "dmn-js-properties-panel": "3.12.0",
     "zeebe-bpmn-moddle": "2.0.0"
   },
   "devDependencies": {
@@ -46,15 +50,19 @@
     "slidev-addon",
     "bpmn",
     "bpmn-js",
+    "dmn",
+    "dmn-js",
+    "diagram-js",
     "bpmn.io",
     "diagram",
     "workflow",
-    "process"
+    "process",
+    "decision-table",
+    "drd"
   ],
   "files": [
     "components",
-    "composables",
-    "engines",
+    "plugins",
     "shared",
     "vite.config.ts"
   ],
@@ -78,10 +86,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emaarco/slidev-addon-bpmn.git"
+    "url": "git+https://github.com/emaarco/slidev-addon-diagram-js.git"
   },
   "bugs": {
-    "url": "https://github.com/emaarco/slidev-addon-bpmn/issues"
+    "url": "https://github.com/emaarco/slidev-addon-diagram-js/issues"
   },
-  "homepage": "https://github.com/emaarco/slidev-addon-bpmn#readme"
+  "homepage": "https://github.com/emaarco/slidev-addon-diagram-js#readme"
 }

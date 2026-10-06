@@ -13,7 +13,7 @@ vi.mock('zeebe-bpmn-moddle/resources/zeebe.json', () => ({
   default: { name: 'Zeebe' },
 }))
 
-import { zeebeEngine } from '../../engines/zeebe'
+import { zeebeEngine } from '../../../../plugins/bpmn/engines/zeebe'
 
 describe('zeebeEngine', () => {
   it('registers the four Zeebe modules', () => {

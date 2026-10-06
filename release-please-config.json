@@ -8,7 +8,7 @@
   "prerelease": false,
   "packages": {
     ".": {
-      "package-name": "slidev-addon-bpmn"
+      "package-name": "slidev-addon-diagram-js"
     }
   }
 }

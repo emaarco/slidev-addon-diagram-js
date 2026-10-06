@@ -1,11 +1,11 @@
 <template>
   <div :style="{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: props.width, height: containerHeight }">
-    <p v-if="loading">Loading BPMN diagram...</p>
+    <p v-if="loading">Loading DMN diagram...</p>
     <p v-if="error" class="text-red-500">{{ error }}</p>
 
-    <div ref="viewerContainerRef" class="bpmn-modeler-container" :style="{
-      width: `calc(100% - ${margin * 2}px)`,
-      height: `calc(100% - ${margin * 2}px)`,
+    <div ref="viewerContainerRef" class="dmn-modeler-container" :style="{
+      width: `calc(${props.width} - ${margin * 2}px)`,
+      height: `calc(${containerHeight} - ${margin * 2}px)`,
       margin: `${margin}px`,
     }"></div>
 
@@ -13,7 +13,7 @@
       v-if="!loading && !error"
       title="Open modeler"
       label="Edit"
-      :position="{ top: '20px', right: '20px', zIndex: 10 }"
+      :position="{ top: '12px', right: '12px', zIndex: 10 }"
       @click="openFullscreen"
     >
       <template #icon>
@@ -100,29 +100,38 @@
 </template>
 
 <script setup lang="ts">
-
 import { type Ref, nextTick, onMounted, onUnmounted, ref } from 'vue'
-import BpmnViewer from 'bpmn-js/lib/Viewer'
-import BpmnModeler from 'bpmn-js/lib/Modeler'
-import tokenSimulationModeler from 'bpmn-js-token-simulation'
-import tokenSimulationViewer from 'bpmn-js-token-simulation/lib/viewer'
-import 'bpmn-js/dist/assets/bpmn-js.css'
-import 'bpmn-js/dist/assets/diagram-js.css'
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
+import DmnViewer from 'dmn-js/lib/Viewer'
+import DmnModeler from 'dmn-js/lib/Modeler'
+import 'dmn-js/dist/assets/diagram-js.css'
+import 'dmn-js/dist/assets/dmn-js-shared.css'
+import 'dmn-js/dist/assets/dmn-js-drd.css'
+import 'dmn-js/dist/assets/dmn-js-decision-table.css'
+import 'dmn-js/dist/assets/dmn-js-decision-table-controls.css'
+import 'dmn-js/dist/assets/dmn-js-literal-expression.css'
+import 'dmn-js/dist/assets/dmn-font/css/dmn-embedded.css'
 import '@bpmn-io/properties-panel/dist/assets/properties-panel.css'
-import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
 import { onSlideEnter } from '@slidev/client'
-import { useBpmn } from '../composables/useBpmn'
-import { zeebeEngine } from '../engines/zeebe'
-import { camunda7Engine } from '../engines/camunda7'
-import type { Engine } from '../engines/types'
-import { fitDiagram } from '../shared/lib/fitDiagram'
-import ToolbarButton from '../shared/ui/ToolbarButton.vue'
+import { useDiagramFile } from '../../shared/lib/useDiagramFile'
+import { camundaEngine } from '../../plugins/dmn/engines/camunda'
+import type { Engine } from '../../plugins/dmn/engines/types'
+import { fitDiagram } from '../../shared/lib/fitDiagram'
+import ToolbarButton from '../../shared/ui/ToolbarButton.vue'
 
 const margin = 5
 const containerWaitTimeout = 5000
+const nativeSizeScale = 1
 
-const { loading, error, fetchBpmnXml, withLoading } = useBpmn()
+// A bare DMN 1.3 model with an empty DRD canvas — the starting point when no
+// `dmnFilePath` is given, so the modeler opens ready to build from scratch.
+const BLANK_DMN = `<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" id="blank_definitions" name="New Decision Model" namespace="http://camunda.org/schema/1.0/dmn">
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1" />
+  </dmndi:DMNDI>
+</definitions>`
+
+const { loading, error, fetchDiagramFile, withLoading } = useDiagramFile('DMN')
 const viewerContainerRef = ref<HTMLDivElement | null>(null)
 const modelerContainerRef = ref<HTMLDivElement | null>(null)
 const propertiesPanelRef = ref<HTMLDivElement | null>(null)
@@ -130,39 +139,25 @@ const isRendered = ref(false)
 const isFullscreen = ref(false)
 const isPanelOpen = ref(true)
 const currentXml = ref<string | null>(null)
-let viewer: InstanceType<typeof BpmnViewer> | null = null
-let modeler: InstanceType<typeof BpmnModeler> | null = null
-let hasModelerChanges = false
-let resizeObserver: ResizeObserver | null = null
+let viewer: any = null
+let modeler: any = null
 
 const props = withDefaults(defineProps<{
-  bpmnFilePath?: string
+  dmnFilePath?: string
   width?: string
   height?: string
   engine?: Engine
-  maxScale?: number
-  tokenSimulation?: boolean
-  transactionBoundaries?: boolean
 }>(), {
   width: '100%',
   height: '500px',
-  tokenSimulation: false,
-  transactionBoundaries: false,
 })
 
 function resolveEngineConfig() {
-  if (props.engine === 'zeebe') return zeebeEngine
-  if (props.engine === 'camunda7') return camunda7Engine
+  if (props.engine === 'camunda') return camundaEngine
   return null
 }
 
 const containerHeight = props.height
-
-// User-overridable enlarge cap for fitDiagram; undefined → fitDiagram's default.
-function resolveMaxScale(): number | undefined {
-  const n = Number(props.maxScale)
-  return Number.isFinite(n) && n > 0 ? n : undefined
-}
 
 async function waitForContainer(containerRef: Ref<HTMLDivElement | null>): Promise<boolean> {
   return new Promise((resolve) => {
@@ -180,6 +175,14 @@ async function waitForContainer(containerRef: Ref<HTMLDivElement | null>): Promi
   })
 }
 
+function fitActiveDrd(instance: any): void {
+  const activeViewer = instance.getActiveViewer?.()
+  const canvas = activeViewer?.get?.('canvas')
+  if (!canvas) return
+  canvas.resized()
+  fitDiagram(canvas, undefined, nativeSizeScale)
+}
+
 async function renderViewer(): Promise<boolean> {
   if (viewer) {
     viewer.destroy()
@@ -189,68 +192,27 @@ async function renderViewer(): Promise<boolean> {
   const ready = await waitForContainer(viewerContainerRef)
   if (!ready) return false
 
-  const viewerOptions: any = { container: viewerContainerRef.value! }
-  if (props.tokenSimulation) {
-    const disableSnackbarModule = { notifications: ['value', { showNotification: () => {} }] }
-    viewerOptions.additionalModules = [tokenSimulationViewer, disableSnackbarModule]
-  }
-  viewer = new BpmnViewer(viewerOptions)
+  viewer = new DmnViewer({ container: viewerContainerRef.value! })
 
   if (!currentXml.value) {
-    if (props.bpmnFilePath) {
-      currentXml.value = await fetchBpmnXml(props.bpmnFilePath)
-    } else {
-      const tempModeler = new BpmnModeler({ container: document.createElement('div') })
-      await tempModeler.createDiagram()
-      const { xml } = await tempModeler.saveXML({ format: true })
-      tempModeler.destroy()
-      if (xml) currentXml.value = xml
-    }
+    currentXml.value = props.dmnFilePath ? await fetchDiagramFile(props.dmnFilePath) : BLANK_DMN
   }
 
-  if (currentXml.value) {
-    await viewer.importXML(currentXml.value)
-    const canvas = viewer.get('canvas') as any
-    canvas.resized()
-    fitDiagram(canvas, undefined, resolveMaxScale())
-    observeViewerContainer()
-  }
+  await viewer.importXML(currentXml.value)
+
+  // Open the DRD view so the thumbnail always shows the diagram, not a table.
+  const drdView = viewer.getViews().find((v: any) => v.type === 'drd')
+  if (drdView) await viewer.open(drdView)
+  fitActiveDrd(viewer)
+
   return true
 }
 
-function observeViewerContainer() {
-  if (typeof ResizeObserver === 'undefined' || !viewerContainerRef.value) return
-  resizeObserver?.disconnect()
-  let lastW = 0
-  let lastH = 0
-  resizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
-      const w = Math.round(entry.contentRect.width)
-      const h = Math.round(entry.contentRect.height)
-      if (w > 0 && h > 0 && (w !== lastW || h !== lastH)) {
-        lastW = w
-        lastH = h
-        refitViewer()
-      }
-    }
-  })
-  resizeObserver.observe(viewerContainerRef.value)
-}
-
-function refitViewer() {
-  if (!viewer) return
-  const canvas = viewer.get('canvas') as any
-  canvas.resized()
-  fitDiagram(canvas, undefined, resolveMaxScale())
-}
-
-async function renderBpmn() {
+async function renderDmn() {
   if (isRendered.value) return
   isRendered.value = true
 
-  const result = await withLoading(async () => {
-    return renderViewer()
-  })
+  const result = await withLoading(() => renderViewer())
 
   // result === false → container hidden (preload). Reset guard so onSlideEnter retries.
   // result === undefined → withLoading caught a real error.
@@ -266,47 +228,33 @@ async function openFullscreen() {
   await nextTick()
   await waitForContainer(modelerContainerRef)
 
-  hasModelerChanges = false
-
   const config = resolveEngineConfig()
   const options: any = { container: modelerContainerRef.value! }
-  const additionalModules: any[] = []
   if (config) {
-    options.propertiesPanel = { parent: propertiesPanelRef.value! }
-    additionalModules.push(...config.additionalModules)
+    options.drd = {
+      additionalModules: config.additionalModules,
+      propertiesPanel: { parent: propertiesPanelRef.value! },
+    }
     options.moddleExtensions = config.moddleExtensions
   }
-  if (props.tokenSimulation) {
-    additionalModules.push(tokenSimulationModeler)
-  }
-  if (additionalModules.length) {
-    options.additionalModules = additionalModules
-  }
-  modeler = new BpmnModeler(options)
+  modeler = new DmnModeler(options)
 
-  await modeler.importXML(currentXml.value!)
-
-  const eventBus = modeler.get('eventBus') as any
-  eventBus.on('commandStack.changed', () => { hasModelerChanges = true })
-  const canvas = modeler.get('canvas') as any
-  canvas.resized()
-  fitDiagram(canvas, undefined, resolveMaxScale())
-
-  if (props.transactionBoundaries) {
-    if (props.engine === 'camunda7') {
-      const transactionBoundaries = modeler.get('transactionBoundaries') as any
-      transactionBoundaries.show()
-    } else {
-      console.warn('[BpmnModeler] transactionBoundaries requires engine="camunda7"; ignoring.')
-    }
-  }
+  await modeler.importXML(currentXml.value)
+  fitActiveDrd(modeler)
 }
 
 async function closeFullscreen() {
+  let changed = false
+
   if (modeler) {
-    if (hasModelerChanges) {
+    try {
       const { xml } = await modeler.saveXML({ format: true })
-      if (xml) currentXml.value = xml
+      if (xml && xml !== currentXml.value) {
+        currentXml.value = xml
+        changed = true
+      }
+    } catch (err) {
+      console.error('Failed to save DMN changes:', err)
     }
     modeler.destroy()
     modeler = null
@@ -315,7 +263,7 @@ async function closeFullscreen() {
   isFullscreen.value = false
   isPanelOpen.value = true
 
-  if (hasModelerChanges) {
+  if (changed) {
     await nextTick()
     await renderViewer()
   }
@@ -325,8 +273,8 @@ async function togglePanel() {
   isPanelOpen.value = !isPanelOpen.value
   await nextTick()
   if (modeler) {
-    const canvas = modeler.get('canvas') as any
-    canvas.resized()
+    const canvas = modeler.getActiveViewer?.()?.get?.('canvas')
+    canvas?.resized()
   }
 }
 
@@ -334,38 +282,27 @@ defineExpose({ openFullscreen, closeFullscreen, togglePanel })
 
 onMounted(async () => {
   await nextTick()
-  await renderBpmn()
+  await renderDmn()
 })
 
 onSlideEnter(async () => {
-  await renderBpmn()
+  await renderDmn()
 })
 
 onUnmounted(() => {
-  resizeObserver?.disconnect()
-  resizeObserver = null
   viewer?.destroy()
   viewer = null
   modeler?.destroy()
   modeler = null
 })
-
 </script>
 
 <style scoped>
-/* bpmn-js watermark anchored bottom-right; shrink so it stays subordinate in
+/* dmn-js watermark anchored bottom-right; shrink so it stays subordinate in
    small tiles. The fullscreen overlay uses its own viewer instance and is not
    targeted by this scoped rule. */
-.bpmn-modeler-container :deep(.bjs-powered-by) {
+.dmn-modeler-container :deep(.bjs-powered-by) {
   transform: scale(0.7);
   transform-origin: bottom right;
-}
-
-/* Trim the token-simulation toggle pill down from its 16px default — smaller and
-   less dominant, but still clearly larger than the 11px chrome buttons. Its icon
-   is height:1em, so font-size drives the whole pill. Only present when the inline
-   viewer runs with tokenSimulation. */
-.bpmn-modeler-container :deep(.bts-toggle-mode) {
-  font-size: 13px;
 }
 </style>

@@ -1,14 +1,14 @@
 import { ref } from 'vue'
 
-export function useBpmn() {
+export function useDiagramFile(diagramKind: string) {
   const loading = ref(true)
   const error = ref<string | null>(null)
 
-  async function fetchBpmnXml(path: string): Promise<string> {
+  async function fetchDiagramFile(path: string): Promise<string> {
     const url = new URL(path, window.location.origin + import.meta.env.BASE_URL).href
     const response = await fetch(url)
     if (!response.ok) {
-      throw new Error(`Failed to fetch BPMN file: ${response.status}`)
+      throw new Error(`Failed to fetch ${diagramKind} file: ${response.status}`)
     }
     return response.text()
   }
@@ -19,13 +19,13 @@ export function useBpmn() {
     try {
       return await fn()
     } catch (err) {
-      error.value = `Failed to load BPMN: ${err instanceof Error ? err.message : String(err)}`
-      console.error('BPMN loading error:', err)
+      error.value = `Failed to load ${diagramKind}: ${err instanceof Error ? err.message : String(err)}`
+      console.error(`${diagramKind} loading error:`, err)
       return undefined
     } finally {
       loading.value = false
     }
   }
 
-  return { loading, error, fetchBpmnXml, withLoading }
+  return { loading, error, fetchDiagramFile, withLoading }
 }

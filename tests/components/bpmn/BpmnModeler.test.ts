@@ -35,13 +35,13 @@ vi.mock('bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css', () =
 vi.mock('bpmn-js-token-simulation', () => ({ default: 'token-sim-modeler' }))
 vi.mock('bpmn-js-token-simulation/lib/viewer', () => ({ default: 'token-sim-viewer' }))
 
-vi.mock('../../engines/zeebe', () => ({
+vi.mock('../../../plugins/bpmn/engines/zeebe', () => ({
   zeebeEngine: {
     additionalModules: ['zeebe-mod-a', 'zeebe-mod-b'],
     moddleExtensions: { zeebe: { tag: 'zeebe-moddle' } },
   },
 }))
-vi.mock('../../engines/camunda7', () => ({
+vi.mock('../../../plugins/bpmn/engines/camunda7', () => ({
   camunda7Engine: {
     additionalModules: ['c7-mod-a', 'c7-mod-b'],
     moddleExtensions: { camunda: { tag: 'camunda-moddle' } },
@@ -58,7 +58,7 @@ vi.mock('@slidev/client', () => ({
   }),
 }))
 
-import BpmnModelerComponent from '../../components/BpmnModeler.vue'
+import BpmnModelerComponent from '../../../components/bpmn/BpmnModeler.vue'
 
 function mockFetchSuccess(xml = '<definitions></definitions>') {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({

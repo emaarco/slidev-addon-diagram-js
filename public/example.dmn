@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+             xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+             xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+             id="Definitions_1"
+             name="Dish Decision"
+             namespace="http://camunda.org/schema/1.0/dmn">
+
+  <inputData id="InputData_Season" name="Season">
+    <variable id="Variable_Season" name="Season" typeRef="string" />
+  </inputData>
+
+  <inputData id="InputData_GuestCount" name="Number of Guests">
+    <variable id="Variable_GuestCount" name="Number of Guests" typeRef="integer" />
+  </inputData>
+
+  <decision id="Decision_Dish" name="Dish">
+    <variable id="Variable_Dish" name="Dish" typeRef="string" />
+    <informationRequirement id="IR_Season">
+      <requiredInput href="#InputData_Season" />
+    </informationRequirement>
+    <informationRequirement id="IR_GuestCount">
+      <requiredInput href="#InputData_GuestCount" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_Dish" hitPolicy="FIRST">
+      <input id="Input_Season" label="Season">
+        <inputExpression id="InputExpression_Season" typeRef="string">
+          <text>Season</text>
+        </inputExpression>
+      </input>
+      <input id="Input_GuestCount" label="Number of Guests">
+        <inputExpression id="InputExpression_GuestCount" typeRef="integer">
+          <text>Number of Guests</text>
+        </inputExpression>
+      </input>
+      <output id="Output_Dish" label="Dish" typeRef="string" />
+      <rule id="Rule_1">
+        <inputEntry id="IE_1_1"><text>"Fall"</text></inputEntry>
+        <inputEntry id="IE_1_2"><text>&lt;= 8</text></inputEntry>
+        <outputEntry id="OE_1"><text>"Spareribs"</text></outputEntry>
+      </rule>
+      <rule id="Rule_2">
+        <inputEntry id="IE_2_1"><text>"Winter"</text></inputEntry>
+        <inputEntry id="IE_2_2"><text>&lt;= 8</text></inputEntry>
+        <outputEntry id="OE_2"><text>"Roastbeef"</text></outputEntry>
+      </rule>
+      <rule id="Rule_3">
+        <inputEntry id="IE_3_1"><text>"Spring"</text></inputEntry>
+        <inputEntry id="IE_3_2"><text>&gt; 4</text></inputEntry>
+        <outputEntry id="OE_3"><text>"Stew"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1">
+      <dmndi:DMNShape id="DMNShape_Decision_Dish" dmnElementRef="Decision_Dish">
+        <dc:Bounds height="80" width="180" x="260" y="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_InputData_Season" dmnElementRef="InputData_Season">
+        <dc:Bounds height="45" width="125" x="160" y="230" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_InputData_GuestCount" dmnElementRef="InputData_GuestCount">
+        <dc:Bounds height="45" width="125" x="380" y="230" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_IR_Season" dmnElementRef="IR_Season">
+        <di:waypoint x="223" y="230" />
+        <di:waypoint x="310" y="160" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_IR_GuestCount" dmnElementRef="IR_GuestCount">
+        <di:waypoint x="443" y="230" />
+        <di:waypoint x="390" y="160" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+
+</definitions>

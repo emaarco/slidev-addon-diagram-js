@@ -12,6 +12,10 @@ export default defineConfig({
       'bpmn-js-properties-panel',
       'camunda-bpmn-js-behaviors/lib/camunda-cloud',
       'camunda-transaction-boundaries',
+      'dmn-js/lib/Viewer',
+      'dmn-js/lib/Modeler',
+      'dmn-js-properties-panel',
+      '@emaarco/dmn-js-simulation',
     ],
   },
 })

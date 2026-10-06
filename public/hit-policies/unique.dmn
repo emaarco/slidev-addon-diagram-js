@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             id="Definitions_Unique" name="Unique" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Decision_Tier" name="Membership Tier">
+    <decisionTable id="DT_Unique" hitPolicy="UNIQUE">
+      <input id="in_spend" label="Yearly Spend (€)">
+        <inputExpression id="ie_spend" typeRef="integer"><text>Spend</text></inputExpression>
+      </input>
+      <output id="out_tier" label="Tier" name="Tier" typeRef="string" />
+      <rule id="u1">
+        <inputEntry id="u1i"><text>&lt; 1000</text></inputEntry>
+        <outputEntry id="u1o"><text>"Bronze"</text></outputEntry>
+      </rule>
+      <rule id="u2">
+        <inputEntry id="u2i"><text>[1000..5000)</text></inputEntry>
+        <outputEntry id="u2o"><text>"Silver"</text></outputEntry>
+      </rule>
+      <rule id="u3">
+        <inputEntry id="u3i"><text>&gt;= 5000</text></inputEntry>
+        <outputEntry id="u3o"><text>"Gold"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

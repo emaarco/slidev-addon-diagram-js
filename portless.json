@@ -1,4 +1,4 @@
 {
-  "name": "slidev-addon-bpmn",
+  "name": "slidev-addon-diagram-js",
   "script": "dev:app"
 }

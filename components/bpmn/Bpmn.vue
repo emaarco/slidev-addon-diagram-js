@@ -10,9 +10,9 @@
 import { onMounted, ref } from 'vue'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import 'bpmn-js/dist/assets/bpmn-js.css'
-import { useBpmn } from '../composables/useBpmn'
+import { useDiagramFile } from '../../shared/lib/useDiagramFile'
 
-const { loading, error, fetchBpmnXml, withLoading } = useBpmn()
+const { loading, error, fetchDiagramFile, withLoading } = useDiagramFile('BPMN')
 const svg = ref<string | null>(null)
 
 const props = withDefaults(defineProps<{
@@ -29,7 +29,7 @@ onMounted(() => {
 })
 
 async function loadAndRenderBpmn(path: string): Promise<void> {
-  const bpmnXml = await fetchBpmnXml(path)
+  const bpmnXml = await fetchDiagramFile(path)
 
   const container = document.createElement('div')
   container.style.width = '1920px'
