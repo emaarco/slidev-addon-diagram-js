@@ -1,12 +1,17 @@
 import { ref } from 'vue'
 
+function resolveWithinBase(path: string): string {
+  const base = import.meta.env.BASE_URL
+  const pathWithinBase = path.startsWith(base) ? path.slice(base.length) : path.replace(/^\//, '')
+  return new URL(pathWithinBase, window.location.origin + base).href
+}
+
 export function useDiagramFile(diagramKind: string) {
   const loading = ref(true)
   const error = ref<string | null>(null)
 
   async function fetchDiagramFile(path: string): Promise<string> {
-    const url = new URL(path, window.location.origin + import.meta.env.BASE_URL).href
-    const response = await fetch(url)
+    const response = await fetch(resolveWithinBase(path))
     if (!response.ok) {
       throw new Error(`Failed to fetch ${diagramKind} file: ${response.status}`)
     }

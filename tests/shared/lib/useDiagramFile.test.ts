@@ -33,6 +33,35 @@ describe('useDiagramFile', () => {
       expect(result).toBe(xml)
     })
 
+    describe('when the deck is served from a sub-path', () => {
+      beforeEach(() => {
+        vi.stubEnv('BASE_URL', '/deck/')
+        fetchMock.mockResolvedValue({ ok: true, text: () => Promise.resolve('') })
+      })
+
+      afterEach(() => {
+        vi.unstubAllEnvs()
+      })
+
+      it('keeps a root-relative path inside the base', async () => {
+        await useDiagramFile('BPMN').fetchDiagramFile('/diagram.bpmn')
+
+        expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/deck/diagram.bpmn')
+      })
+
+      it('does not prefix a path that already carries the base', async () => {
+        await useDiagramFile('BPMN').fetchDiagramFile('/deck/diagram.bpmn')
+
+        expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/deck/diagram.bpmn')
+      })
+
+      it('resolves a relative path against the base', async () => {
+        await useDiagramFile('BPMN').fetchDiagramFile('diagram.bpmn')
+
+        expect(fetchMock).toHaveBeenCalledWith('http://localhost:3000/deck/diagram.bpmn')
+      })
+    })
+
     it('throws on non-ok response', async () => {
       fetchMock.mockResolvedValue({ ok: false, status: 404 })
 
