@@ -26,6 +26,17 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.0.0](https://github.com/emaarco/slidev-addon-bpmn/compare/v1.10.2...v2.0.0) (2026-10-06)
+
+
+### ⚠ BREAKING CHANGES
+
+* consolidate BPMN and DMN into slidev-addon-diagram-js ([#122](https://github.com/emaarco/slidev-addon-bpmn/issues/122))
+
+### Features
+
+* consolidate BPMN and DMN into slidev-addon-diagram-js ([#122](https://github.com/emaarco/slidev-addon-bpmn/issues/122)) ([abf40ab](https://github.com/emaarco/slidev-addon-bpmn/commit/abf40ab8868c65a3d60c0d103eac337d7d6879ba))
+
 ## [1.10.2](https://github.com/emaarco/slidev-addon-bpmn/compare/v1.10.1...v1.10.2) (2026-09-21)
 
 
