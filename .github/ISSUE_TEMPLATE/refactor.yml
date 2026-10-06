@@ -22,7 +22,7 @@ body:
     attributes:
       label: Current State
       description: Describe the existing code structure or design that is problematic.
-      placeholder: "Currently, the code in `components/Bpmn.vue` does X by…"
+      placeholder: "Currently, the code in `components/bpmn/Bpmn.vue` does X by…"
     validations:
       required: true
 

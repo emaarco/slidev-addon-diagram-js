@@ -2,13 +2,17 @@
 
 Slidev auto-registers **every component in this directory as a global** in the
 consuming slide deck (via `unplugin-vue-components`; the addon root's
-`components/` dir is scanned by `@slidev/cli`). So a file here becomes usable in
-any `.md` slide **without an import**:
+`components/` dir is scanned by `@slidev/cli`, subfolders included). So a file
+here becomes usable in any `.md` slide **without an import**:
 
 ```md
-<Bpmn src="/diagram.bpmn" />
-<BpmnTokenSimulation src="/diagram.bpmn" />
+<Bpmn bpmnFilePath="/diagram.bpmn" />
+<BpmnTokenSimulation bpmnFilePath="/diagram.bpmn" />
 <BpmnModeler engine="zeebe" />
+<DmnDrd dmnFilePath="/decision.dmn" />
+<DmnTable dmnFilePath="/decision.dmn" />
+<DmnSimulate dmnFilePath="/decision.dmn" />
+<DmnModeler engine="camunda" />
 ```
 
 That makes this folder the addon's **public API** — put a component here only if
@@ -16,18 +20,26 @@ end users should mount it directly.
 
 ## Consequences
 
-- **Registered by filename, not path.** A subfolder (`components/ui/Button.vue`)
-  still leaks a global `<Button>` into every deck. Don't hide internals here.
+- **One subfolder per modeler.** `components/bpmn/` and `components/dmn/` group
+  the components of one modeler; a new modeler gets its own subfolder.
+- **Registered by filename, not path.** The subfolder is not part of the name:
+  `components/bpmn/Bpmn.vue` is the global `<Bpmn>`. A helper placed here
+  (`components/ui/Button.vue`, or any `.ts` file) would leak into every deck as
+  a global too. Don't hide internals here.
 - **Internal building blocks live outside `components/`.** Shared UI atoms and
   helpers go in [`../shared/`](../shared) (`shared/ui/*`, `shared/lib/*`) and are
   imported explicitly — they never touch the consumer's global namespace.
-- Business/rendering logic sits in [`../composables/`](../composables); engine
-  wiring in [`../engines/`](../engines).
+- Modeler-specific logic such as engine wiring sits in
+  [`../plugins/<modeler>/`](../plugins).
 
 ## Current components
 
 | Component | Purpose |
 |---|---|
-| `Bpmn.vue` | Static SVG rendering (off-screen render, best for PDF export) |
-| `BpmnTokenSimulation.vue` | Interactive viewer with animated token-flow simulation |
-| `BpmnModeler.vue` | Live BPMN modeler; optional `engine` prop mounts a properties panel |
+| `bpmn/Bpmn.vue` | Static SVG rendering (off-screen render, best for PDF export) |
+| `bpmn/BpmnTokenSimulation.vue` | Interactive viewer with animated token-flow simulation |
+| `bpmn/BpmnModeler.vue` | Live BPMN modeler; optional `engine` prop mounts a properties panel |
+| `dmn/DmnDrd.vue` | Static SVG rendering of the DRD (off-screen render, best for PDF export) |
+| `dmn/DmnTable.vue` | Renders a DMN decision table directly in the DOM |
+| `dmn/DmnSimulate.vue` | Renders a decision table with an input form; evaluates it with FEEL and highlights the matched rule (DMN's answer to BPMN token simulation) |
+| `dmn/DmnModeler.vue` | Live DMN modeler; optional `engine` prop mounts a properties panel |
