@@ -10,7 +10,7 @@
 import { onMounted, ref } from 'vue'
 import BpmnViewer from 'bpmn-js/lib/Viewer'
 import 'bpmn-js/dist/assets/bpmn-js.css'
-import { useBpmn } from '../composables/useBpmn'
+import { useBpmn } from '../../composables/useBpmn'
 
 const { loading, error, fetchBpmnXml, withLoading } = useBpmn()
 const svg = ref<string | null>(null)

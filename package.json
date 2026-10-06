@@ -12,7 +12,7 @@
     "build:pages": "slidev build example.md --base /slidev-addon-bpmn/ --out dist",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint:deps": "depcruise components composables engines shared --config .dependency-cruiser.cjs --output-type err",
+    "lint:deps": "depcruise components composables plugins shared --config .dependency-cruiser.cjs --output-type err",
     "knip": "knip",
     "knip:fix": "knip --fix"
   },
@@ -54,7 +54,7 @@
   "files": [
     "components",
     "composables",
-    "engines",
+    "plugins",
     "shared",
     "vite.config.ts"
   ],

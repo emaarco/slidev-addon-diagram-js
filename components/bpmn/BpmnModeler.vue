@@ -112,12 +112,12 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css'
 import '@bpmn-io/properties-panel/dist/assets/properties-panel.css'
 import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css'
 import { onSlideEnter } from '@slidev/client'
-import { useBpmn } from '../composables/useBpmn'
-import { zeebeEngine } from '../engines/zeebe'
-import { camunda7Engine } from '../engines/camunda7'
-import type { Engine } from '../engines/types'
-import { fitDiagram } from '../shared/lib/fitDiagram'
-import ToolbarButton from '../shared/ui/ToolbarButton.vue'
+import { useBpmn } from '../../composables/useBpmn'
+import { zeebeEngine } from '../../plugins/bpmn/engines/zeebe'
+import { camunda7Engine } from '../../plugins/bpmn/engines/camunda7'
+import type { Engine } from '../../plugins/bpmn/engines/types'
+import { fitDiagram } from '../../shared/lib/fitDiagram'
+import ToolbarButton from '../../shared/ui/ToolbarButton.vue'
 
 const margin = 5
 const containerWaitTimeout = 5000

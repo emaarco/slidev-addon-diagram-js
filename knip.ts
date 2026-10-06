@@ -5,17 +5,17 @@ import type { KnipConfig } from 'knip'
  *
  * Entry points (where the reachable-code graph starts):
  *   - setup/main.ts     Slidev auto-loads this to register the addon's components.
- *   - components/*.vue   The published component surface consumers import directly;
- *                        marked as entry so its public exports aren't flagged unused.
+ *   - components/**\/*.vue  The published component surface consumers import directly;
+ *                          marked as entry so its public exports aren't flagged unused.
  * vite/vitest config files are auto-detected by knip's built-in plugins (which also
  * treat tests/**\/*.test.ts as entry), so they don't need listing here.
  */
 const config: KnipConfig = {
-  entry: ['setup/main.ts', 'components/*.vue'],
+  entry: ['setup/main.ts', 'components/**/*.vue'],
   project: [
     'components/**/*.{ts,vue}',
     'composables/**/*.ts',
-    'engines/**/*.ts',
+    'plugins/**/*.ts',
     'shared/**/*.{ts,vue}',
     'setup/**/*.ts',
   ],

@@ -12,7 +12,7 @@ vi.mock('bpmn-js/lib/Viewer', () => ({
   default: MockBpmnViewer,
 }))
 
-import Bpmn from '../../components/Bpmn.vue'
+import Bpmn from '../../../components/bpmn/Bpmn.vue'
 
 const SAMPLE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="50" height="50"/></svg>'
 

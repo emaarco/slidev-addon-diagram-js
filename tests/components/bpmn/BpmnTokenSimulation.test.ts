@@ -28,7 +28,7 @@ vi.mock('@slidev/client', () => ({
   }),
 }))
 
-import BpmnTokenSimulation from '../../components/BpmnTokenSimulation.vue'
+import BpmnTokenSimulation from '../../../components/bpmn/BpmnTokenSimulation.vue'
 
 function mockFetchSuccess(xml = '<definitions></definitions>') {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
