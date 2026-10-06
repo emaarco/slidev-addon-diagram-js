@@ -1,7 +1,7 @@
 {
-  "name": "slidev-addon-bpmn",
+  "name": "slidev-addon-diagram-js",
   "version": "1.10.2",
-  "description": "Display BPMN 2.0 diagrams in Slidev presentations",
+  "description": "Display BPMN and DMN diagrams in Slidev presentations, built on bpmn.io and diagram-js",
   "type": "module",
   "scripts": {
     "dev": "portless",
@@ -9,7 +9,7 @@
     "build": "slidev build example.md",
     "export": "slidev export example.md",
     "screenshot": "slidev export example.md --format png",
-    "build:pages": "slidev build example.md --base /slidev-addon-bpmn/ --out dist",
+    "build:pages": "slidev build example.md --base /slidev-addon-diagram-js/ --out dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint:deps": "depcruise components plugins shared --config .dependency-cruiser.cjs --output-type err",
@@ -50,10 +50,15 @@
     "slidev-addon",
     "bpmn",
     "bpmn-js",
+    "dmn",
+    "dmn-js",
+    "diagram-js",
     "bpmn.io",
     "diagram",
     "workflow",
-    "process"
+    "process",
+    "decision-table",
+    "drd"
   ],
   "files": [
     "components",
@@ -81,10 +86,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/emaarco/slidev-addon-bpmn.git"
+    "url": "git+https://github.com/emaarco/slidev-addon-diagram-js.git"
   },
   "bugs": {
-    "url": "https://github.com/emaarco/slidev-addon-bpmn/issues"
+    "url": "https://github.com/emaarco/slidev-addon-diagram-js/issues"
   },
-  "homepage": "https://github.com/emaarco/slidev-addon-bpmn#readme"
+  "homepage": "https://github.com/emaarco/slidev-addon-diagram-js#readme"
 }
