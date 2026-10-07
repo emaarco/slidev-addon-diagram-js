@@ -181,3 +181,12 @@ PR tags the commit and publishes a GitHub Release; the same workflow then runs i
 `publish` job (`npm publish --provenance`) and `deploy-pages` job (publish the example to
 GitHub Pages). The workflow exposes a `dry_run` input via `workflow_dispatch` that runs a
 `publish-dry-run` job (`npm publish --dry-run`) without creating a release or publishing.
+
+**Betas:** to try a change in a real deck before it is released, run the workflow manually on
+the branch with a `beta_version` such as `2.2.0-beta.0` (the version the change will be released
+as, plus `-beta.N`). The `publish-beta` job publishes that branch under the `beta` dist-tag with
+provenance. The version is set in the runner only: nothing is committed, tagged or released,
+`latest` does not move, and release-please keeps counting from the last stable version. A beta
+run skips every other job; add `dry_run` to rehearse it. A published version can never be
+reused, so the next one is `-beta.1`. A deck pins the exact version
+(`npm i slidev-addon-diagram-js@2.2.0-beta.0`).
