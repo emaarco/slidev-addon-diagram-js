@@ -101,8 +101,5 @@
   "bugs": {
     "url": "https://github.com/emaarco/slidev-addon-diagram-js/issues"
   },
-  "homepage": "https://github.com/emaarco/slidev-addon-diagram-js#readme",
-  "overrides": {
-    "magic-string@1": "1.4.1"
-  }
+  "homepage": "https://github.com/emaarco/slidev-addon-diagram-js#readme"
 }
