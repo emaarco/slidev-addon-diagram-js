@@ -145,7 +145,7 @@ and `components/wardley-maps/`.
   table styling is `src/dmn/decisionTable.css`.
 - **`DmnSimulate.vue`** — decision table plus an input form, using `EmbeddedViewer` directly
   because the table is teleported to `<body>` in fullscreen. `DecisionSimulation` wraps
-  `parseDecisionModelFromXml` / `evaluateDecision` from
+  `DmnXmlReader` / `DecisionTableEvaluator` from
   [`@emaarco/dmn-js-simulation`](https://github.com/emaarco/dmn-simulation) (FEEL via `feelin`, full
   DMN hit-policy set). `RuleHighlighter` gives reported rules the `sim-match` class and rules that
   matched but were dropped by the hit policy `sim-candidate`. One demo slide per hit policy lives
