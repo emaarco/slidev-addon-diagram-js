@@ -2,15 +2,17 @@ import {
   type DecisionModel,
   type EvaluationResult,
   type RawValue,
-  evaluateDecision,
-  parseDecisionModelFromXml,
+  DecisionTableEvaluator,
+  DmnXmlReader,
 } from '@emaarco/dmn-js-simulation'
 
 export class DecisionSimulation {
   private readonly model: DecisionModel
+  private readonly evaluator: DecisionTableEvaluator
 
   constructor(dmnXml: string, decisionId?: string) {
-    this.model = parseDecisionModelFromXml(dmnXml, decisionId)
+    this.model = new DmnXmlReader().readDecisionTable(dmnXml, decisionId)
+    this.evaluator = new DecisionTableEvaluator(this.model)
   }
 
   get inputs(): DecisionModel['inputs'] {
@@ -29,6 +31,6 @@ export class DecisionSimulation {
   }
 
   evaluate(values: RawValue[]): EvaluationResult {
-    return evaluateDecision(this.model, values)
+    return this.evaluator.evaluate(values)
   }
 }
