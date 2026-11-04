@@ -21,7 +21,7 @@
   "license": "MIT",
   "dependencies": {
     "@bpmn-io/properties-panel": "3.58.1",
-    "@emaarco/bpmn-js-data-simulation": "0.2.0",
+    "@emaarco/bpmn-js-data-simulation": "0.3.0",
     "@emaarco/dmn-js-simulation": "0.4.0",
     "@miragon/event-storming-renderer": "0.7.0",
     "@miragon/team-topologies-renderer": "0.15.1",
@@ -101,5 +101,8 @@
   "bugs": {
     "url": "https://github.com/emaarco/slidev-addon-diagram-js/issues"
   },
-  "homepage": "https://github.com/emaarco/slidev-addon-diagram-js#readme"
+  "homepage": "https://github.com/emaarco/slidev-addon-diagram-js#readme",
+  "overrides": {
+    "magic-string@1": "1.4.1"
+  }
 }
