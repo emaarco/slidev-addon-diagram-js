@@ -35,7 +35,7 @@
     "camunda-dmn-moddle": "1.3.1",
     "camunda-transaction-boundaries": "1.1.2",
     "diagram-js": "15.28.1",
-    "dmn-js": "17.13.0",
+    "dmn-js": "18.0.1",
     "dmn-js-properties-panel": "3.13.0",
     "zeebe-bpmn-moddle": "2.0.0"
   },
