@@ -10,7 +10,6 @@ updates:
       prefix: "fix"
       prefix-development: "chore"
       include: "scope"
-    versioning-strategy: increase
     open-pull-requests-limit: 10
     cooldown:
       default-days: 5
