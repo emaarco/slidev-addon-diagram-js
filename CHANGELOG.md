@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.2.4](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.3...v2.2.4) (2026-11-11)
+
+
+### Bug Fixes
+
+* **deps:** bump @emaarco/dmn-js-simulation to 0.4.1 for the dmn-js 18 peer ([#155](https://github.com/emaarco/slidev-addon-diagram-js/issues/155)) ([a523f5f](https://github.com/emaarco/slidev-addon-diagram-js/commit/a523f5ff207858210c53326a64f020f33ad60bd5))
+
 ## [2.2.3](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.2...v2.2.3) (2026-11-11)
 
 
