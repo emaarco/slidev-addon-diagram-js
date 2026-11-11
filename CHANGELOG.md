@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.2.3](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.2...v2.2.3) (2026-11-11)
+
+
+### Bug Fixes
+
+* **deps:** release runtime dependency bumps through dependabot ([#151](https://github.com/emaarco/slidev-addon-diagram-js/issues/151)) ([36e623e](https://github.com/emaarco/slidev-addon-diagram-js/commit/36e623eab318aebb6fbf88091d4a3bb0eccce280))
+
 ## [2.2.2](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.1...v2.2.2) (2026-10-23)
 
 
