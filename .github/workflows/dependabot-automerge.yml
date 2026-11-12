@@ -1,15 +1,15 @@
-name: Dependabot merge
+name: Dependabot auto-merge
 
 on:
   workflow_run:
     workflows:
-      - "Dependabot auto-merge"
+      - "Dependabot auto-merge eligibility"
     types: [completed]
 
 permissions: {}
 
 jobs:
-  merge:
+  auto-merge:
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.actor.login == 'dependabot[bot]' &&

@@ -1,4 +1,4 @@
-name: Dependabot auto-merge
+name: Dependabot auto-merge eligibility
 
 on: pull_request
 
@@ -7,7 +7,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  mark-for-auto-merge:
+  label-eligible:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
