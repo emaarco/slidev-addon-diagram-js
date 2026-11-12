@@ -3,11 +3,11 @@ name: Dependabot auto-merge
 on: pull_request
 
 permissions:
-  contents: write
+  contents: read
   pull-requests: write
 
 jobs:
-  auto-merge:
+  mark-for-auto-merge:
     if: github.actor == 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -18,15 +18,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable auto-merge for patch and minor updates
+      - name: Label patch and minor updates for auto-merge
         if: steps.meta.outputs.update-type == 'version-update:semver-patch' || steps.meta.outputs.update-type == 'version-update:semver-minor'
-        run: |
-          for i in 1 2 3 4 5; do
-            gh pr merge --auto --squash "$PR_URL" && exit 0
-            echo "enablePullRequestAutoMerge race (attempt $i) — retrying in 15s…"
-            sleep 15
-          done
-          exit 1
+        run: gh pr edit "$PR_URL" --add-label auto-merge
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
