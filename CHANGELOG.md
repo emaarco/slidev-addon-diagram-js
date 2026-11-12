@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.2.5](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.4...v2.2.5) (2026-11-12)
+
+
+### Bug Fixes
+
+* **deps:** bump the npm-minor-patch group with 3 updates ([#160](https://github.com/emaarco/slidev-addon-diagram-js/issues/160)) ([4a4b01d](https://github.com/emaarco/slidev-addon-diagram-js/commit/4a4b01d487ad119bdedb4b1c23350780da9c2a2d))
+
 ## [2.2.4](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.3...v2.2.4) (2026-11-11)
 
 
