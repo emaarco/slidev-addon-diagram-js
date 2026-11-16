@@ -90,12 +90,13 @@ const props = defineProps<{
   width: string
   height: string
   modelerStyles?: string
+  propertiesPanelOpen?: boolean
 }>()
 
 const previewSource = ref<string | undefined>(props.filePath ? undefined : props.notation.blankSource)
 const renderedSource = ref<string | null>(null)
 const isFullscreen = ref(false)
-const isPanelOpen = ref(true)
+const isPanelOpen = ref(props.propertiesPanelOpen)
 const modelerCanvasRef = ref<HTMLDivElement | null>(null)
 const propertiesPanelRef = ref<HTMLDivElement | null>(null)
 const modelerStylesheet = props.modelerStyles ? new PageStylesheet(props.modelerStyles) : null
@@ -111,6 +112,7 @@ async function openFullscreen(): Promise<void> {
 
   const openRequest = ++latestOpenRequest
   isFullscreen.value = true
+  isPanelOpen.value = props.propertiesPanelOpen
   modelerStylesheet?.attach()
   await nextTick()
   const session = await openModeler(renderedSource.value)
@@ -149,7 +151,6 @@ async function togglePanel(): Promise<void> {
 function leaveFullscreen(): void {
   discardModelerSession()
   isFullscreen.value = false
-  isPanelOpen.value = true
 }
 
 function discardModelerSession(): void {

@@ -47,6 +47,7 @@ Renders interactive BPMN diagrams with token simulation capabilities. Perfect fo
 | `height` | `string` | `'auto'` | Height of the diagram container (defaults to 500px when 'auto') |
 | `fullscreen` | `boolean` | `true` | Show the button that expands the simulation to fullscreen |
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size. Lower keeps it smaller; higher lets it fill more. |
+| `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |
 
 ## `<BpmnModeler>` — Live modeler
 

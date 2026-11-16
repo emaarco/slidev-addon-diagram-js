@@ -116,3 +116,4 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `width` | `string` | `'100%'` | Width of the modeler container |
 | `height` | `string` | `'500px'` | Height of the modeler container |
 | `engine` | `'camunda'` | — | Optional engine. Mounts a `dmn-js-properties-panel` configured for Camunda. Omit for a panel-less modeler. |
+| `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |

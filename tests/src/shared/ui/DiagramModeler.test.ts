@@ -53,7 +53,7 @@ describe('DiagramModeler.vue', () => {
   }
 
   function mountModeler(
-    props: { filePath?: string } = { filePath: 'board.storm' },
+    props: { filePath?: string; propertiesPanelOpen?: boolean } = { filePath: 'board.storm' },
     notation: ModelerNotation & PreviewNotation = staticNotation(),
   ) {
     wrapper = mount(DiagramModeler, {
@@ -68,9 +68,9 @@ describe('DiagramModeler.vue', () => {
     })
   }
 
-  async function mountRenderedModeler(notation?: ModelerNotation & PreviewNotation) {
+  async function mountRenderedModeler(notation?: ModelerNotation & PreviewNotation, propertiesPanelOpen?: boolean) {
     mockFetchSuccess()
-    mountModeler({ filePath: 'board.storm' }, notation)
+    mountModeler({ filePath: 'board.storm', propertiesPanelOpen }, notation)
     await flushPromises()
   }
 
@@ -332,42 +332,60 @@ describe('DiagramModeler.vue', () => {
       expect(findButton('panel')).toBeUndefined()
     })
 
-    it('hides the panel and tells the modeler it was resized', async () => {
+    it('opens with the panel collapsed by default', async () => {
       await mountRenderedModeler(notationWithPanel())
-      await openModelerFullscreen()
 
-      findButton('Hide panel')!.click()
-      await flushPromises()
+      await openModelerFullscreen()
 
       expect(propertiesPanel()!.style.display).toBe('none')
       expect(findButton('Show panel')).toBeDefined()
-      expect(session.resized).toHaveBeenCalledOnce()
     })
 
-    it('shows the hidden panel again', async () => {
-      await mountRenderedModeler(notationWithPanel())
-      await openModelerFullscreen()
-      findButton('Hide panel')!.click()
-      await flushPromises()
-
-      findButton('Show panel')!.click()
-      await flushPromises()
-
-      expect(propertiesPanel()!.style.display).toBe('')
-      expect(session.resized).toHaveBeenCalledTimes(2)
-    })
-
-    it('opens with the panel shown after it was hidden in the last session', async () => {
-      await mountRenderedModeler(notationWithPanel())
-      await openModelerFullscreen()
-      findButton('Hide panel')!.click()
-      await flushPromises()
-      await closeModeler()
+    it('opens with the panel expanded when asked to', async () => {
+      await mountRenderedModeler(notationWithPanel(), true)
 
       await openModelerFullscreen()
 
       expect(propertiesPanel()!.style.display).toBe('')
       expect(findButton('Hide panel')).toBeDefined()
+    })
+
+    it('shows the panel and tells the modeler it was resized', async () => {
+      await mountRenderedModeler(notationWithPanel())
+      await openModelerFullscreen()
+
+      findButton('Show panel')!.click()
+      await flushPromises()
+
+      expect(propertiesPanel()!.style.display).toBe('')
+      expect(findButton('Hide panel')).toBeDefined()
+      expect(session.resized).toHaveBeenCalledOnce()
+    })
+
+    it('hides the shown panel again', async () => {
+      await mountRenderedModeler(notationWithPanel())
+      await openModelerFullscreen()
+      findButton('Show panel')!.click()
+      await flushPromises()
+
+      findButton('Hide panel')!.click()
+      await flushPromises()
+
+      expect(propertiesPanel()!.style.display).toBe('none')
+      expect(session.resized).toHaveBeenCalledTimes(2)
+    })
+
+    it('opens with the panel collapsed again after it was shown in the last session', async () => {
+      await mountRenderedModeler(notationWithPanel())
+      await openModelerFullscreen()
+      findButton('Show panel')!.click()
+      await flushPromises()
+      await closeModeler()
+
+      await openModelerFullscreen()
+
+      expect(propertiesPanel()!.style.display).toBe('none')
+      expect(findButton('Show panel')).toBeDefined()
     })
   })
 

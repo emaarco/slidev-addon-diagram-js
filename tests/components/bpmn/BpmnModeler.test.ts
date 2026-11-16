@@ -285,18 +285,19 @@ describe('BpmnModeler.vue', () => {
       expect(bpmnJs.lastModeler().options.additionalModules).toEqual([`${engine}-module`])
     })
 
-    it('hides the properties panel and resizes the canvas when the panel is toggled', async () => {
+    it('opens with the properties panel collapsed and resizes the canvas when it is shown', async () => {
       mockFetchSuccess()
       await mountAndRender({ bpmnFilePath: 'test.bpmn', engine: 'zeebe' })
       await click('Open modeler')
       const { canvas } = bpmnJs.lastModeler()
-      canvas.resized.mockClear()
-
-      await click('Hide properties panel')
-
       const panel = document.body.querySelector<HTMLElement>('.diagram-modeler-properties-panel')!
       expect(panel.style.display).toBe('none')
-      expect(button('Show properties panel')).not.toBeNull()
+      canvas.resized.mockClear()
+
+      await click('Show properties panel')
+
+      expect(panel.style.display).toBe('')
+      expect(button('Hide properties panel')).not.toBeNull()
       expect(canvas.resized).toHaveBeenCalledOnce()
     })
 

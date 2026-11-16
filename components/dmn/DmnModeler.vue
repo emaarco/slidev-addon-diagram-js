@@ -4,6 +4,7 @@
     :filePath="props.dmnFilePath"
     :width="props.width"
     :height="props.height"
+    :propertiesPanelOpen="props.propertiesPanelOpen"
   />
 </template>
 
@@ -18,9 +19,11 @@ const props = withDefaults(defineProps<{
   width?: string
   height?: string
   engine?: Engine
+  propertiesPanelOpen?: boolean
 }>(), {
   width: '100%',
   height: '500px',
+  propertiesPanelOpen: false,
 })
 
 const notation = new DmnModelerNotation(props.engine)
