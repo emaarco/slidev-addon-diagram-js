@@ -4,6 +4,7 @@
     :filePath="props.bpmnFilePath"
     :width="props.width"
     :height="props.height"
+    :propertiesPanelOpen="props.propertiesPanelOpen"
   />
 </template>
 
@@ -19,12 +20,14 @@ const props = withDefaults(defineProps<{
   width?: string
   height?: string
   engine?: Engine
+  propertiesPanelOpen?: boolean
   maxScale?: number
   tokenSimulation?: boolean
   transactionBoundaries?: boolean
 }>(), {
   width: '100%',
   height: '500px',
+  propertiesPanelOpen: false,
   tokenSimulation: false,
   transactionBoundaries: false,
 })

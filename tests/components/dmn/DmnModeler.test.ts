@@ -190,12 +190,13 @@ describe('DmnModeler.vue', () => {
     expect(modelerOptions().moddleExtensions).toEqual({ camunda: {} })
   })
 
-  it('toggles the properties panel and tells the modeler canvas about the resize', async () => {
+  it('opens with the properties panel expanded when asked to and toggles it', async () => {
     mockFetchSuccess()
-    const wrapper = mountModeler({ dmnFilePath: 'test.dmn', engine: 'camunda' })
+    const wrapper = mountModeler({ dmnFilePath: 'test.dmn', engine: 'camunda', propertiesPanelOpen: true })
     await settle()
     await openModeler(wrapper)
     const panel = document.body.querySelector<HTMLElement>('.diagram-modeler-properties-panel')!
+    expect(panel.style.display).toBe('')
     modelerCanvas.resized.mockClear()
 
     await clickBodyButton('Hide properties panel')
