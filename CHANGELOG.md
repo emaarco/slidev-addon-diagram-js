@@ -26,6 +26,18 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.3.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.4...v2.3.0) (2026-11-16)
+
+
+### Features
+
+* start the properties panel collapsed and add propertiesPanelOpen prop ([#165](https://github.com/emaarco/slidev-addon-diagram-js/issues/165)) ([0fc5ccf](https://github.com/emaarco/slidev-addon-diagram-js/commit/0fc5ccf2a5fc99b595f42e0676a7d2d7d9d01753))
+
+
+### Bug Fixes
+
+* **deps:** bump the npm-minor-patch group with 3 updates ([#160](https://github.com/emaarco/slidev-addon-diagram-js/issues/160)) ([4a4b01d](https://github.com/emaarco/slidev-addon-diagram-js/commit/4a4b01d487ad119bdedb4b1c23350780da9c2a2d))
+
 ## [2.2.4](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.3...v2.2.4) (2026-11-11)
 
 
