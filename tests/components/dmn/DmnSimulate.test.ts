@@ -116,7 +116,7 @@ describe('DmnSimulate.vue', () => {
     const wrapper = mountSimulate()
     await settle()
 
-    expect(MockDmnViewer).toHaveBeenCalledWith({ container: wrapper.find('div.dmn-table-wrapper').element })
+    expect(MockDmnViewer).toHaveBeenCalledWith({ container: wrapper.find('div.dmn-table-wrapper').element, drd: { drdRenderer: {} } })
     expect(viewer.importXML).toHaveBeenCalledWith(exampleXml)
     expect(viewer.open).toHaveBeenCalledWith(TABLE_VIEW)
     expect(wrapper.findAll('tbody tr')).toHaveLength(EXAMPLE_RULE_COUNT)
@@ -307,6 +307,28 @@ describe('DmnSimulate.vue', () => {
 
     expect(classes).not.toContain('hide-drd-button')
     expect(classes).not.toContain('hide-annotations')
+  })
+
+  it('uses the light theme by default', () => {
+    mockFetch()
+
+    expect(mountSimulate().find('.dmn-simulate').classes()).not.toContain('dmn-theme-dark')
+  })
+
+  it('draws the simulation in the dark theme', () => {
+    mockFetch()
+
+    expect(mountSimulate({ theme: 'dark' }).find('.dmn-simulate').classes()).toContain('dmn-theme-dark')
+  })
+
+  it('keeps the dark theme in fullscreen', async () => {
+    mockFetch()
+    const wrapper = mountSimulate({ theme: 'dark' })
+    await settle()
+
+    await wrapper.find('button.sim-fullscreen').trigger('click')
+
+    expect(fullscreenOverlay()!.classList).toContain('dmn-theme-dark')
   })
 
   it('moves the simulation to a fullscreen overlay and back', async () => {

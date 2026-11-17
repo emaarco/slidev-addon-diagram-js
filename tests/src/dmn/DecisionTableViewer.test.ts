@@ -14,6 +14,7 @@ vi.mock('dmn-js/lib/Viewer', () => ({ default: MockDmnViewer }))
 
 import { DecisionTableNotation } from '../../../src/dmn/DecisionTableNotation'
 import { DecisionTableViewer } from '../../../src/dmn/DecisionTableViewer'
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 
 const DRD_VIEW = { type: 'drd' }
 const FIRST_TABLE = { type: 'decisionTable', element: { id: 'Decision_First' } }
@@ -33,7 +34,13 @@ describe('DecisionTableViewer', () => {
   it('creates a dmn-js viewer in the container', () => {
     new DecisionTableViewer(container)
 
-    expect(MockDmnViewer).toHaveBeenCalledWith({ container })
+    expect(MockDmnViewer).toHaveBeenCalledWith({ container, drd: { drdRenderer: {} } })
+  })
+
+  it('draws the DRD view in the dark theme', () => {
+    new DecisionTableViewer(container, undefined, new DiagramTheme('dark'))
+
+    expect(MockDmnViewer).toHaveBeenCalledWith({ container, drd: { drdRenderer: new DiagramTheme('dark').rendererColors() } })
   })
 
   it('imports the source and opens the first decision table', async () => {
@@ -84,5 +91,11 @@ describe('DecisionTableNotation', () => {
     await tableViewer.show('<xml/>')
 
     expect(viewer.open).toHaveBeenCalledWith(SECOND_TABLE)
+  })
+
+  it('creates viewers in its theme', async () => {
+    await new DecisionTableNotation(undefined, new DiagramTheme('dark')).createViewer(document.createElement('div'))
+
+    expect(MockDmnViewer.mock.lastCall![0].drd.drdRenderer).toEqual(new DiagramTheme('dark').rendererColors())
   })
 })

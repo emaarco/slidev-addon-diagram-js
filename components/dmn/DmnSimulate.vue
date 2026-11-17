@@ -5,7 +5,7 @@
          not the CSS-transform-scaled Slidev slide. Teleport relocates the existing
          DOM nodes, so the dmn-js viewer instance stays intact — no re-render. -->
     <Teleport to="body" :disabled="!isFullscreen">
-      <div class="dmn-simulate" :class="{ 'dmn-simulate--fullscreen': isFullscreen }">
+      <div class="dmn-simulate" :class="{ 'dmn-simulate--fullscreen': isFullscreen, 'dmn-theme-dark': props.theme === 'dark' }">
         <p v-if="loading">Loading DMN decision table...</p>
         <p v-else-if="error" class="text-red-500">{{ error }}</p>
 
@@ -99,6 +99,7 @@ import { DecisionTableNotation } from '../../src/dmn/DecisionTableNotation'
 import { RuleHighlighter } from '../../src/dmn/RuleHighlighter'
 import { formatValue } from '../../src/dmn/utils/formatValue'
 import { DiagramFileLoader } from '../../src/shared/lib/DiagramFileLoader'
+import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
 import { EmbeddedViewer } from '../../src/shared/lib/EmbeddedViewer'
 
 const props = withDefaults(defineProps<{
@@ -110,6 +111,7 @@ const props = withDefaults(defineProps<{
   fullscreenFontSize?: string
   showAnnotations?: boolean
   showDrdButton?: boolean
+  theme?: DiagramThemeName
 }>(), {
   width: '100%',
   height: '340px',
@@ -117,11 +119,12 @@ const props = withDefaults(defineProps<{
   fullscreenFontSize: '12px',
   showAnnotations: false,
   showDrdButton: false,
+  theme: 'light',
 })
 
 const fileLoader = new DiagramFileLoader('DMN')
 const { loading, error } = fileLoader
-const embeddedViewer = new EmbeddedViewer(new DecisionTableNotation(props.decisionId))
+const embeddedViewer = new EmbeddedViewer(new DecisionTableNotation(props.decisionId, new DiagramTheme(props.theme)))
 const containerRef = ref<HTMLDivElement | null>(null)
 const simulation = shallowRef<DecisionSimulation | null>(null)
 const values = ref<RawValue[]>([])
@@ -354,6 +357,69 @@ onBeforeUnmount(() => {
 .dmn-simulate .dmn-decision-table-container tbody tr.sim-candidate td {
   background: #f1f5f9 !important;
   box-shadow: inset 0 0 0 9999px rgba(148, 163, 184, 0.14);
+}
+
+.dmn-simulate.dmn-theme-dark {
+  color: var(--dmn-dark-text);
+}
+
+.dmn-simulate--fullscreen.dmn-theme-dark {
+  background: var(--dmn-dark-surface);
+}
+
+.dmn-simulate.dmn-theme-dark .sim-field label {
+  color: var(--dmn-dark-text-subtle);
+}
+
+.dmn-simulate.dmn-theme-dark .sim-field input,
+.dmn-simulate.dmn-theme-dark .sim-field select,
+.dmn-simulate.dmn-theme-dark .sim-reset,
+.dmn-simulate.dmn-theme-dark .sim-fullscreen {
+  background: var(--dmn-dark-surface-subtle);
+  border-color: var(--dmn-dark-border);
+  color: var(--dmn-dark-text);
+}
+
+.dmn-simulate.dmn-theme-dark .sim-run:disabled {
+  background: #3a3f47;
+  border-color: #3a3f47;
+  color: #8c8c8c;
+}
+
+.dmn-simulate.dmn-theme-dark .sim-result {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #6ee7b7;
+}
+
+.dmn-simulate.dmn-theme-dark .sim-result--miss {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.dmn-simulate.dmn-theme-dark .sim-result--warn {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
+}
+
+.dmn-simulate.dmn-theme-dark .sim-output {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dmn-simulate.dmn-theme-dark .sim-output strong {
+  color: inherit;
+}
+
+.dmn-simulate.dmn-theme-dark .dmn-decision-table-container tbody tr.sim-match td {
+  background: rgba(250, 204, 21, 0.25) !important;
+  box-shadow: none;
+}
+
+.dmn-simulate.dmn-theme-dark .dmn-decision-table-container tbody tr.sim-candidate td {
+  background: rgba(148, 163, 184, 0.18) !important;
+  box-shadow: none;
 }
 
 /* --- Table styling: overrides of src/dmn/decisionTable.css --- */
