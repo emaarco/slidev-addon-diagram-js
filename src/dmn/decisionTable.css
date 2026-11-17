@@ -77,7 +77,8 @@
   color-scheme: dark;
 }
 
-.dmn-theme-dark .dmn-decision-table-container {
+.dmn-theme-dark .dmn-decision-table-container,
+.dmn-theme-dark .dmn-drd-container {
   --bio-surface: var(--dmn-dark-surface);
   --bio-surface-subtle: var(--dmn-dark-surface-subtle);
   --bio-surface-medium: var(--dmn-dark-surface-medium);
