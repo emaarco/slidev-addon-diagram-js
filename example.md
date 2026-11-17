@@ -75,7 +75,7 @@ Renders a `.bpmn` file as a static, inline SVG. Ideal for print and PDF export.
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
 
-`<Bpmn bpmnFilePath="/newsletter.bpmn" height="300px" />`
+`<Bpmn bpmnFilePath="/newsletter.bpmn" height="300px" theme="dark" />`
 
 ---
 layout: bpmn
@@ -128,6 +128,19 @@ accent: blue
 With `engine="camunda7"`, the scenario mocks the score and JUEL picks the flow.
 
 <BpmnTokenSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" scenariosFilePath="/loan-approval.scenarios.json" height="320px" />
+
+---
+layout: content
+title: Dark theme
+eyebrow: Bpmn
+accent: blue
+---
+
+With `theme="dark"`, strokes and labels turn light on transparent fills, for dark slides.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <Bpmn bpmnFilePath="/newsletter.bpmn" height="300px" theme="dark" />
+</div>
 
 ---
 layout: bpmn

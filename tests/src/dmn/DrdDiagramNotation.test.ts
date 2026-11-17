@@ -64,6 +64,12 @@ describe('DrdDiagramNotation', () => {
     expect(viewerConfig().drd.textRenderer.defaultStyle.fontSize).toBe(12)
   })
 
+  it('draws the DRD in the dark theme', async () => {
+    await new DrdDiagramNotation('12px', 'dark').exportSvg('<xml/>', container)
+
+    expect(viewerConfig().drd.drdRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
+  })
+
   it('throws when the file has no DRD view', async () => {
     viewer.getViews.mockReturnValue([{ type: 'decisionTable' }])
 

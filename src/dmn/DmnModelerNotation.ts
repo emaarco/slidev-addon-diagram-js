@@ -1,3 +1,4 @@
+import type { DiagramTheme } from '../shared/lib/diagramTheme'
 import type { LiveNotation, LiveViewer, ModelerContainers, ModelerNotation, ModelerSession } from '../shared/lib/notation'
 import { DmnModelerSession } from './DmnModelerSession'
 import { DrdLiveViewer } from './DrdLiveViewer'
@@ -16,12 +17,15 @@ export class DmnModelerNotation implements LiveNotation, ModelerNotation {
   readonly blankSource = BLANK_DMN
   readonly hasPropertiesPanel: boolean
 
-  constructor(private readonly engine?: Engine) {
+  constructor(
+    private readonly engine?: Engine,
+    private readonly theme: DiagramTheme = 'light',
+  ) {
     this.hasPropertiesPanel = !!engine
   }
 
   async createViewer(container: HTMLElement): Promise<LiveViewer> {
-    return new DrdLiveViewer(container)
+    return new DrdLiveViewer(container, this.theme)
   }
 
   openModeler(source: string, containers: ModelerContainers): Promise<ModelerSession> {

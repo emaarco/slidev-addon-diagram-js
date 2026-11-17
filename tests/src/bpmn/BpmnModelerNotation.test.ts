@@ -43,7 +43,19 @@ describe('BpmnModelerNotation', () => {
     it('creates a plain viewer without token simulation', async () => {
       await new BpmnModelerNotation(DEFAULT_OPTIONS).createViewer(container)
 
-      expect(FakeBpmnViewer).toHaveBeenCalledWith({ container })
+      expect(FakeBpmnViewer).toHaveBeenCalledWith({ container, bpmnRenderer: {} })
+    })
+
+    it('draws the preview in the dark theme', async () => {
+      await new BpmnModelerNotation(DEFAULT_OPTIONS, 'dark').createViewer(container)
+
+      expect(bpmnJs.lastViewer().options.bpmnRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
+    })
+
+    it('draws the token-simulation preview in the dark theme', async () => {
+      await new BpmnModelerNotation({ ...DEFAULT_OPTIONS, tokenSimulation: true }, 'dark').createViewer(container)
+
+      expect(bpmnJs.lastViewer().options.bpmnRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
     })
 
     it('adds the token simulation viewer modules with token simulation', async () => {

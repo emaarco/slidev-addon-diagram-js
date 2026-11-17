@@ -26,6 +26,7 @@ Renders Decision Requirements Diagrams as static SVG images. Perfect for PDF exp
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
 | `fontSize` | `string` | `'12px'` | Font size of the diagram labels |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. |
 
 ## `<DmnTable>` — Decision table
 
@@ -117,3 +118,4 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `height` | `string` | `'500px'` | Height of the modeler container |
 | `engine` | `'camunda'` | — | Optional engine. Mounts a `dmn-js-properties-panel` configured for Camunda. Omit for a panel-less modeler. |
 | `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. Applies to the preview; the fullscreen modeler stays light. |
