@@ -281,6 +281,32 @@ Simulate a decision. Feed inputs in, evaluate them with FEEL, and highlight the 
 `<DmnSimulate dmnFilePath="/example.dmn" height="300px" />`
 
 ---
+layout: content
+title: Dark theme
+eyebrow: Dmn-Table
+accent: blue
+---
+
+With `theme="dark"`, decision tables turn light on dark, for dark slides.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <DmnTable dmnFilePath="/example.dmn" height="300px" theme="dark" />
+</div>
+
+---
+layout: content
+title: Dark theme
+eyebrow: Dmn-Simulate
+accent: green
+---
+
+`<DmnSimulate>` takes the same `theme="dark"`: form, highlighted rules and result follow along.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <DmnSimulate dmnFilePath="/example.dmn" height="150px" fontSize="10px" theme="dark" />
+</div>
+
+---
 layout: dmn
 title: Live DMN modeler
 eyebrow: Dmn-Modeler

@@ -101,7 +101,7 @@ describe('DmnTable.vue', () => {
     const wrapper = mountTable()
     await settle()
 
-    expect(MockDmnViewer).toHaveBeenCalledWith({ container: tableWrapper(wrapper).element })
+    expect(MockDmnViewer).toHaveBeenCalledWith({ container: tableWrapper(wrapper).element, drd: { drdRenderer: {} } })
     expect(viewer.importXML).toHaveBeenCalledWith('<definitions id="table"></definitions>')
     expect(viewer.open).toHaveBeenCalledWith(TABLE_VIEW)
     expect(wrapper.text()).not.toContain('Loading')
@@ -196,6 +196,18 @@ describe('DmnTable.vue', () => {
     mockFetchSuccess()
 
     expect(tableWrapper(mountTable({ showAnnotations: true })).classes()).not.toContain('hide-annotations')
+  })
+
+  it('uses the light theme by default', () => {
+    mockFetchSuccess()
+
+    expect(tableWrapper(mountTable()).classes()).not.toContain('dmn-theme-dark')
+  })
+
+  it('draws the table in the dark theme', () => {
+    mockFetchSuccess()
+
+    expect(tableWrapper(mountTable({ theme: 'dark' })).classes()).toContain('dmn-theme-dark')
   })
 
   it('exposes the font size as a CSS variable on the table wrapper', () => {

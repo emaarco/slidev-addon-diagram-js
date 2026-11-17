@@ -66,3 +66,44 @@
 .dmn-table-wrapper.hide-drd-button .view-drd {
   display: none !important;
 }
+
+.dmn-theme-dark {
+  --dmn-dark-surface: #1e1e1e;
+  --dmn-dark-surface-subtle: #262626;
+  --dmn-dark-surface-medium: #2e2e2e;
+  --dmn-dark-text: #e6e6e6;
+  --dmn-dark-text-subtle: #b3b3b3;
+  --dmn-dark-border: #4d4d4d;
+  color-scheme: dark;
+}
+
+.dmn-theme-dark .dmn-decision-table-container,
+.dmn-theme-dark .dmn-drd-container {
+  --bio-surface: var(--dmn-dark-surface);
+  --bio-surface-subtle: var(--dmn-dark-surface-subtle);
+  --bio-surface-medium: var(--dmn-dark-surface-medium);
+  --bio-text: var(--dmn-dark-text);
+  --bio-text-subtle: var(--dmn-dark-text-subtle);
+  --bio-border: var(--dmn-dark-border);
+  color: var(--bio-text);
+}
+
+.dmn-theme-dark .dmn-decision-table-container table,
+.dmn-theme-dark .dmn-decision-table-container th {
+  background: var(--decision-table-background-color) !important;
+}
+
+.dmn-theme-dark .dmn-decision-table-container td {
+  background: transparent !important;
+}
+
+.dmn-theme-dark .dmn-decision-table-container table,
+.dmn-theme-dark .dmn-decision-table-container th,
+.dmn-theme-dark .dmn-decision-table-container td {
+  color: var(--table-cell-color) !important;
+  border-color: var(--table-cell-border-color) !important;
+}
+
+.dmn-theme-dark .bjs-powered-by {
+  filter: invert(1);
+}

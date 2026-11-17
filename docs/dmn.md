@@ -51,6 +51,7 @@ Renders DMN Decision Tables directly in the slide. Perfect for presenting busine
 | `fontSize` | `string` | `'12px'` | Font size of the table content |
 | `showAnnotations` | `boolean` | `false` | Show or hide the annotations column |
 | `showDrdButton` | `boolean` | `false` | Show or hide the built-in "View DRD" button |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws the table light on dark, for dark slides. |
 
 ## `<DmnSimulate>` — Live decision simulation
 
@@ -78,6 +79,7 @@ Use the **Fullscreen** button next to the form to blow the whole simulation up t
 | `fullscreenFontSize` | `string` | `'12px'` | Font size of the table content in fullscreen (raise it so the table reads from the back of the room) |
 | `showAnnotations` | `boolean` | `false` | Show or hide the annotations column |
 | `showDrdButton` | `boolean` | `false` | Show or hide the built-in "View DRD" button |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws the table, input form and result light on dark, for dark slides. The fullscreen view follows. |
 
 > **Hit policies:** the full DMN set is supported — `UNIQUE`, `ANY`, `PRIORITY`, `FIRST`, `COLLECT` (incl. `SUM`/`MIN`/`MAX`/`COUNT` aggregation), `RULE ORDER` and `OUTPUT ORDER`. The rule(s) the policy actually reports are highlighted strongly; rules that merely matched but were dropped (e.g. under `FIRST`/`PRIORITY`) are shown as faint candidates. `PRIORITY` and `OUTPUT ORDER` use the output's `<outputValues>` list as the priority order. `UNIQUE`/`ANY` show a violation badge when their constraint is broken. Input cells are evaluated as FEEL unary tests via [feelin](https://github.com/nikku/feelin); an empty cell matches any value.
 >
