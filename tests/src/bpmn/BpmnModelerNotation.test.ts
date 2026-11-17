@@ -11,6 +11,7 @@ vi.mock('../../../src/bpmn/engines/camunda7', () => ({
   camunda7Engine: { additionalModules: ['camunda7-module'], moddleExtensions: { camunda: {} } },
 }))
 
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { BpmnModelerNotation } from '../../../src/bpmn/BpmnModelerNotation'
 import { BpmnModelerSession } from '../../../src/bpmn/BpmnModelerSession'
 import { bpmnJs, FakeBpmnViewer, SMALL_DIAGRAM } from './fakeBpmnJs'
@@ -47,13 +48,13 @@ describe('BpmnModelerNotation', () => {
     })
 
     it('draws the preview in the dark theme', async () => {
-      await new BpmnModelerNotation(DEFAULT_OPTIONS, 'dark').createViewer(container)
+      await new BpmnModelerNotation(DEFAULT_OPTIONS, new DiagramTheme('dark')).createViewer(container)
 
       expect(bpmnJs.lastViewer().options.bpmnRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
     })
 
     it('draws the token-simulation preview in the dark theme', async () => {
-      await new BpmnModelerNotation({ ...DEFAULT_OPTIONS, tokenSimulation: true }, 'dark').createViewer(container)
+      await new BpmnModelerNotation({ ...DEFAULT_OPTIONS, tokenSimulation: true }, new DiagramTheme('dark')).createViewer(container)
 
       expect(bpmnJs.lastViewer().options.bpmnRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
     })

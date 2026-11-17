@@ -13,7 +13,7 @@ import '../../src/bpmn/bpmn.css'
 import { BpmnModelerNotation } from '../../src/bpmn/BpmnModelerNotation'
 import type { Engine } from '../../src/bpmn/engines/bpmnEngines'
 import { parseMaxScale } from '../../src/bpmn/utils/parseMaxScale'
-import type { DiagramTheme } from '../../src/shared/lib/diagramTheme'
+import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
 import DiagramModeler from '../../src/shared/ui/DiagramModeler.vue'
 
 const props = withDefaults(defineProps<{
@@ -25,7 +25,7 @@ const props = withDefaults(defineProps<{
   maxScale?: number
   tokenSimulation?: boolean
   transactionBoundaries?: boolean
-  theme?: DiagramTheme
+  theme?: DiagramThemeName
 }>(), {
   width: '100%',
   height: '500px',
@@ -40,6 +40,6 @@ const notation = new BpmnModelerNotation({
   tokenSimulation: props.tokenSimulation,
   transactionBoundaries: props.transactionBoundaries,
   maxScale: parseMaxScale(props.maxScale),
-}, props.theme)
+}, new DiagramTheme(props.theme))
 </script>
 

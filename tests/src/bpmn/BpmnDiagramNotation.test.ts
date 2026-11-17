@@ -11,6 +11,7 @@ const { MockBpmnViewer, viewer } = vi.hoisted(() => {
 
 vi.mock('bpmn-js/lib/Viewer', () => ({ default: MockBpmnViewer }))
 
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { BpmnDiagramNotation } from '../../../src/bpmn/BpmnDiagramNotation'
 
 describe('BpmnDiagramNotation', () => {
@@ -34,7 +35,7 @@ describe('BpmnDiagramNotation', () => {
   })
 
   it('draws light strokes and labels on transparent fills in the dark theme', async () => {
-    await new BpmnDiagramNotation('dark').exportSvg('<definitions/>', container)
+    await new BpmnDiagramNotation(new DiagramTheme('dark')).exportSvg('<definitions/>', container)
 
     expect(MockBpmnViewer).toHaveBeenLastCalledWith({ container, bpmnRenderer: { defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' } })
   })

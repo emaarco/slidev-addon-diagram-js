@@ -1,4 +1,4 @@
-import type { DiagramTheme } from '../shared/lib/diagramTheme'
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { LiveNotation, LiveViewer, ModelerContainers, ModelerNotation, ModelerSession } from '../shared/lib/notation'
 import { DmnModelerSession } from './DmnModelerSession'
 import { DrdLiveViewer } from './DrdLiveViewer'
@@ -19,7 +19,7 @@ export class DmnModelerNotation implements LiveNotation, ModelerNotation {
 
   constructor(
     private readonly engine?: Engine,
-    private readonly theme: DiagramTheme = 'light',
+    private readonly theme = new DiagramTheme(),
   ) {
     this.hasPropertiesPanel = !!engine
   }

@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import '../../src/dmn/dmn.css'
 import { DrdDiagramNotation } from '../../src/dmn/DrdDiagramNotation'
-import type { DiagramTheme } from '../../src/shared/lib/diagramTheme'
+import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
 import StaticDiagram from '../../src/shared/ui/StaticDiagram.vue'
 
 const props = withDefaults(defineProps<{
@@ -18,7 +18,7 @@ const props = withDefaults(defineProps<{
   width?: string
   height?: string
   fontSize?: string
-  theme?: DiagramTheme
+  theme?: DiagramThemeName
 }>(), {
   width: '100%',
   height: 'auto',
@@ -26,5 +26,5 @@ const props = withDefaults(defineProps<{
   theme: 'light',
 })
 
-const notation = new DrdDiagramNotation(props.fontSize, props.theme)
+const notation = new DrdDiagramNotation(props.fontSize, new DiagramTheme(props.theme))
 </script>

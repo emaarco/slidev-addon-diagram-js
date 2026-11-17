@@ -1,13 +1,13 @@
 import DmnViewer from 'dmn-js/lib/Viewer'
-import { type DiagramTheme, rendererColors } from '../shared/lib/diagramTheme'
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { LiveViewer } from '../shared/lib/notation'
 import { fitActiveDrd } from './utils/fitActiveDrd'
 
 export class DrdLiveViewer implements LiveViewer {
   private readonly viewer: any
 
-  constructor(container: HTMLElement, theme: DiagramTheme = 'light') {
-    this.viewer = new DmnViewer({ container, drd: { drdRenderer: rendererColors[theme] } })
+  constructor(container: HTMLElement, theme = new DiagramTheme()) {
+    this.viewer = new DmnViewer({ container, drd: { drdRenderer: theme.rendererColors() } })
   }
 
   async show(source: string): Promise<void> {

@@ -1,6 +1,6 @@
 import DataSimulationModule from '@emaarco/bpmn-js-data-simulation'
 import tokenSimulationViewer from 'bpmn-js-token-simulation/lib/viewer'
-import { type DiagramTheme, rendererColors } from '../shared/lib/diagramTheme'
+import type { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { LiveNotation, LiveViewer } from '../shared/lib/notation'
 import { BpmnSimulationViewer } from './BpmnSimulationViewer'
 import { type Engine, bpmnEngines } from './engines/bpmnEngines'
@@ -26,7 +26,7 @@ export class BpmnTokenSimulationNotation implements LiveNotation {
   }
 
   private async viewerOptions(): Promise<Record<string, unknown>> {
-    const bpmnRenderer = rendererColors[this.options.theme ?? 'light']
+    const bpmnRenderer = this.options.theme?.rendererColors() ?? {}
     const dataSimulation = this.options.dataSimulation
     if (!dataSimulation) return { additionalModules: tokenSimulationViewerModules, bpmnRenderer }
 
