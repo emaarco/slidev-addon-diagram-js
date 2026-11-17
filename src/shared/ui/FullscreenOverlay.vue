@@ -40,6 +40,7 @@ function keepKeyStrokesFromSlideNavigation(event: KeyboardEvent): void {
   height: 100vh;
   z-index: 9999;
   background: white;
+  color: #22242a;
   display: flex;
 }
 
