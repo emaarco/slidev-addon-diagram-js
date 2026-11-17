@@ -10,6 +10,7 @@ vi.mock('../../../src/bpmn/engines/camunda7', () => ({
   camunda7Engine: { additionalModules: ['camunda7-module'], moddleExtensions: { camunda: { name: 'camunda' } } },
 }))
 
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { BpmnSimulationViewer } from '../../../src/bpmn/BpmnSimulationViewer'
 import { BpmnTokenSimulationNotation } from '../../../src/bpmn/BpmnTokenSimulationNotation'
 import { silencedNotificationsModule } from '../../../src/bpmn/tokenSimulationViewerModules'
@@ -33,7 +34,14 @@ describe('BpmnTokenSimulationNotation', () => {
     expect(bpmnJs.lastViewer().options).toEqual({
       container,
       additionalModules: ['token-simulation-viewer', silencedNotificationsModule],
+      bpmnRenderer: {},
     })
+  })
+
+  it('draws the viewer in the dark theme', async () => {
+    await new BpmnTokenSimulationNotation({ theme: new DiagramTheme('dark') }).createViewer(container)
+
+    expect(bpmnJs.lastViewer().options.bpmnRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
   })
 
   it('silences the token simulation notifications', () => {
@@ -67,6 +75,7 @@ describe('BpmnTokenSimulationNotation', () => {
         additionalModules: ['token-simulation-viewer', 'data-simulation', silencedNotificationsModule],
         moddleExtensions,
         dataSimulation: { engine, scenarios: SCENARIOS },
+        bpmnRenderer: {},
       })
     })
 

@@ -232,6 +232,17 @@ describe('BpmnTokenSimulation.vue', () => {
       expect(bpmnJs.lastViewer().fittedViewbox()).toBeDefined()
     })
 
+    it('draws the inline viewer dark and the fullscreen viewer light with theme="dark"', async () => {
+      mockFetchSuccess()
+      await mountAndRender({ theme: 'dark' })
+
+      await openFullscreen()
+
+      const [inlineViewer, fullscreenViewer] = bpmnJs.viewers
+      expect(inlineViewer.options.bpmnRenderer).toMatchObject({ defaultStrokeColor: '#e6e6e6' })
+      expect(fullscreenViewer.options.bpmnRenderer).toEqual({})
+    })
+
     it('destroys only the fullscreen viewer when Close is clicked', async () => {
       mockFetchSuccess()
       await mountAndRender()

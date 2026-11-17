@@ -118,7 +118,7 @@ describe('DmnModeler.vue', () => {
     const wrapper = mountModeler()
     await settle()
 
-    expect(MockDmnViewer).toHaveBeenCalledWith({ container: wrapper.find('.live-diagram-canvas').element })
+    expect(MockDmnViewer).toHaveBeenCalledWith({ container: wrapper.find('.live-diagram-canvas').element, drd: { drdRenderer: {} } })
     expect(viewer.importXML).toHaveBeenCalledWith(ORIGINAL_XML)
     expect(viewer.open).toHaveBeenCalledWith(DRD_VIEW)
     expect(wrapper.find('button[title="Open modeler"]').exists()).toBe(true)

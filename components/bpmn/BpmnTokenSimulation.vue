@@ -50,6 +50,7 @@ import type { Engine } from '../../src/bpmn/engines/bpmnEngines'
 import { parseMaxScale } from '../../src/bpmn/utils/parseMaxScale'
 import { DiagramFileLoader } from '../../src/shared/lib/DiagramFileLoader'
 import { EmbeddedViewer } from '../../src/shared/lib/EmbeddedViewer'
+import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
 import FullscreenOverlay from '../../src/shared/ui/FullscreenOverlay.vue'
 import LiveDiagram from '../../src/shared/ui/LiveDiagram.vue'
 import ToolbarButton from '../../src/shared/ui/ToolbarButton.vue'
@@ -62,21 +63,25 @@ const props = withDefaults(defineProps<{
   maxScale?: number
   engine?: Engine
   scenariosFilePath?: string
+  theme?: DiagramThemeName
 }>(), {
   width: '100%',
   height: 'auto',
   fullscreen: true,
+  theme: 'light',
 })
 
 const containerHeight = props.height === 'auto' ? '500px' : props.height
 const scenariosLoader = new DiagramFileLoader('BPMN')
 
-const notation = new BpmnTokenSimulationNotation({
+const simulationOptions = {
   maxScale: parseMaxScale(props.maxScale),
   dataSimulation: props.engine && props.scenariosFilePath
     ? { engine: props.engine, loadScenarios: async () => JSON.parse(await scenariosLoader.fetchFile(props.scenariosFilePath!)) }
     : undefined,
-})
+}
+const notation = new BpmnTokenSimulationNotation({ ...simulationOptions, theme: new DiagramTheme(props.theme) })
+const fullscreenNotation = new BpmnTokenSimulationNotation(simulationOptions)
 
 const renderedSource = ref<string | null>(null)
 const isFullscreen = ref(false)
@@ -91,7 +96,7 @@ async function openFullscreen(): Promise<void> {
   if (renderedSource.value === null) return
   isFullscreen.value = true
   await nextTick()
-  fullscreenViewer = new EmbeddedViewer(notation)
+  fullscreenViewer = new EmbeddedViewer(fullscreenNotation)
   await fullscreenViewer.show(fullscreenContainerRef.value!, renderedSource.value)
 }
 

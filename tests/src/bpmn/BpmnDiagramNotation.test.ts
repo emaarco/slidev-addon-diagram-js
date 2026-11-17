@@ -11,6 +11,7 @@ const { MockBpmnViewer, viewer } = vi.hoisted(() => {
 
 vi.mock('bpmn-js/lib/Viewer', () => ({ default: MockBpmnViewer }))
 
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { BpmnDiagramNotation } from '../../../src/bpmn/BpmnDiagramNotation'
 
 describe('BpmnDiagramNotation', () => {
@@ -28,9 +29,15 @@ describe('BpmnDiagramNotation', () => {
   it('renders the source in a viewer inside the given container and returns its SVG', async () => {
     const svg = await new BpmnDiagramNotation().exportSvg('<definitions/>', container)
 
-    expect(MockBpmnViewer).toHaveBeenCalledWith({ container })
+    expect(MockBpmnViewer).toHaveBeenCalledWith({ container, bpmnRenderer: {} })
     expect(viewer.importXML).toHaveBeenCalledWith('<definitions/>')
     expect(svg).toBe('<svg id="exported"/>')
+  })
+
+  it('draws light strokes and labels on transparent fills in the dark theme', async () => {
+    await new BpmnDiagramNotation(new DiagramTheme('dark')).exportSvg('<definitions/>', container)
+
+    expect(MockBpmnViewer).toHaveBeenLastCalledWith({ container, bpmnRenderer: { defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' } })
   })
 
   it('destroys the viewer after exporting', async () => {

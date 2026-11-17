@@ -1,4 +1,5 @@
 import DmnViewer from 'dmn-js/lib/Viewer'
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { StaticNotation } from '../shared/lib/notation'
 
 const DEFAULT_FONT_SIZE = 12
@@ -8,14 +9,17 @@ export class DrdDiagramNotation implements StaticNotation {
   readonly rendering = 'static'
   private readonly fontSize: number
 
-  constructor(fontSize: string) {
+  constructor(fontSize: string, private readonly theme = new DiagramTheme()) {
     this.fontSize = parseInt(fontSize, 10) || DEFAULT_FONT_SIZE
   }
 
   async exportSvg(source: string, container: HTMLElement): Promise<string> {
     const viewer = new DmnViewer({
       container,
-      drd: { textRenderer: { defaultStyle: { fontSize: this.fontSize } } },
+      drd: {
+        textRenderer: { defaultStyle: { fontSize: this.fontSize } },
+        drdRenderer: this.theme.rendererColors(),
+      },
     })
     try {
       await viewer.importXML(source)

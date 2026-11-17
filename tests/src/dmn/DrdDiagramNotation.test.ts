@@ -13,6 +13,7 @@ const { MockDmnViewer, viewer } = vi.hoisted(() => ({
 
 vi.mock('dmn-js/lib/Viewer', () => ({ default: MockDmnViewer }))
 
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { DrdDiagramNotation } from '../../../src/dmn/DrdDiagramNotation'
 
 const DRD_VIEW = { type: 'drd' }
@@ -62,6 +63,12 @@ describe('DrdDiagramNotation', () => {
     await new DrdDiagramNotation('large').exportSvg('<xml/>', container)
 
     expect(viewerConfig().drd.textRenderer.defaultStyle.fontSize).toBe(12)
+  })
+
+  it('draws the DRD in the dark theme', async () => {
+    await new DrdDiagramNotation('12px', new DiagramTheme('dark')).exportSvg('<xml/>', container)
+
+    expect(viewerConfig().drd.drdRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
   })
 
   it('throws when the file has no DRD view', async () => {

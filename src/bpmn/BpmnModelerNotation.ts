@@ -1,3 +1,4 @@
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { LiveNotation, LiveViewer, ModelerContainers, ModelerNotation, ModelerSession } from '../shared/lib/notation'
 import { BpmnLiveViewer } from './BpmnLiveViewer'
 import { type BpmnModelerOptions, BpmnModelerSession } from './BpmnModelerSession'
@@ -25,13 +26,17 @@ export class BpmnModelerNotation implements LiveNotation, ModelerNotation {
   readonly blankSource = BLANK_BPMN
   readonly hasPropertiesPanel: boolean
 
-  constructor(private readonly options: BpmnModelerOptions) {
+  constructor(
+    private readonly options: BpmnModelerOptions,
+    private readonly theme = new DiagramTheme(),
+  ) {
     this.hasPropertiesPanel = !!options.engine
   }
 
   async createViewer(container: HTMLElement): Promise<LiveViewer> {
-    if (!this.options.tokenSimulation) return new BpmnLiveViewer(container, {}, this.options.maxScale)
-    return new BpmnSimulationViewer(container, { additionalModules: tokenSimulationViewerModules }, this.options.maxScale)
+    const bpmnRenderer = this.theme.rendererColors()
+    if (!this.options.tokenSimulation) return new BpmnLiveViewer(container, { bpmnRenderer }, this.options.maxScale)
+    return new BpmnSimulationViewer(container, { additionalModules: tokenSimulationViewerModules, bpmnRenderer }, this.options.maxScale)
   }
 
   openModeler(source: string, containers: ModelerContainers): Promise<ModelerSession> {

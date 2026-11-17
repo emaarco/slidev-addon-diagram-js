@@ -73,6 +73,7 @@ src/                    all other production code, published with the package
     lib/StaticSvgRenderer.ts  off-screen render: container, SVG clean-up, unique ids, padding, sizing
     lib/EmbeddedViewer.ts     lifecycle of a live viewer in a slide: wait for size, render once, refit, destroy
     lib/PageStylesheet.ts     adds a stylesheet to the page and removes it again
+    lib/DiagramTheme.ts       light/dark renderer colours for the bpmn-js and dmn-js previews (`theme` prop)
     lib/utils/                fitDiagram (pad, clamp, centre a canvas viewbox), SVG and URL helpers
     ui/StaticDiagram.vue      renders a StaticNotation from a file or a given source as SVG
     ui/LiveDiagram.vue        renders a LiveNotation in a live viewer (EmbeddedViewer + onSlideEnter)
