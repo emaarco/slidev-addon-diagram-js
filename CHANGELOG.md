@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.3.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.3.0...v2.3.1) (2026-11-17)
+
+
+### Bug Fixes
+
+* keep modeler icons dark on decks with light text ([#170](https://github.com/emaarco/slidev-addon-diagram-js/issues/170)) ([3dbbfdb](https://github.com/emaarco/slidev-addon-diagram-js/commit/3dbbfdb7926dd0a4041f66f41cb718e2dd57f3e9))
+
 ## [2.3.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.2.4...v2.3.0) (2026-11-16)
 
 
