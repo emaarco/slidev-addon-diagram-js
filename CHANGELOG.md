@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.5.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.4.0...v2.5.0) (2026-11-17)
+
+
+### Features
+
+* add a dark theme for dmn decision tables and the simulation ([#175](https://github.com/emaarco/slidev-addon-diagram-js/issues/175)) ([e55f76b](https://github.com/emaarco/slidev-addon-diagram-js/commit/e55f76b653ed4b5356abab91adcfcb13e78a34ea))
+
 ## [2.4.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.3.1...v2.4.0) (2026-11-17)
 
 
