@@ -6,6 +6,7 @@
     :height="props.height"
     :propertiesPanelOpen="props.propertiesPanelOpen"
     :theme="props.theme"
+    :class="{ 'dmn-theme-dark': props.theme === 'dark' }"
   />
 </template>
 

@@ -215,6 +215,19 @@ Renders the DRD of a `.dmn` file as a static, inline SVG. Ideal for print and PD
 `<DmnDrd dmnFilePath="/example.dmn" height="300px" />`
 
 ---
+layout: content
+title: Dark theme
+eyebrow: Dmn-Drd
+accent: blue
+---
+
+With `theme="dark"`, strokes and labels of the DRD turn light, for dark slides.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <DmnDrd dmnFilePath="/example.dmn" height="300px" theme="dark" />
+</div>
+
+---
 layout: dmn
 title: Static decision tables
 eyebrow: Dmn-Table
@@ -336,6 +349,19 @@ A full modeler canvas for workshops. Omit the file for a blank canvas, or set an
 | `height` | string | Canvas height (default 500px) |
 
 `<DmnModeler dmnFilePath="/example.dmn" engine="camunda" height="320px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Dmn-Modeler
+accent: blue
+---
+
+With `theme="dark"`, the DRD preview and its definitions box turn light on dark, for dark slides.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <DmnModeler dmnFilePath="/example.dmn" height="300px" theme="dark" />
+</div>
 
 ---
 layout: section

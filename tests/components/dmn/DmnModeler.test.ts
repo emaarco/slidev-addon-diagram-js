@@ -144,6 +144,18 @@ describe('DmnModeler.vue', () => {
     expect((wrapper.element as HTMLElement).style.height).toBe('320px')
   })
 
+  it('uses the light theme by default', () => {
+    mockFetchSuccess()
+
+    expect(mountModeler().classes()).not.toContain('dmn-theme-dark')
+  })
+
+  it('draws the DRD preview in the dark theme', () => {
+    mockFetchSuccess()
+
+    expect(mountModeler({ dmnFilePath: 'test.dmn', theme: 'dark' }).classes()).toContain('dmn-theme-dark')
+  })
+
   it('shows an error on fetch failure', async () => {
     mockFetchFailure()
     const wrapper = mountModeler()
