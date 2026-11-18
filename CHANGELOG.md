@@ -26,6 +26,14 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.5.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.5.0...v2.5.1) (2026-11-18)
+
+
+### Bug Fixes
+
+* **deps:** bump the npm-minor-patch group with 12 updates ([#177](https://github.com/emaarco/slidev-addon-diagram-js/issues/177)) ([fce6d16](https://github.com/emaarco/slidev-addon-diagram-js/commit/fce6d16916c893c700b9a751a210e44fe3699444))
+* render the token simulation and toolbar buttons dark with theme="dark" ([#179](https://github.com/emaarco/slidev-addon-diagram-js/issues/179)) ([c8bc2c2](https://github.com/emaarco/slidev-addon-diagram-js/commit/c8bc2c221d5cf1fb82217753d78a7657ab6ad497))
+
 ## [2.5.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.4.0...v2.5.0) (2026-11-17)
 
 
