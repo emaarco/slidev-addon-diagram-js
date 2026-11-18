@@ -88,6 +88,14 @@
   color: var(--bio-text);
 }
 
+.dmn-drd-container {
+  --dmn-definitions-color: var(--bio-text);
+}
+
+.dmn-drd-container .dmn-definitions {
+  color: var(--dmn-definitions-color);
+}
+
 .dmn-theme-dark .dmn-decision-table-container table,
 .dmn-theme-dark .dmn-decision-table-container th {
   background: var(--decision-table-background-color) !important;
