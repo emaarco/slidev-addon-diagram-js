@@ -92,4 +92,4 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size (e.g. a lone start event on a blank canvas). Lower keeps it smaller; higher lets it fill more. |
 | `tokenSimulation` | `boolean` | `false` | Adds the token simulation to the modeler |
 | `transactionBoundaries` | `boolean` | `false` | Overlays Camunda 7 transaction boundaries. Only takes effect with `engine="camunda7"`. |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. Applies to the preview; the fullscreen modeler stays light. |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen modeler follows: canvas, palette, menus and properties panel. |

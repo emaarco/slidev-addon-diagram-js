@@ -112,6 +112,7 @@
   border-color: var(--table-cell-border-color) !important;
 }
 
-.dmn-theme-dark .bjs-powered-by {
+.dmn-theme-dark .bjs-powered-by,
+.fullscreen-overlay.diagram-theme-dark .dmn-js-parent .bjs-powered-by {
   filter: invert(1);
 }

@@ -184,9 +184,20 @@ describe('DmnModeler.vue', () => {
 
     const canvas = document.body.querySelector('.diagram-modeler-canvas')
     expect(canvas).not.toBeNull()
-    expect(modelerOptions()).toEqual({ container: canvas })
+    expect(modelerOptions()).toEqual({ container: canvas, drd: { drdRenderer: {} } })
     expect(modeler.importXML).toHaveBeenCalledWith(ORIGINAL_XML)
     expect(bodyButton('Show properties panel') ?? bodyButton('Hide properties panel')).toBeUndefined()
+  })
+
+  it('opens the modeler in the dark theme with theme="dark"', async () => {
+    mockFetchSuccess()
+    const wrapper = mountModeler({ dmnFilePath: 'test.dmn', theme: 'dark' })
+    await settle()
+
+    await openModeler(wrapper)
+
+    expect(modelerOptions().drd.drdRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
+    expect(document.body.querySelector('.fullscreen-overlay')!.classList).toContain('diagram-theme-dark')
   })
 
   it('nests the Camunda properties panel config under the drd key', async () => {
@@ -198,7 +209,7 @@ describe('DmnModeler.vue', () => {
 
     const panel = document.body.querySelector('.diagram-modeler-properties-panel')
     expect(panel).not.toBeNull()
-    expect(modelerOptions().drd).toEqual({ additionalModules: ['MODULE'], propertiesPanel: { parent: panel } })
+    expect(modelerOptions().drd).toEqual({ drdRenderer: {}, additionalModules: ['MODULE'], propertiesPanel: { parent: panel } })
     expect(modelerOptions().moddleExtensions).toEqual({ camunda: {} })
   })
 

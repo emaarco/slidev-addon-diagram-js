@@ -40,6 +40,6 @@ export class BpmnModelerNotation implements LiveNotation, ModelerNotation {
   }
 
   openModeler(source: string, containers: ModelerContainers): Promise<ModelerSession> {
-    return BpmnModelerSession.open(source, containers, this.options)
+    return BpmnModelerSession.open(source, containers, this.options, this.theme)
   }
 }

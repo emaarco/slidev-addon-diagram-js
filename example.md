@@ -174,6 +174,19 @@ A full modeler canvas for workshops. Set an `engine` for its properties panel.
 `<BpmnModeler bpmnFilePath="/newsletter.bpmn" engine="zeebe" height="325px" />`
 
 ---
+layout: content
+title: Dark theme
+eyebrow: Bpmn-Modeler
+accent: blue
+---
+
+With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette, menus and properties panel.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <BpmnModeler bpmnFilePath="/newsletter.bpmn" engine="zeebe" tokenSimulation height="300px" theme="dark" />
+</div>
+
+---
 layout: section
 eyebrow: Decisions
 accent: blue
@@ -357,10 +370,10 @@ eyebrow: Dmn-Modeler
 accent: blue
 ---
 
-With `theme="dark"`, the DRD preview and its definitions box turn light on dark, for dark slides.
+With `theme="dark"`, the DRD preview turns light on dark, and the fullscreen modeler follows: requirement diagram, decision tables and properties panel.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <DmnModeler dmnFilePath="/example.dmn" height="300px" theme="dark" />
+  <DmnModeler dmnFilePath="/example.dmn" engine="camunda" height="300px" theme="dark" />
 </div>
 
 ---
