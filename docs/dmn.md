@@ -120,4 +120,4 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `height` | `string` | `'500px'` | Height of the modeler container |
 | `engine` | `'camunda'` | — | Optional engine. Mounts a `dmn-js-properties-panel` configured for Camunda. Omit for a panel-less modeler. |
 | `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. Applies to the preview; the fullscreen modeler stays light. |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen modeler follows: canvas, palette, menus and properties panel. |

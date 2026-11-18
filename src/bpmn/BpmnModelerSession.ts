@@ -1,5 +1,6 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import tokenSimulationModeler from 'bpmn-js-token-simulation'
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { ModelerContainers, ModelerSession } from '../shared/lib/notation'
 import { fitDiagram } from '../shared/lib/utils/fitDiagram'
 import { type Engine, bpmnEngines } from './engines/bpmnEngines'
@@ -19,8 +20,8 @@ export class BpmnModelerSession implements ModelerSession {
     eventBus.on('commandStack.changed', () => { this.hasChanges = true })
   }
 
-  static async open(source: string, containers: ModelerContainers, options: BpmnModelerOptions): Promise<BpmnModelerSession> {
-    const modeler = new BpmnModeler(BpmnModelerSession.modelerConfig(containers, options))
+  static async open(source: string, containers: ModelerContainers, options: BpmnModelerOptions, theme = new DiagramTheme()): Promise<BpmnModelerSession> {
+    const modeler = new BpmnModeler(BpmnModelerSession.modelerConfig(containers, options, theme))
     try {
       await modeler.importXML(source)
     } catch (err) {
@@ -67,8 +68,8 @@ export class BpmnModelerSession implements ModelerSession {
     return this.modeler.get('canvas')
   }
 
-  private static modelerConfig(containers: ModelerContainers, options: BpmnModelerOptions): Record<string, unknown> {
-    const config: Record<string, unknown> = { container: containers.canvas }
+  private static modelerConfig(containers: ModelerContainers, options: BpmnModelerOptions, theme: DiagramTheme): Record<string, unknown> {
+    const config: Record<string, unknown> = { container: containers.canvas, bpmnRenderer: theme.rendererColors() }
     const additionalModules: any[] = []
 
     if (options.engine) {

@@ -34,7 +34,7 @@
       </template>
     </ToolbarButton>
 
-    <FullscreenOverlay :open="isFullscreen">
+    <FullscreenOverlay :open="isFullscreen" :theme="props.theme">
       <div ref="modelerCanvasRef" class="diagram-modeler-canvas"></div>
 
       <template #toolbar>
@@ -197,5 +197,50 @@ onUnmounted(discardModelerSession)
   overflow-y: auto;
   border-left: 1px solid #ccc;
   background: #fafafa;
+}
+
+.diagram-theme-dark .diagram-modeler-properties-panel {
+  border-left-color: #4d4d4d;
+  background: #1e1e1e;
+}
+</style>
+
+<style>
+.fullscreen-overlay.diagram-theme-dark .bio-theme-parent {
+  --bio-surface: #1e1e1e;
+  --bio-surface-overlay: #262626;
+  --bio-surface-subtle: #262626;
+  --bio-surface-medium: #2e2e2e;
+  --bio-surface-strong: #3a3a3a;
+  --bio-surface-inverted: #e6e6e6;
+  --bio-surface-inverted-subtle: #b3b3b3;
+  --bio-text: #e6e6e6;
+  --bio-text-subtle: #b3b3b3;
+  --bio-text-subtlest: #808080;
+  --bio-text-on-inverted: #1e1e1e;
+  --bio-border: #4d4d4d;
+  --bio-border-subtle: #3a3a3a;
+  --bio-border-disabled: #333333;
+  --bio-border-input: #4d4d4d;
+  --bio-primary: hsl(205, 90%, 58%);
+  --bio-primary-hover: hsl(205, 90%, 50%);
+  --bio-primary-surface: hsl(205, 50%, 20%);
+  --bio-primary-surface-strong: hsl(205, 50%, 28%);
+  --bio-neutral: #8c8c8c;
+  --bio-danger: hsl(360, 90%, 65%);
+  --bio-danger-hover: hsl(360, 90%, 58%);
+  --bio-danger-text: hsl(360, 90%, 72%);
+  --bio-danger-surface: hsl(360, 45%, 22%);
+  --bio-danger-surface-subtle: hsl(360, 35%, 16%);
+  --bio-warning-text: hsl(39, 100%, 65%);
+  --bio-warning-surface: hsl(38, 45%, 16%);
+  --bio-info: hsl(205, 90%, 58%);
+  --bio-info-on-inverted: hsl(205, 100%, 35%);
+  --bio-focus: hsl(205, 90%, 58%);
+  --bio-focus-surface: hsl(205, 50%, 20%);
+  --bio-canvas-accent: hsl(205, 90%, 58%);
+  --bio-canvas-accent-subtle: hsl(205, 60%, 35%);
+  --bio-shadow: hsla(0, 0%, 0%, 60%);
+  --bio-shadow-subtle: hsla(0, 0%, 0%, 30%);
 }
 </style>

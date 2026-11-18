@@ -109,4 +109,10 @@ describe('BpmnModelerNotation', () => {
       additionalModules: ['zeebe-module', 'token-simulation-modeler'],
     })
   })
+
+  it('opens the modeler in its theme', async () => {
+    await new BpmnModelerNotation(DEFAULT_OPTIONS, new DiagramTheme('dark')).openModeler('<definitions/>', { canvas: document.createElement('div') })
+
+    expect(bpmnJs.lastModeler().options.bpmnRenderer).toEqual(new DiagramTheme('dark').rendererColors())
+  })
 })

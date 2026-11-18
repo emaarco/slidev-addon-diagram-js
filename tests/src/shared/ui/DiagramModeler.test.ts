@@ -111,7 +111,7 @@ describe('DiagramModeler.vue', () => {
     expect(findButton('Edit')).toBeDefined()
   })
 
-  it('puts the preview and its Edit button on the dark theme with theme="dark"', async () => {
+  it('puts the preview and the fullscreen modeler on the dark theme with theme="dark"', async () => {
     mockFetchSuccess()
 
     mountModeler({ filePath: 'board.storm', theme: 'dark' })
@@ -119,13 +119,15 @@ describe('DiagramModeler.vue', () => {
     await openModelerFullscreen()
 
     expect(wrapper.find('.diagram-modeler').classes()).toContain('diagram-theme-dark')
-    expect(document.body.querySelector('.diagram-theme-dark .fullscreen-overlay')).toBeNull()
+    expect(document.body.querySelector('.fullscreen-overlay')!.classList).toContain('diagram-theme-dark')
   })
 
-  it('keeps the preview on the light theme by default', async () => {
+  it('keeps the preview and the fullscreen modeler on the light theme by default', async () => {
     await mountRenderedModeler()
+    await openModelerFullscreen()
 
     expect(wrapper.find('.diagram-modeler').classes()).not.toContain('diagram-theme-dark')
+    expect(document.body.querySelector('.fullscreen-overlay')!.classList).not.toContain('diagram-theme-dark')
   })
 
   it('does not offer editing when the file cannot be loaded', async () => {

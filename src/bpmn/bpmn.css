@@ -41,3 +41,11 @@
   --bio-text-subtle: #b3b3b3;
   --bio-text-subtlest: #808080;
 }
+
+.fullscreen-overlay.diagram-theme-dark .bts-container {
+  --token-simulation-element-stroke-color: #e6e6e6;
+  --token-simulation-element-fill-color: #1e1e1e;
+  --token-simulation-active-outgoing-flow-stroke-color: #e6e6e6;
+  --token-simulation-inactive-outgoing-flow-stroke-color: #808080;
+  --token-simulation-highlighted-scope-fill-color: #2e2e2e;
+}

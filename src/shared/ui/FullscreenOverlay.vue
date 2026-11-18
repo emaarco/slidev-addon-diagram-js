@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div v-if="props.open" class="fullscreen-overlay">
+    <div v-if="props.open" class="fullscreen-overlay" :class="{ 'diagram-theme-dark': props.theme === 'dark' }">
       <div class="fullscreen-overlay-main">
         <slot />
         <div class="fullscreen-overlay-toolbar">
@@ -14,8 +14,9 @@
 
 <script setup lang="ts">
 import { onUnmounted, watch } from 'vue'
+import type { DiagramThemeName } from '../lib/DiagramTheme'
 
-const props = defineProps<{ open: boolean }>()
+const props = defineProps<{ open: boolean; theme?: DiagramThemeName }>()
 
 watch(() => props.open, (open) => {
   if (open) document.addEventListener('keydown', keepKeyStrokesFromSlideNavigation)
@@ -42,6 +43,12 @@ function keepKeyStrokesFromSlideNavigation(event: KeyboardEvent): void {
   background: white;
   color: #22242a;
   display: flex;
+}
+
+.fullscreen-overlay.diagram-theme-dark {
+  background: #1e1e1e;
+  color: #e6e6e6;
+  color-scheme: dark;
 }
 
 .fullscreen-overlay-main {

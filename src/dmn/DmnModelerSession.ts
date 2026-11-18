@@ -1,4 +1,5 @@
 import DmnModeler from 'dmn-js/lib/Modeler'
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { ModelerContainers, ModelerSession } from '../shared/lib/notation'
 import { type Engine, dmnEngines } from './engines/dmnEngines'
 import { fitActiveDrd } from './utils/fitActiveDrd'
@@ -9,8 +10,8 @@ export class DmnModelerSession implements ModelerSession {
     private readonly importedXml: string,
   ) {}
 
-  static async open(source: string, containers: ModelerContainers, engine?: Engine): Promise<DmnModelerSession> {
-    const modeler = new DmnModeler(DmnModelerSession.modelerConfig(containers, engine))
+  static async open(source: string, containers: ModelerContainers, engine?: Engine, theme = new DiagramTheme()): Promise<DmnModelerSession> {
+    const modeler = new DmnModeler(DmnModelerSession.modelerConfig(containers, engine, theme))
     try {
       await modeler.importXML(source)
     } catch (err) {
@@ -34,14 +35,14 @@ export class DmnModelerSession implements ModelerSession {
     this.modeler.destroy()
   }
 
-  private static modelerConfig(containers: ModelerContainers, engine?: Engine): Record<string, unknown> {
-    const config: Record<string, unknown> = { container: containers.canvas }
+  private static modelerConfig(containers: ModelerContainers, engine: Engine | undefined, theme: DiagramTheme): Record<string, unknown> {
+    const drd: Record<string, unknown> = { drdRenderer: theme.rendererColors() }
+    const config: Record<string, unknown> = { container: containers.canvas, drd }
     if (!engine) return config
 
     const engineConfig = dmnEngines[engine]
-    const drd: Record<string, unknown> = { additionalModules: engineConfig.drdModules }
+    drd.additionalModules = engineConfig.drdModules
     if (containers.propertiesPanel) drd.propertiesPanel = { parent: containers.propertiesPanel }
-    config.drd = drd
     config.moddleExtensions = engineConfig.moddleExtensions
     return config
   }

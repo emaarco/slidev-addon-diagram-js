@@ -29,6 +29,6 @@ export class DmnModelerNotation implements LiveNotation, ModelerNotation {
   }
 
   openModeler(source: string, containers: ModelerContainers): Promise<ModelerSession> {
-    return DmnModelerSession.open(source, containers, this.engine)
+    return DmnModelerSession.open(source, containers, this.engine, this.theme)
   }
 }

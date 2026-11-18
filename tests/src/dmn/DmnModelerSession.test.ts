@@ -16,6 +16,7 @@ vi.mock('../../../src/dmn/engines/camunda', () => ({
 }))
 
 import { DmnModelerSession } from '../../../src/dmn/DmnModelerSession'
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 
 function modelerConfig(): any {
   return MockDmnModeler.mock.calls[0][0]
@@ -39,7 +40,7 @@ describe('DmnModelerSession', () => {
   it('creates a plain modeler in the canvas container without an engine', async () => {
     await DmnModelerSession.open('<xml/>', { canvas })
 
-    expect(modelerConfig()).toEqual({ container: canvas })
+    expect(modelerConfig()).toEqual({ container: canvas, drd: { drdRenderer: {} } })
   })
 
   it('nests the engine modules and properties panel under the drd key', async () => {
@@ -47,9 +48,16 @@ describe('DmnModelerSession', () => {
 
     expect(modelerConfig().container).toBe(canvas)
     expect(modelerConfig().drd).toEqual({
+      drdRenderer: {},
       additionalModules: ['CAMUNDA_MODULE'],
       propertiesPanel: { parent: propertiesPanel },
     })
+  })
+
+  it('draws the requirement diagram in the dark theme', async () => {
+    await DmnModelerSession.open('<xml/>', { canvas }, undefined, new DiagramTheme('dark'))
+
+    expect(modelerConfig().drd.drdRenderer).toEqual(new DiagramTheme('dark').rendererColors())
   })
 
   it('registers the engine moddle extensions at the top level', async () => {

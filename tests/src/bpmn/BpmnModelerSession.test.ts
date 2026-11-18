@@ -10,6 +10,7 @@ vi.mock('../../../src/bpmn/engines/camunda7', () => ({
 }))
 
 import { type BpmnModelerOptions, BpmnModelerSession } from '../../../src/bpmn/BpmnModelerSession'
+import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { bpmnJs, SMALL_DIAGRAM } from './fakeBpmnJs'
 
 const SOURCE = '<definitions>imported</definitions>'
@@ -30,7 +31,7 @@ describe('BpmnModelerSession', () => {
     it('passes only the canvas container without engine and token simulation', async () => {
       await open()
 
-      expect(bpmnJs.lastModeler().options).toEqual({ container: canvas })
+      expect(bpmnJs.lastModeler().options).toEqual({ container: canvas, bpmnRenderer: {} })
     })
 
     it('wires the Zeebe modules, moddle and properties panel for engine="zeebe"', async () => {
@@ -38,6 +39,7 @@ describe('BpmnModelerSession', () => {
 
       expect(bpmnJs.lastModeler().options).toEqual({
         container: canvas,
+        bpmnRenderer: {},
         propertiesPanel: { parent: propertiesPanel },
         moddleExtensions: { zeebe: { name: 'zeebe' } },
         additionalModules: ['zeebe-module-a', 'zeebe-module-b'],
@@ -49,6 +51,7 @@ describe('BpmnModelerSession', () => {
 
       expect(bpmnJs.lastModeler().options).toEqual({
         container: canvas,
+        bpmnRenderer: {},
         propertiesPanel: { parent: propertiesPanel },
         moddleExtensions: { camunda: { name: 'camunda' } },
         additionalModules: ['camunda7-module'],
@@ -65,7 +68,13 @@ describe('BpmnModelerSession', () => {
     it('adds the token simulation modeler module', async () => {
       await open({ tokenSimulation: true })
 
-      expect(bpmnJs.lastModeler().options).toEqual({ container: canvas, additionalModules: ['token-simulation-modeler'] })
+      expect(bpmnJs.lastModeler().options).toEqual({ container: canvas, bpmnRenderer: {}, additionalModules: ['token-simulation-modeler'] })
+    })
+
+    it('draws the diagram in the dark theme', async () => {
+      await BpmnModelerSession.open(SOURCE, { canvas }, DEFAULT_OPTIONS, new DiagramTheme('dark'))
+
+      expect(bpmnJs.lastModeler().options.bpmnRenderer).toEqual(new DiagramTheme('dark').rendererColors())
     })
 
     it('puts the token simulation after the engine modules', async () => {
