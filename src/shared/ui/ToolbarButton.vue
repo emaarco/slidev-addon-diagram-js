@@ -18,8 +18,8 @@ const emit = defineEmits<{ (e: 'click', ev: MouseEvent): void }>()
 
 const baseStyle: CSSProperties = {
   cursor: 'pointer',
-  background: 'white',
-  border: '1px solid #ccc',
+  background: 'var(--diagram-toolbar-button-background, white)',
+  border: '1px solid var(--diagram-toolbar-button-border, #ccc)',
   borderRadius: '3px',
   padding: '3px 6px',
   display: 'flex',
@@ -30,7 +30,7 @@ const baseStyle: CSSProperties = {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
   fontSize: '11px',
   lineHeight: '1',
-  color: '#333',
+  color: 'var(--diagram-toolbar-button-color, #333)',
   boxShadow: '0 1px 2px rgba(0,0,0,0.08)',
 }
 
@@ -39,3 +39,11 @@ const resolvedStyle = computed<CSSProperties>(() => {
   return { ...baseStyle, position: 'absolute', ...props.position }
 })
 </script>
+
+<style>
+.diagram-theme-dark {
+  --diagram-toolbar-button-background: #262626;
+  --diagram-toolbar-button-border: #4d4d4d;
+  --diagram-toolbar-button-color: #e6e6e6;
+}
+</style>

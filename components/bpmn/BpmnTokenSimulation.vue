@@ -1,5 +1,5 @@
 <template>
-  <div class="bpmn-token-simulation" :style="{ width: props.width, height: containerHeight }">
+  <div class="bpmn-token-simulation" :class="{ 'diagram-theme-dark': props.theme === 'dark' }" :style="{ width: props.width, height: containerHeight }">
     <LiveDiagram
       :notation="notation"
       :filePath="props.bpmnFilePath"
