@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.5.2](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.5.1...v2.5.2) (2026-11-18)
+
+
+### Bug Fixes
+
+* **dmn:** render the DRD definitions box dark with theme="dark" ([#181](https://github.com/emaarco/slidev-addon-diagram-js/issues/181)) ([fc63cda](https://github.com/emaarco/slidev-addon-diagram-js/commit/fc63cda71ec733645ff75b04272c31529a6a7c87))
+
 ## [2.5.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.5.0...v2.5.1) (2026-11-18)
 
 
