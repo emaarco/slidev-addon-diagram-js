@@ -32,3 +32,12 @@
   transform: scale(var(--bts-toggle-scale, 1));
   transform-origin: bottom right;
 }
+
+.diagram-theme-dark .bts-container {
+  --bio-surface: #1e1e1e;
+  --bio-surface-subtle: #262626;
+  --bio-surface-medium: #2e2e2e;
+  --bio-text: #e6e6e6;
+  --bio-text-subtle: #b3b3b3;
+  --bio-text-subtlest: #808080;
+}

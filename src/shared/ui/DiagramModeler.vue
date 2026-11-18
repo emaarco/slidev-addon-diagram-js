@@ -1,5 +1,5 @@
 <template>
-  <div class="diagram-modeler" :style="{ width: props.width, height: props.height }">
+  <div class="diagram-modeler" :class="{ 'diagram-theme-dark': props.theme === 'dark' }" :style="{ width: props.width, height: props.height }">
     <LiveDiagram
       v-if="props.notation.rendering === 'live'"
       :notation="props.notation"
@@ -77,6 +77,7 @@
 
 <script setup lang="ts">
 import { nextTick, onUnmounted, ref } from 'vue'
+import type { DiagramThemeName } from '../lib/DiagramTheme'
 import type { ModelerNotation, ModelerSession, PreviewNotation } from '../lib/notation'
 import { PageStylesheet } from '../lib/PageStylesheet'
 import FullscreenOverlay from './FullscreenOverlay.vue'
@@ -91,6 +92,7 @@ const props = defineProps<{
   height: string
   modelerStyles?: string
   propertiesPanelOpen?: boolean
+  theme?: DiagramThemeName
 }>()
 
 const previewSource = ref<string | undefined>(props.filePath ? undefined : props.notation.blankSource)

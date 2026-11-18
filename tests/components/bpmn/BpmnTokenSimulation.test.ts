@@ -243,6 +243,16 @@ describe('BpmnTokenSimulation.vue', () => {
       expect(fullscreenViewer.options.bpmnRenderer).toEqual({})
     })
 
+    it('puts the simulation chrome and the Expand button on the dark theme with theme="dark"', async () => {
+      mockFetchSuccess()
+      const wrapper = await mountAndRender({ theme: 'dark' })
+
+      await openFullscreen()
+
+      expect(wrapper.find('.bpmn-token-simulation').classes()).toContain('diagram-theme-dark')
+      expect(document.body.querySelector('.diagram-theme-dark .fullscreen-overlay')).toBeNull()
+    })
+
     it('destroys only the fullscreen viewer when Close is clicked', async () => {
       mockFetchSuccess()
       await mountAndRender()

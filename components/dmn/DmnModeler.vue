@@ -5,6 +5,7 @@
     :width="props.width"
     :height="props.height"
     :propertiesPanelOpen="props.propertiesPanelOpen"
+    :theme="props.theme"
   />
 </template>
 
