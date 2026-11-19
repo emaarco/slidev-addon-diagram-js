@@ -8,7 +8,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
+import { DocumentTheme } from '../../src/shared/lib/DocumentTheme'
 import { WardleyMapNotation } from '../../src/wardley-maps/WardleyMapNotation'
 import StaticDiagram from '../../src/shared/ui/StaticDiagram.vue'
 
@@ -20,8 +22,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   width: '100%',
   height: 'auto',
-  theme: 'light',
 })
 
-const notation = new WardleyMapNotation(new DiagramTheme(props.theme))
+const theme = new DocumentTheme(() => props.theme).name
+const notation = computed(() => new WardleyMapNotation(new DiagramTheme(theme.value)))
 </script>

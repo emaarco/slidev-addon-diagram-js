@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 const { mockImportDocument, mockSaveSVG, mockDestroy, MockViewer } = vi.hoisted(() => ({
   mockImportDocument: vi.fn(),
@@ -133,5 +134,56 @@ describe('TeamTopologies.vue', () => {
     await flushPromises()
 
     expect(wrapper.find('text').attributes('style')).toContain('fill: rgb(230, 230, 230)')
+  })
+
+  describe('without a theme', () => {
+    beforeEach(() => {
+      mockFetchSuccess()
+      mockImportDocument.mockImplementation(() => {
+        const [{ container }] = MockViewer.mock.calls.at(-1)!
+        container.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><text style="fill: #1D1D1D">Label</text></svg>'
+        mockSaveSVG.mockImplementation(() => ({ svg: container.innerHTML }))
+      })
+    })
+
+    it('paints the exported SVG dark while the deck is dark', async () => {
+      document.documentElement.classList.add('dark')
+
+      const wrapper = mount(TeamTopologies, { props: { teamTopologiesFilePath: 'teams.tt' } })
+      await flushPromises()
+
+      expect(wrapper.find('text').attributes('style')).toContain('fill: rgb(230, 230, 230)')
+    })
+
+    it('renders again when the deck switches between light and dark', async () => {
+      const wrapper = mount(TeamTopologies, { props: { teamTopologiesFilePath: 'teams.tt' } })
+      await flushPromises()
+      expect(wrapper.find('text').attributes('style')).toContain('fill: #1D1D1D')
+
+      document.documentElement.classList.add('dark')
+      await nextTick()
+      await flushPromises()
+      expect(wrapper.find('text').attributes('style')).toContain('fill: rgb(230, 230, 230)')
+
+      document.documentElement.classList.remove('dark')
+      await nextTick()
+      await flushPromises()
+      expect(wrapper.find('text').attributes('style')).toContain('fill: #1D1D1D')
+    })
+  })
+
+  it('stays light on a dark deck with theme="light"', async () => {
+    mockFetchSuccess()
+    mockImportDocument.mockImplementation(() => {
+      const [{ container }] = MockViewer.mock.calls[0]
+      container.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><text style="fill: #1D1D1D">Label</text></svg>'
+      mockSaveSVG.mockImplementation(() => ({ svg: container.innerHTML }))
+    })
+    document.documentElement.classList.add('dark')
+
+    const wrapper = mount(TeamTopologies, { props: { teamTopologiesFilePath: 'teams.tt', theme: 'light' } })
+    await flushPromises()
+
+    expect(wrapper.find('text').attributes('style')).toContain('fill: #1D1D1D')
   })
 })

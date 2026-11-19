@@ -21,7 +21,7 @@ Renders the file as a static SVG, the same way `<Bpmn>` does, so it also works i
 | `wardleyMapFilePath` | `string` | *required* | Path to the `.owm` file (relative to `public/`) |
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Pipelines and evolution arrows keep their colours. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Pipelines and evolution arrows keep their colours. |
 
 ## `<WardleyMapModeler>` — Live modeler
 
@@ -44,6 +44,6 @@ Or start with a blank canvas:
 | `wardleyMapFilePath` | `string` | — | Optional path to the `.owm` file (relative to `public/`). Omit for a blank diagram. |
 | `width` | `string` | `'100%'` | Width of the modeler container |
 | `height` | `string` | `'500px'` | Height of the modeler container |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Pipelines and evolution arrows keep their colours. The fullscreen modeler follows: canvas, palette and context pad. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Pipelines and evolution arrows keep their colours. The fullscreen modeler follows: canvas, palette and context pad. |
 
 The renderer draws its labels in the Geist typeface when your deck provides it and falls back to a system sans-serif font otherwise.

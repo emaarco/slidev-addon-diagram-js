@@ -144,10 +144,17 @@ describe('DmnModeler.vue', () => {
     expect((wrapper.element as HTMLElement).style.height).toBe('320px')
   })
 
-  it('uses the light theme by default', () => {
+  it('uses the light theme while the deck is light', () => {
     mockFetchSuccess()
 
     expect(mountModeler().classes()).not.toContain('dmn-theme-dark')
+  })
+
+  it('uses the dark theme while the deck is dark', () => {
+    mockFetchSuccess()
+    document.documentElement.classList.add('dark')
+
+    expect(mountModeler().classes()).toContain('dmn-theme-dark')
   })
 
   it('draws the DRD preview in the dark theme', () => {

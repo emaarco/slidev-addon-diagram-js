@@ -155,7 +155,20 @@ describe('WardleyMapModeler.vue', () => {
     expect(container.getAttribute('data-cd-theme')).toBe('dark')
   })
 
-  it('keeps the modeler canvas light by default', async () => {
+  it('opens a dark modeler canvas while the deck is dark', async () => {
+    mockFetchSuccess()
+    document.documentElement.classList.add('dark')
+    mountModeler()
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.getAttribute('data-cd-theme')).toBe('dark')
+  })
+
+  it('keeps the modeler canvas light while the deck is light', async () => {
     mockFetchSuccess()
     mountModeler()
     await flushPromises()

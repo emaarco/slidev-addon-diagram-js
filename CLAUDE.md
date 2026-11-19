@@ -77,6 +77,7 @@ src/                    all other production code, published with the package
                               (the fullscreen modeler's dark chrome is one `--bio-*` token set in `ui/DiagramModeler.vue`)
                               (decision tables are HTML: their dark theme is the `dmn-theme-dark` class in `src/dmn/decisionTable.css`)
     lib/DarkCanvas.ts         dark theme of the Miragon renderers: repaints their light brand neutrals, follows a live modeler
+    lib/DocumentTheme.ts      effective theme of a component: its `theme` prop, else the deck's mode (`html.dark`)
     lib/utils/                fitDiagram (pad, clamp, centre a canvas viewbox), SVG and URL helpers
     ui/StaticDiagram.vue      renders a StaticNotation from a file or a given source as SVG
     ui/LiveDiagram.vue        renders a LiveNotation in a live viewer (EmbeddedViewer + onSlideEnter)
@@ -214,6 +215,11 @@ implementing `StaticNotation` and `ModelerNotation`.
   (`src/shared/lib/utils/resolveWithinBase.ts`).
 - `fitDiagram` lets a small diagram grow up to 2× by default. BPMN components expose that cap as
   the `maxScale` prop; the DMN DRD preview passes `1` so it is never enlarged past its native size.
+- **Theme follows the deck:** without a `theme` prop, `DocumentTheme` resolves the theme from the
+  `dark` class on `<html>` (Slidev's dark mode) and watches it with a `MutationObserver`. Each
+  component builds its notation as a `computed` of that theme; `StaticDiagram`, `LiveDiagram` and
+  `DmnSimulate` render the current source again with the new notation. An open fullscreen modeler
+  keeps the theme it was opened with.
 - The `engine` props are typed per modeler as the keys of its registry (`bpmnEngines`:
   `'zeebe' | 'camunda7'`, `dmnEngines`: `'camunda'`).
 

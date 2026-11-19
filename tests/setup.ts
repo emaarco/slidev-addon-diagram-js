@@ -9,4 +9,5 @@ afterEach(() => {
   vi.restoreAllMocks()
   vi.unstubAllGlobals()
   vi.useRealTimers()
+  document.documentElement.classList.remove('dark')
 })

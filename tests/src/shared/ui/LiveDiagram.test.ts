@@ -186,6 +186,20 @@ describe('LiveDiagram.vue', () => {
     expect(viewers[1].show).toHaveBeenCalledWith('<definitions id="after"/>')
   })
 
+  it('replaces the viewer with one of a new notation, showing the same source', async () => {
+    mountLiveDiagram({ source: '<definitions id="shown"/>' })
+    giveSize(canvas(), 800, 600)
+    await vi.waitFor(() => expect(wrapper.emitted('rendered')).toHaveLength(1))
+
+    const darkCreateViewer = vi.fn(async () => ({ show: vi.fn().mockResolvedValue(undefined), fit: vi.fn(), destroy: vi.fn() }))
+    await wrapper.setProps({ notation: { kind: 'BPMN', rendering: 'live', createViewer: darkCreateViewer } })
+
+    await vi.waitFor(() => expect(wrapper.emitted('rendered')).toHaveLength(2))
+    expect(viewers[0].destroy).toHaveBeenCalledOnce()
+    expect(darkCreateViewer).toHaveBeenCalledWith(canvas())
+    expect((await darkCreateViewer.mock.results[0].value).show).toHaveBeenCalledWith('<definitions id="shown"/>')
+  })
+
   it('destroys the viewer when unmounted', async () => {
     mockFetchSuccess()
     mountLiveDiagram()

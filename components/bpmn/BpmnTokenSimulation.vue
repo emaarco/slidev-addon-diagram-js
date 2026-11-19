@@ -1,5 +1,5 @@
 <template>
-  <div class="bpmn-token-simulation" :class="{ 'diagram-theme-dark': props.theme === 'dark' }" :style="{ width: props.width, height: containerHeight }">
+  <div class="bpmn-token-simulation" :class="{ 'diagram-theme-dark': theme === 'dark' }" :style="{ width: props.width, height: containerHeight }">
     <LiveDiagram
       :notation="notation"
       :filePath="props.bpmnFilePath"
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onUnmounted, ref } from 'vue'
+import { computed, nextTick, onUnmounted, ref } from 'vue'
 import '../../src/bpmn/bpmn.css'
 import { BpmnTokenSimulationNotation } from '../../src/bpmn/BpmnTokenSimulationNotation'
 import type { Engine } from '../../src/bpmn/engines/bpmnEngines'
@@ -51,6 +51,7 @@ import { parseMaxScale } from '../../src/bpmn/utils/parseMaxScale'
 import { DiagramFileLoader } from '../../src/shared/lib/DiagramFileLoader'
 import { EmbeddedViewer } from '../../src/shared/lib/EmbeddedViewer'
 import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
+import { DocumentTheme } from '../../src/shared/lib/DocumentTheme'
 import FullscreenOverlay from '../../src/shared/ui/FullscreenOverlay.vue'
 import LiveDiagram from '../../src/shared/ui/LiveDiagram.vue'
 import ToolbarButton from '../../src/shared/ui/ToolbarButton.vue'
@@ -68,7 +69,6 @@ const props = withDefaults(defineProps<{
   width: '100%',
   height: 'auto',
   fullscreen: true,
-  theme: 'light',
 })
 
 const containerHeight = props.height === 'auto' ? '500px' : props.height
@@ -80,7 +80,8 @@ const simulationOptions = {
     ? { engine: props.engine, loadScenarios: async () => JSON.parse(await scenariosLoader.fetchFile(props.scenariosFilePath!)) }
     : undefined,
 }
-const notation = new BpmnTokenSimulationNotation({ ...simulationOptions, theme: new DiagramTheme(props.theme) })
+const theme = new DocumentTheme(() => props.theme).name
+const notation = computed(() => new BpmnTokenSimulationNotation({ ...simulationOptions, theme: new DiagramTheme(theme.value) }))
 const fullscreenNotation = new BpmnTokenSimulationNotation(simulationOptions)
 
 const renderedSource = ref<string | null>(null)

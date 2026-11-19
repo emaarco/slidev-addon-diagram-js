@@ -5,16 +5,18 @@
     :width="props.width"
     :height="props.height"
     :propertiesPanelOpen="props.propertiesPanelOpen"
-    :theme="props.theme"
-    :class="{ 'dmn-theme-dark': props.theme === 'dark' }"
+    :theme="theme"
+    :class="{ 'dmn-theme-dark': theme === 'dark' }"
   />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import '../../src/dmn/dmn.css'
 import { DmnModelerNotation } from '../../src/dmn/DmnModelerNotation'
 import type { Engine } from '../../src/dmn/engines/dmnEngines'
 import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
+import { DocumentTheme } from '../../src/shared/lib/DocumentTheme'
 import DiagramModeler from '../../src/shared/ui/DiagramModeler.vue'
 
 const props = withDefaults(defineProps<{
@@ -28,9 +30,9 @@ const props = withDefaults(defineProps<{
   width: '100%',
   height: '500px',
   propertiesPanelOpen: false,
-  theme: 'light',
 })
 
-const notation = new DmnModelerNotation(props.engine, new DiagramTheme(props.theme))
+const theme = new DocumentTheme(() => props.theme).name
+const notation = computed(() => new DmnModelerNotation(props.engine, new DiagramTheme(theme.value)))
 </script>
 
