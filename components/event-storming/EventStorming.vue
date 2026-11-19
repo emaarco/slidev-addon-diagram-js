@@ -8,7 +8,9 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
+import { DocumentTheme } from '../../src/shared/lib/DocumentTheme'
 import { EventStormingNotation } from '../../src/event-storming/EventStormingNotation'
 import StaticDiagram from '../../src/shared/ui/StaticDiagram.vue'
 
@@ -20,8 +22,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   width: '100%',
   height: 'auto',
-  theme: 'light',
 })
 
-const notation = new EventStormingNotation(new DiagramTheme(props.theme))
+const theme = new DocumentTheme(() => props.theme).name
+const notation = computed(() => new EventStormingNotation(new DiagramTheme(theme.value)))
 </script>

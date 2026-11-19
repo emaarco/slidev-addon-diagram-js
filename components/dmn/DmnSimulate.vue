@@ -5,7 +5,7 @@
          not the CSS-transform-scaled Slidev slide. Teleport relocates the existing
          DOM nodes, so the dmn-js viewer instance stays intact — no re-render. -->
     <Teleport to="body" :disabled="!isFullscreen">
-      <div class="dmn-simulate" :class="{ 'dmn-simulate--fullscreen': isFullscreen, 'dmn-theme-dark': props.theme === 'dark' }">
+      <div class="dmn-simulate" :class="{ 'dmn-simulate--fullscreen': isFullscreen, 'dmn-theme-dark': theme === 'dark' }">
         <p v-if="loading">Loading DMN decision table...</p>
         <p v-else-if="error" class="text-red-500">{{ error }}</p>
 
@@ -100,6 +100,7 @@ import { RuleHighlighter } from '../../src/dmn/RuleHighlighter'
 import { formatValue } from '../../src/dmn/utils/formatValue'
 import { DiagramFileLoader } from '../../src/shared/lib/DiagramFileLoader'
 import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
+import { DocumentTheme } from '../../src/shared/lib/DocumentTheme'
 import { EmbeddedViewer } from '../../src/shared/lib/EmbeddedViewer'
 
 const props = withDefaults(defineProps<{
@@ -119,12 +120,13 @@ const props = withDefaults(defineProps<{
   fullscreenFontSize: '12px',
   showAnnotations: false,
   showDrdButton: false,
-  theme: 'light',
 })
 
 const fileLoader = new DiagramFileLoader('DMN')
 const { loading, error } = fileLoader
-const embeddedViewer = new EmbeddedViewer(new DecisionTableNotation(props.decisionId, new DiagramTheme(props.theme)))
+const theme = new DocumentTheme(() => props.theme).name
+const notation = computed(() => new DecisionTableNotation(props.decisionId, new DiagramTheme(theme.value)))
+let embeddedViewer = new EmbeddedViewer(notation.value)
 const containerRef = ref<HTMLDivElement | null>(null)
 const simulation = shallowRef<DecisionSimulation | null>(null)
 const values = ref<RawValue[]>([])
@@ -176,6 +178,13 @@ async function render(): Promise<void> {
   if (error.value) simulation.value = null
 }
 
+async function renderWith(newNotation: DecisionTableNotation): Promise<void> {
+  embeddedViewer.destroy()
+  embeddedViewer = new EmbeddedViewer(newNotation)
+  await render()
+  if (result.value) ruleHighlighter.highlight(result.value.reportedRuleIndices, result.value.matchedRuleIndices)
+}
+
 function runSimulation(): void {
   if (!simulation.value || !isComplete.value) return
   const evaluation = simulation.value.evaluate(values.value)
@@ -200,6 +209,7 @@ onMounted(() => {
 })
 
 onSlideEnter(render)
+watch(notation, renderWith)
 
 onBeforeUnmount(() => {
   window.removeEventListener('keydown', closeFullscreenOnEscape)

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { enableAutoUnmount, flushPromises, mount, type VueWrapper } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 enableAutoUnmount(afterEach)
 
@@ -309,10 +310,27 @@ describe('DmnSimulate.vue', () => {
     expect(classes).not.toContain('hide-annotations')
   })
 
-  it('uses the light theme by default', () => {
+  it('uses the light theme while the deck is light', () => {
     mockFetch()
 
     expect(mountSimulate().find('.dmn-simulate').classes()).not.toContain('dmn-theme-dark')
+  })
+
+  it('follows the deck into the dark theme and keeps the simulated result', async () => {
+    mockFetch()
+    const wrapper = mountSimulate()
+    await settle()
+    await simulate(wrapper, 'Spring', '6')
+
+    document.documentElement.classList.add('dark')
+    await nextTick()
+    await settle()
+
+    expect(wrapper.find('.dmn-simulate').classes()).toContain('dmn-theme-dark')
+    expect(MockDmnViewer).toHaveBeenCalledTimes(2)
+    expect(MockDmnViewer.mock.calls[1][0].drd.drdRenderer).toMatchObject({ defaultStrokeColor: '#e6e6e6' })
+    expect(wrapper.find('.sim-result').text()).toContain('Rule 3')
+    expect(ruleRowClasses(wrapper)).toEqual([[], [], ['sim-match']])
   })
 
   it('draws the simulation in the dark theme', () => {

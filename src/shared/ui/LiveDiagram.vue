@@ -27,13 +27,20 @@ const emit = defineEmits<{ rendered: [source: string] }>()
 
 const fileLoader = new DiagramFileLoader(props.notation.kind)
 const { loading, error } = fileLoader
-const embeddedViewer = new EmbeddedViewer(props.notation)
+let embeddedViewer = new EmbeddedViewer(props.notation)
 const containerRef = ref<HTMLDivElement | null>(null)
 
 onMounted(render)
 onSlideEnter(render)
 watch(() => props.source, render)
+watch(() => props.notation, renderWith)
 onUnmounted(() => embeddedViewer.destroy())
+
+function renderWith(notation: LiveNotation): Promise<void> {
+  embeddedViewer.destroy()
+  embeddedViewer = new EmbeddedViewer(notation)
+  return render()
+}
 
 async function render(): Promise<void> {
   await fileLoader.withLoading(async () => {

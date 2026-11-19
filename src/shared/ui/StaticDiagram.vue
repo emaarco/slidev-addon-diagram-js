@@ -28,7 +28,7 @@ const svgRenderer = new StaticSvgRenderer()
 const svg = ref<string | null>(null)
 
 onMounted(render)
-watch(() => props.source, render)
+watch([() => props.source, () => props.notation], render)
 
 function render(): Promise<void | undefined> {
   return fileLoader.withLoading(async () => {

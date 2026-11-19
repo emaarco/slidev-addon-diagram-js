@@ -123,6 +123,21 @@ describe('StaticDiagram.vue', () => {
     expect(exportSvg.mock.calls[1][0]).toBe('title After')
   })
 
+  it('renders the same source again with a new notation', async () => {
+    const exportSvg = vi.fn().mockResolvedValue(SAMPLE_SVG)
+    const wrapper = mount(StaticDiagram, {
+      props: { source: 'title Board', width: '100%', height: 'auto', notation: eventStormingNotation(exportSvg) },
+    })
+    await flushPromises()
+
+    const darkExportSvg = vi.fn().mockResolvedValue(SAMPLE_SVG)
+    await wrapper.setProps({ notation: eventStormingNotation(darkExportSvg) })
+    await flushPromises()
+
+    expect(darkExportSvg).toHaveBeenCalledOnce()
+    expect(darkExportSvg.mock.calls[0][0]).toBe('title Board')
+  })
+
   it('reports the source it rendered', async () => {
     mockFetchSuccess('title Order Checkout')
 

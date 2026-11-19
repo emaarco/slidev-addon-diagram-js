@@ -26,7 +26,7 @@ Renders Decision Requirements Diagrams as static SVG images. Perfect for PDF exp
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
 | `fontSize` | `string` | `'12px'` | Font size of the diagram labels |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. |
 
 ## `<DmnTable>` — Decision table
 
@@ -51,7 +51,7 @@ Renders DMN Decision Tables directly in the slide. Perfect for presenting busine
 | `fontSize` | `string` | `'12px'` | Font size of the table content |
 | `showAnnotations` | `boolean` | `false` | Show or hide the annotations column |
 | `showDrdButton` | `boolean` | `false` | Show or hide the built-in "View DRD" button |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws the table light on dark, for dark slides. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws the table light on dark, for dark slides. |
 
 ## `<DmnSimulate>` — Live decision simulation
 
@@ -79,7 +79,7 @@ Use the **Fullscreen** button next to the form to blow the whole simulation up t
 | `fullscreenFontSize` | `string` | `'12px'` | Font size of the table content in fullscreen (raise it so the table reads from the back of the room) |
 | `showAnnotations` | `boolean` | `false` | Show or hide the annotations column |
 | `showDrdButton` | `boolean` | `false` | Show or hide the built-in "View DRD" button |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws the table, input form and result light on dark, for dark slides. The fullscreen view follows. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws the table, input form and result light on dark, for dark slides. The fullscreen view follows. |
 
 > **Hit policies:** the full DMN set is supported — `UNIQUE`, `ANY`, `PRIORITY`, `FIRST`, `COLLECT` (incl. `SUM`/`MIN`/`MAX`/`COUNT` aggregation), `RULE ORDER` and `OUTPUT ORDER`. The rule(s) the policy actually reports are highlighted strongly; rules that merely matched but were dropped (e.g. under `FIRST`/`PRIORITY`) are shown as faint candidates. `PRIORITY` and `OUTPUT ORDER` use the output's `<outputValues>` list as the priority order. `UNIQUE`/`ANY` show a violation badge when their constraint is broken. Input cells are evaluated as FEEL unary tests via [feelin](https://github.com/nikku/feelin); an empty cell matches any value.
 >
@@ -120,4 +120,4 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `height` | `string` | `'500px'` | Height of the modeler container |
 | `engine` | `'camunda'` | — | Optional engine. Mounts a `dmn-js-properties-panel` configured for Camunda. Omit for a panel-less modeler. |
 | `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen modeler follows: canvas, palette, menus and properties panel. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen modeler follows: canvas, palette, menus and properties panel. |

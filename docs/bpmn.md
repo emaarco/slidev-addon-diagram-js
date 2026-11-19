@@ -25,7 +25,7 @@ Renders BPMN diagrams as static SVG images. Perfect for PDF exports and presenta
 | `bpmnFilePath` | `string` | *required* | Path to the `.bpmn` file (relative to `public/`) |
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. |
 
 ## `<BpmnTokenSimulation>` — Token simulation
 
@@ -47,7 +47,7 @@ Renders interactive BPMN diagrams with token simulation capabilities. Perfect fo
 | `width` | `string` | `'100%'` | Width of the diagram container |
 | `height` | `string` | `'auto'` | Height of the diagram container (defaults to 500px when 'auto') |
 | `fullscreen` | `boolean` | `true` | Show the button that expands the simulation to fullscreen |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen view stays light. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen view stays light. |
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size. Lower keeps it smaller; higher lets it fill more. |
 | `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |
 
@@ -92,4 +92,4 @@ In fullscreen mode, the panel can be hidden and shown again via the toolbar — 
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size (e.g. a lone start event on a blank canvas). Lower keeps it smaller; higher lets it fill more. |
 | `tokenSimulation` | `boolean` | `false` | Adds the token simulation to the modeler |
 | `transactionBoundaries` | `boolean` | `false` | Overlays Camunda 7 transaction boundaries as bars across the sequence flows, in Miragon blue (`#335DE5`, `#6B8AFF` with `theme="dark"`), overridable via `--transaction-boundary-background-color`. Only takes effect with `engine="camunda7"`. |
-| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen modeler follows: canvas, palette, menus and properties panel. |
+| `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen modeler follows: canvas, palette, menus and properties panel. |

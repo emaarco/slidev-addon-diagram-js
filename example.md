@@ -39,6 +39,48 @@ Every notation is rendered from its source file. Pick the component that fits th
 | Event Storming | `EventStorming` | | `EventStormingModeler` |
 
 ---
+layout: content
+title: Follows the deck's dark mode
+eyebrow: Overview
+accent: blue
+---
+
+<script setup>
+function toggleDeckDarkMode() {
+  document.documentElement.classList.toggle('dark')
+}
+</script>
+
+Without a `theme`, every diagram is dark while `<html>` has the `dark` class (Slidev's dark mode) and redraws when it switches. <button class="dark-mode-toggle" @click="toggleDeckDarkMode">Toggle dark mode</button>
+
+<div class="dark-mode-demo">
+  <Bpmn bpmnFilePath="/newsletter.bpmn" height="260px" />
+  <TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="260px" />
+</div>
+
+<style>
+.dark-mode-toggle {
+  padding: 2px 10px;
+  border: 1px solid currentColor;
+  border-radius: 6px;
+  font-size: 0.8em;
+}
+
+.dark-mode-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 8px;
+  border-radius: 12px;
+}
+
+html.dark .dark-mode-demo {
+  background: #1e1e1e;
+}
+</style>
+
+---
 layout: section
 eyebrow: Processes
 accent: blue

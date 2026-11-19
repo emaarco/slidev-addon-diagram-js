@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { enableAutoUnmount, flushPromises, mount, type VueWrapper } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 enableAutoUnmount(afterEach)
 
@@ -198,10 +199,27 @@ describe('DmnTable.vue', () => {
     expect(tableWrapper(mountTable({ showAnnotations: true })).classes()).not.toContain('hide-annotations')
   })
 
-  it('uses the light theme by default', () => {
+  it('uses the light theme while the deck is light', () => {
     mockFetchSuccess()
 
     expect(tableWrapper(mountTable()).classes()).not.toContain('dmn-theme-dark')
+  })
+
+  it('follows the deck into the dark theme', async () => {
+    mockFetchSuccess()
+    const wrapper = mountTable()
+
+    document.documentElement.classList.add('dark')
+    await nextTick()
+
+    expect(tableWrapper(wrapper).classes()).toContain('dmn-theme-dark')
+  })
+
+  it('stays light on a dark deck with theme="light"', () => {
+    mockFetchSuccess()
+    document.documentElement.classList.add('dark')
+
+    expect(tableWrapper(mountTable({ theme: 'light' })).classes()).not.toContain('dmn-theme-dark')
   })
 
   it('draws the table in the dark theme', () => {

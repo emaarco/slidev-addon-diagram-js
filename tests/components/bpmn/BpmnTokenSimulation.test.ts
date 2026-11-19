@@ -243,6 +243,20 @@ describe('BpmnTokenSimulation.vue', () => {
       expect(fullscreenViewer.options.bpmnRenderer).toEqual({})
     })
 
+    it('redraws the inline viewer dark when the deck turns dark', async () => {
+      mockFetchSuccess()
+      const wrapper = await mountAndRender()
+
+      document.documentElement.classList.add('dark')
+      await nextTick()
+      await settle()
+
+      const [lightViewer, darkViewer] = bpmnJs.viewers
+      expect(lightViewer.options.bpmnRenderer).toEqual({})
+      expect(darkViewer.options.bpmnRenderer).toMatchObject({ defaultStrokeColor: '#e6e6e6' })
+      expect(wrapper.find('.bpmn-token-simulation').classes()).toContain('diagram-theme-dark')
+    })
+
     it('puts the simulation chrome and the Expand button on the dark theme with theme="dark"', async () => {
       mockFetchSuccess()
       const wrapper = await mountAndRender({ theme: 'dark' })
