@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.8.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.7.0...v2.8.0) (2026-11-19)
+
+
+### Features
+
+* **bpmn:** draw transaction boundaries in Miragon blue ([#188](https://github.com/emaarco/slidev-addon-diagram-js/issues/188)) ([4936776](https://github.com/emaarco/slidev-addon-diagram-js/commit/493677648d61c04fce39add4076a50caae1786c7))
+
 ## [2.7.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.6.0...v2.7.0) (2026-11-19)
 
 
