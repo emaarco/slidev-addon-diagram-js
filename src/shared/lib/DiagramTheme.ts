@@ -1,3 +1,5 @@
+import { DarkCanvas } from './DarkCanvas'
+
 export type DiagramThemeName = 'light' | 'dark'
 
 const LIGHT_ON_DARK = '#e6e6e6'
@@ -9,5 +11,9 @@ export class DiagramTheme {
   rendererColors(): Record<string, string> {
     if (this.name === 'light') return {}
     return { defaultFillColor: 'transparent', defaultStrokeColor: LIGHT_ON_DARK, defaultLabelColor: LIGHT_ON_DARK }
+  }
+
+  darkCanvas(): DarkCanvas | null {
+    return this.name === 'dark' ? new DarkCanvas() : null
   }
 }

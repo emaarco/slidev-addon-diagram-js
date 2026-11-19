@@ -5,6 +5,7 @@ import {
   parseDocument,
   serializeDocument,
 } from '@miragon/team-topologies-schema-model'
+import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { ModelerContainers, ModelerNotation, ModelerSession, StaticNotation } from '../shared/lib/notation'
 
 export class TeamTopologiesNotation implements StaticNotation, ModelerNotation {
@@ -12,12 +13,15 @@ export class TeamTopologiesNotation implements StaticNotation, ModelerNotation {
   readonly rendering = 'static'
   readonly blankSource = serializeDocument(emptyDocument())
 
+  constructor(private readonly theme = new DiagramTheme()) {}
+
   async exportSvg(source: string, container: HTMLElement): Promise<string> {
     const teamTopologies = this.parse(source)
 
     const viewer = new Viewer({ container })
     try {
       viewer.importDocument(teamTopologies)
+      this.theme.darkCanvas()?.paint(container)
       return viewer.saveSVG().svg
     } finally {
       viewer.destroy()
@@ -27,6 +31,7 @@ export class TeamTopologiesNotation implements StaticNotation, ModelerNotation {
   async openModeler(source: string, { canvas }: ModelerContainers): Promise<ModelerSession> {
     const modeler = new Modeler({ container: canvas })
     modeler.importDocument(this.parse(source))
+    const stopPainting = this.theme.darkCanvas()?.follow(canvas)
     const serialize = () => serializeDocument(modeler.exportDocument())
     const importedSource = serialize()
 
@@ -35,7 +40,10 @@ export class TeamTopologiesNotation implements StaticNotation, ModelerNotation {
         const source = serialize()
         return source === importedSource ? null : source
       },
-      destroy: () => modeler.destroy(),
+      destroy: () => {
+        stopPainting?.()
+        modeler.destroy()
+      },
     }
   }
 

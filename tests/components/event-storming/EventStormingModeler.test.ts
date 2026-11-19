@@ -35,7 +35,7 @@ function findButton(label: string): HTMLButtonElement | undefined {
 describe('EventStormingModeler.vue', () => {
   let wrapper: VueWrapper
 
-  function mountModeler(props: { eventStormingFilePath?: string } = { eventStormingFilePath: 'checkout.storm' }) {
+  function mountModeler(props: { eventStormingFilePath?: string, theme?: 'light' | 'dark' } = { eventStormingFilePath: 'checkout.storm' }) {
     wrapper = mount(EventStormingModeler, { attachTo: document.body, props })
   }
 
@@ -142,5 +142,28 @@ describe('EventStormingModeler.vue', () => {
     await flushPromises()
 
     expect(mockViewerImport).toHaveBeenCalledTimes(rendersBeforeEditing)
+  })
+  it('opens a dark modeler canvas with theme="dark"', async () => {
+    mockFetchSuccess()
+    mountModeler({ eventStormingFilePath: 'checkout.storm', theme: 'dark' })
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.getAttribute('data-cd-theme')).toBe('dark')
+  })
+
+  it('keeps the modeler canvas light by default', async () => {
+    mockFetchSuccess()
+    mountModeler()
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.hasAttribute('data-cd-theme')).toBe(false)
   })
 })

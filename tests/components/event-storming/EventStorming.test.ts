@@ -110,4 +110,17 @@ describe('EventStorming.vue', () => {
     expect(wrapper.text()).toContain('Failed to load Event Storming: unknown sticky kind')
     expect(mockDestroy).toHaveBeenCalledOnce()
   })
+  it('paints the exported SVG dark with theme="dark"', async () => {
+    mockFetchSuccess()
+    mockImportDSL.mockImplementation(() => {
+      const [{ container }] = MockViewer.mock.calls[0]
+      container.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><text style="fill: #1D1D1D">Label</text></svg>'
+      mockSaveSVG.mockImplementation(async () => ({ svg: container.innerHTML }))
+    })
+
+    const wrapper = mount(EventStorming, { props: { eventStormingFilePath: 'checkout.storm', theme: 'dark' } })
+    await flushPromises()
+
+    expect(wrapper.find('text').attributes('style')).toContain('fill: rgb(230, 230, 230)')
+  })
 })

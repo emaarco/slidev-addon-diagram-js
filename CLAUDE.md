@@ -76,6 +76,7 @@ src/                    all other production code, published with the package
     lib/DiagramTheme.ts       light/dark renderer colours for the bpmn-js and dmn-js previews and modelers (`theme` prop)
                               (the fullscreen modeler's dark chrome is one `--bio-*` token set in `ui/DiagramModeler.vue`)
                               (decision tables are HTML: their dark theme is the `dmn-theme-dark` class in `src/dmn/decisionTable.css`)
+    lib/DarkCanvas.ts         dark theme of the Miragon renderers: repaints their light brand neutrals, follows a live modeler
     lib/utils/                fitDiagram (pad, clamp, centre a canvas viewbox), SVG and URL helpers
     ui/StaticDiagram.vue      renders a StaticNotation from a file or a given source as SVG
     ui/LiveDiagram.vue        renders a LiveNotation in a live viewer (EmbeddedViewer + onSlideEnter)
@@ -180,6 +181,14 @@ implementing `StaticNotation` and `ModelerNotation`.
   and the BPMN/DMN modelers. The modeler components import the CSS with `?inline` and
   `DiagramModeler` attaches it (`PageStylesheet`) on open and removes it on close. The static
   viewers need no CSS: `saveSVG()` returns a self-contained SVG.
+- **Dark theme:** the Miragon renderers draw fixed light colours as inline styles and have no dark mode
+  (their `appearance.themes` is `["light"]`, and exports stay light). With `theme="dark"`,
+  `DiagramTheme.darkCanvas()` returns a `DarkCanvas` that maps the brand neutrals (`#1D1D1D`, `#FFFFFF`,
+  `#F9F7F7`, `#E6E2E2`, `#6B6666`) to dark values. Notation colours stay, and a `.djs-visual` whose first
+  shape carries a notation fill (sticky, team type) is left as it is, dark text included. The static
+  components paint the viewer before `saveSVG()`; a modeler session calls `follow(canvas)`, which sets
+  `data-cd-theme="dark"` (the renderers' own dark `--cd-ui-*` tokens for palette and context pad) and
+  repaints on every DOM change via a `MutationObserver`. Drop it once the renderers draw dark themselves.
 - **BPMN and DMN CSS is one stylesheet per modeler**, imported globally by every component of that
   modeler because the live previews need it: `src/bpmn/bpmn.css` (bpmn-js, properties panel,
   token and data simulation, plus the `.bpmn-simulation-chrome` rules a `BpmnSimulationViewer`

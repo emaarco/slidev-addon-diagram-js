@@ -413,8 +413,22 @@ Renders a Team Topologies document as a static, inline SVG. Ideal for print and 
 | `teamTopologiesFilePath` | string | Path to the file (required) |
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
+| `theme` | light / dark | Light lines and text for dark slides |
 
 `<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="300px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Team-Topologies
+accent: blue
+---
+
+With `theme="dark"`, text, lines and grid turn light on a dark canvas. Notation colours stay as they are.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="300px" theme="dark" />
+</div>
 
 ---
 layout: mermaid
@@ -443,8 +457,22 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `teamTopologiesFilePath` | string | Path to the file (omit for a blank canvas) |
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
+| `theme` | light / dark | Dark preview and fullscreen modeler |
 
 `<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="300px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Team-Topologies-Modeler
+accent: blue
+---
+
+With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette and context pad.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="300px" theme="dark" />
+</div>
 
 ---
 layout: section
@@ -483,8 +511,22 @@ Renders a Wardley Map written in OWM text as a static, inline SVG. Ideal for pri
 | `wardleyMapFilePath` | string | Path to the file (required) |
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
+| `theme` | light / dark | Light lines and text for dark slides |
 
 `<WardleyMap wardleyMapFilePath="/tea-shop.owm" height="300px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Wardley-Map
+accent: blue
+---
+
+With `theme="dark"`, text, lines and grid turn light on a dark canvas. Notation colours stay as they are.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <WardleyMap wardleyMapFilePath="/tea-shop.owm" height="300px" theme="dark" />
+</div>
 
 ---
 layout: mermaid
@@ -513,8 +555,22 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `wardleyMapFilePath` | string | Path to the file (omit for a blank canvas) |
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
+| `theme` | light / dark | Dark preview and fullscreen modeler |
 
 `<WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="300px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Wardley-Map-Modeler
+accent: blue
+---
+
+With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette and context pad.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="300px" theme="dark" />
+</div>
 
 ---
 layout: section
@@ -553,8 +609,22 @@ Renders an Event Storming board as a static, inline SVG. Ideal for print and PDF
 | `eventStormingFilePath` | string | Path to the file (required) |
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
+| `theme` | light / dark | Light lines and text for dark slides |
 
 `<EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Event-Storming
+accent: blue
+---
+
+With `theme="dark"`, text, lines and grid turn light on a dark canvas. Notation colours stay as they are.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" theme="dark" />
+</div>
 
 ---
 layout: mermaid
@@ -583,8 +653,22 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `eventStormingFilePath` | string | Path to the file (omit for a blank canvas) |
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
+| `theme` | light / dark | Dark preview and fullscreen modeler |
 
 `<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="300px" />`
+
+---
+layout: content
+title: Dark theme
+eyebrow: Event-Storming-Modeler
+accent: blue
+---
+
+With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette and context pad.
+
+<div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
+  <EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="300px" theme="dark" />
+</div>
 
 ---
 layout: section

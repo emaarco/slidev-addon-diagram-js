@@ -21,6 +21,7 @@ Renders the file as a static SVG, the same way `<Bpmn>` does, so it also works i
 | `eventStormingFilePath` | `string` | *required* | Path to the `.storm` file (relative to `public/`) |
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Stickies keep their colours, with their dark text. |
 
 ## `<EventStormingModeler>` — Live modeler
 
@@ -43,5 +44,6 @@ Or start with a blank canvas:
 | `eventStormingFilePath` | `string` | — | Optional path to the `.storm` file (relative to `public/`). Omit for a blank diagram. |
 | `width` | `string` | `'100%'` | Width of the modeler container |
 | `height` | `string` | `'500px'` | Height of the modeler container |
+| `theme` | `'light' \| 'dark'` | `'light'` | `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Stickies keep their colours, with their dark text. The fullscreen modeler follows: canvas, palette and context pad. |
 
 The renderer draws its labels in the Geist typeface when your deck provides it and falls back to a system sans-serif font otherwise.
