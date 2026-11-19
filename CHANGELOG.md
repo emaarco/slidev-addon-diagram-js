@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.7.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.6.0...v2.7.0) (2026-11-19)
+
+
+### Features
+
+* **miragon:** add theme="dark" to Team Topologies, Wardley Maps and Event Storming ([#186](https://github.com/emaarco/slidev-addon-diagram-js/issues/186)) ([efe4f10](https://github.com/emaarco/slidev-addon-diagram-js/commit/efe4f1090486064dc9d77f98522ce1df7a9f3e8e)), closes [#185](https://github.com/emaarco/slidev-addon-diagram-js/issues/185)
+
 ## [2.6.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.5.2...v2.6.0) (2026-11-18)
 
 
