@@ -35,7 +35,7 @@ function findButton(label: string): HTMLButtonElement | undefined {
 describe('WardleyMapModeler.vue', () => {
   let wrapper: VueWrapper
 
-  function mountModeler(props: { wardleyMapFilePath?: string } = { wardleyMapFilePath: 'tea-shop.owm' }) {
+  function mountModeler(props: { wardleyMapFilePath?: string, theme?: 'light' | 'dark' } = { wardleyMapFilePath: 'tea-shop.owm' }) {
     wrapper = mount(WardleyMapModeler, { attachTo: document.body, props })
   }
 
@@ -142,5 +142,28 @@ describe('WardleyMapModeler.vue', () => {
     await flushPromises()
 
     expect(mockViewerImport).toHaveBeenCalledTimes(rendersBeforeEditing)
+  })
+  it('opens a dark modeler canvas with theme="dark"', async () => {
+    mockFetchSuccess()
+    mountModeler({ wardleyMapFilePath: 'tea-shop.owm', theme: 'dark' })
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.getAttribute('data-cd-theme')).toBe('dark')
+  })
+
+  it('keeps the modeler canvas light by default', async () => {
+    mockFetchSuccess()
+    mountModeler()
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.hasAttribute('data-cd-theme')).toBe(false)
   })
 })

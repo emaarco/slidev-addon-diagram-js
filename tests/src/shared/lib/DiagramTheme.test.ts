@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { DarkCanvas } from '../../../../src/shared/lib/DarkCanvas'
 import { DiagramTheme } from '../../../../src/shared/lib/DiagramTheme'
 
 describe('DiagramTheme', () => {
@@ -13,5 +14,10 @@ describe('DiagramTheme', () => {
       defaultStrokeColor: '#e6e6e6',
       defaultLabelColor: '#e6e6e6',
     })
+  })
+
+  it('repaints the canvas of the Miragon renderers only in the dark theme', () => {
+    expect(new DiagramTheme().darkCanvas()).toBeNull()
+    expect(new DiagramTheme('dark').darkCanvas()).toBeInstanceOf(DarkCanvas)
   })
 })

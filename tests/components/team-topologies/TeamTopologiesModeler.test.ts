@@ -37,7 +37,7 @@ function findButton(label: string): HTMLButtonElement | undefined {
 describe('TeamTopologiesModeler.vue', () => {
   let wrapper: VueWrapper
 
-  function mountModeler(props: { teamTopologiesFilePath?: string } = { teamTopologiesFilePath: 'teams.tt' }) {
+  function mountModeler(props: { teamTopologiesFilePath?: string, theme?: 'light' | 'dark' } = { teamTopologiesFilePath: 'teams.tt' }) {
     wrapper = mount(TeamTopologiesModeler, { attachTo: document.body, props })
   }
 
@@ -145,5 +145,28 @@ describe('TeamTopologiesModeler.vue', () => {
     await flushPromises()
 
     expect(mockViewerImport).toHaveBeenCalledTimes(rendersBeforeEditing)
+  })
+  it('opens a dark modeler canvas with theme="dark"', async () => {
+    mockFetchSuccess()
+    mountModeler({ teamTopologiesFilePath: 'teams.tt', theme: 'dark' })
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.getAttribute('data-cd-theme')).toBe('dark')
+  })
+
+  it('keeps the modeler canvas light by default', async () => {
+    mockFetchSuccess()
+    mountModeler()
+    await flushPromises()
+
+    findButton('Edit')!.click()
+    await flushPromises()
+
+    const [{ container }] = MockModeler.mock.calls[0]
+    expect(container.hasAttribute('data-cd-theme')).toBe(false)
   })
 })
