@@ -191,7 +191,7 @@ implementing `StaticNotation` and `ModelerNotation`.
   repaints on every DOM change via a `MutationObserver`. Drop it once the renderers draw dark themselves.
 - **BPMN and DMN CSS is one stylesheet per modeler**, imported globally by every component of that
   modeler because the live previews need it: `src/bpmn/bpmn.css` (bpmn-js, properties panel,
-  token and data simulation, plus the `.bpmn-simulation-chrome` rules a `BpmnSimulationViewer`
+  token and data simulation, transaction boundaries, plus the `.bpmn-simulation-chrome` rules a `BpmnSimulationViewer`
   applies to its container) and `src/dmn/dmn.css` (dmn-js, properties panel, `decisionTable.css`).
   They pull the library CSS in via `@import`, which Vite resolves. A new library stylesheet goes
   there, not into a component. `DiagramModeler` shrinks the bpmn.io watermark of a live preview.

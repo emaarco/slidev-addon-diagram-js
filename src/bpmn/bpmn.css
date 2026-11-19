@@ -4,6 +4,15 @@
 @import '@bpmn-io/properties-panel/dist/assets/properties-panel.css';
 @import 'bpmn-js-token-simulation/assets/css/bpmn-js-token-simulation.css';
 @import '@emaarco/bpmn-js-data-simulation/assets/bpmn-js-data-simulation.css';
+@import 'camunda-transaction-boundaries/assets/transaction-boundaries.css';
+
+.transaction-boundary.transaction-boundary {
+  --transaction-boundary-background-color: #335DE5;
+}
+
+.diagram-theme-dark .transaction-boundary.transaction-boundary {
+  --transaction-boundary-background-color: #6B8AFF;
+}
 
 /* Simulation chrome of a BpmnSimulationViewer, which sets --bts-toggle-scale on its container. */
 .bpmn-simulation-chrome .bts-toggle-mode,
