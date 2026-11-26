@@ -75,6 +75,7 @@
 import { computed, onUnmounted, ref, shallowRef, useId, watch } from 'vue'
 import { useSlideContext } from '@slidev/client'
 import {
+  type NumberRange,
   type PathVariable,
   type Scenario,
   ScenarioParser,
@@ -99,6 +100,7 @@ const props = withDefaults(defineProps<{
   variables?: Variables
   scenariosFilePath?: string
   controls?: 'auto' | 'none' | string[]
+  ranges?: Record<string, Partial<NumberRange>>
   steps?: Variables[]
   width?: string
   height?: string
@@ -145,7 +147,7 @@ if (props.steps?.length) {
 
 const fields = computed<PathVariable[]>(() => {
   if (!viewer.value || props.controls === 'none') return []
-  const derived = viewer.value.variablesReadByConditions(values.value)
+  const derived = viewer.value.variablesReadByConditions(values.value, props.ranges)
   const controls = props.controls
   return controls === 'auto' ? derived : derived.filter(field => controls.includes(field.name))
 })

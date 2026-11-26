@@ -1,4 +1,4 @@
-import type { PathSimulation, PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
+import type { NumberRange, PathSimulation, PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
 import { BpmnLiveViewer } from './BpmnLiveViewer'
 
 interface ElementRegistry {
@@ -25,9 +25,9 @@ export class BpmnPathSimulationViewer extends BpmnLiveViewer {
     return this.pathSimulation().simulate(variables)
   }
 
-  // The variables the gateway conditions read, each typed by its current value.
-  variablesReadByConditions(values: Variables): PathVariable[] {
-    return this.pathSimulation().deriveVariables(values)
+  // The variables the conditions read, each typed by its current value; `ranges` fixes slider bounds.
+  variablesReadByConditions(values: Variables, ranges?: Readonly<Record<string, Partial<NumberRange>>>): PathVariable[] {
+    return this.pathSimulation().deriveVariables(values, { ranges })
   }
 
   // The scenario's variables after the diagram's output mappings, the other scenarios filling the gaps.

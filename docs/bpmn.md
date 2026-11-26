@@ -31,6 +31,12 @@ Renders BPMN diagrams as static SVG images. Perfect for PDF exports and presenta
 
 Renders interactive BPMN diagrams with token simulation capabilities. Perfect for process walkthroughs and training — step through the execution with an animated token flow.
 
+With an `engine` and a scenario file the token simulation runs with data, via [`@emaarco/bpmn-js-data-simulation`](https://github.com/emaarco/bpmn-js-data-simulation): ▶ on a start event opens a dialog prefilled from a scenario, and the engine's conditions decide instead of a click. Exclusive and inclusive gateways route by their conditions, an activity with conditional outgoing flows takes every true one (Camunda 7; Zeebe refuses such a model, so the token stops there), and a parallel or sequential multi-instance activity runs once per item of its collection, or `loopCardinality` times.
+
+```vue
+<BpmnTokenSimulation bpmnFilePath="./bike-order.bpmn" engine="zeebe" scenariosFilePath="./bike-order.scenarios.json" />
+```
+
 ```vue
 <BpmnTokenSimulation
   bpmnFilePath="./my-process.bpmn"
@@ -47,6 +53,8 @@ Renders interactive BPMN diagrams with token simulation capabilities. Perfect fo
 | `width` | `string` | `'100%'` | Width of the diagram container |
 | `height` | `string` | `'auto'` | Height of the diagram container (defaults to 500px when 'auto') |
 | `fullscreen` | `boolean` | `true` | Show the button that expands the simulation to fullscreen |
+| `engine` | `'zeebe' \| 'camunda7'` | — | With `scenariosFilePath`: runs the data simulation, reading FEEL (Zeebe) or the JUEL subset (Camunda 7) |
+| `scenariosFilePath` | `string` | — | With `engine`: the [scenario file](https://github.com/emaarco/bpmn-js-data-simulation/blob/main/docs/scenarios.md) the start dialog is prefilled from, including the items a multi-instance collection runs over |
 | `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws strokes and labels light on transparent fills, for dark slides. Colours set on elements in the model are kept. The fullscreen view stays light. |
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size. Lower keeps it smaller; higher lets it fill more. |
 | `propertiesPanelOpen` | `boolean` | `false` | Shows the properties panel expanded when the modeler opens. It starts collapsed by default; the toolbar button toggles it either way. |
@@ -81,7 +89,7 @@ For a fixed story, give `steps`: every slide click applies the next set of varia
 />
 ```
 
-Mappings and task results are not applied along the path, so pass every variable the conditions read (a scenario's task results are run through the output mappings once, when it is picked). A gateway that cannot decide, because a variable is missing or a condition cannot be evaluated, stops the path and turns red; a notice below the diagram says why.
+Like the data simulation, the path follows conditional flows that leave an activity: every true one is taken. Mappings and task results are not applied along the path, so pass every variable the conditions read (a scenario's task results are run through the output mappings once, when it is picked). A gateway that cannot decide, because a variable is missing or a condition cannot be evaluated, stops the path and turns red; a notice below the diagram says why.
 
 **Props:**
 
@@ -92,6 +100,7 @@ Mappings and task results are not applied along the path, so pass every variable
 | `variables` | `object` | `{}` | The variables to start from. A scenario overrides them. |
 | `scenariosFilePath` | `string` | — | A [scenario file](https://github.com/emaarco/bpmn-js-data-simulation/blob/main/docs/scenarios.md) to start from its first scenario, with a dropdown when it holds several |
 | `controls` | `'auto' \| 'none' \| string[]` | `'auto'` | Which variables get a control: every variable the conditions read, none, or the listed ones |
+| `ranges` | `Record<string, { min?, max?, step? }>` | — | Fixed slider bounds per variable, e.g. `{ screeningScore: { max: 100 } }`; without them a slider spans up to twice the largest number the variable is compared with |
 | `steps` | `object[]` | — | Variables applied one slide click after the other, each on top of the ones before |
 | `width` | `string` | `'100%'` | Width of the component |
 | `height` | `string` | `'400px'` | Height of the diagram; the controls sit below it |

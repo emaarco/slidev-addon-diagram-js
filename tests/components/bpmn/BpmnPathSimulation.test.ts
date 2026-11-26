@@ -27,7 +27,7 @@ vi.mock('@slidev/client', () => ({
   useSlideContext: () => ({ $clicks: slide.clicks, $clicksContext: { register: slide.register, unregister: slide.unregister } }),
 }))
 
-import type { PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
+import type { DeriveVariablesOptions, PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
 import BpmnPathSimulation from '../../../components/bpmn/BpmnPathSimulation.vue'
 import { bpmnJs } from '../../src/bpmn/fakeBpmnJs'
 import { BIKE_ORDER_NAMES, fakeElementRegistry } from '../../src/bpmn/fakeElementRegistry'
@@ -51,11 +51,11 @@ function simulatePath(variables: Variables): SimulatedPath {
 }
 
 // The variables the bike order's conditions read, typed by their value like the path simulation does.
-function deriveVariables(values: Variables): PathVariable[] {
+function deriveVariables(values: Variables, options?: DeriveVariablesOptions): PathVariable[] {
   return ['creditworthy', 'orderTotal', 'accessories', 'customer'].map((name): PathVariable => {
     const value = values[name]
     if (typeof value === 'boolean') return { name, type: 'boolean' }
-    if (typeof value === 'number') return { name, type: 'number', range: { min: 0, max: 20000, step: 200 } }
+    if (typeof value === 'number') return { name, type: 'number', range: { min: 0, max: 20000, step: 200, ...options?.ranges?.[name] } }
     if (value === undefined || typeof value === 'string') return { name, type: 'text' }
     return { name, type: 'json' }
   })
@@ -153,6 +153,13 @@ describe('BpmnPathSimulation.vue', () => {
 
     const slider = wrapper.find('input[name="orderTotal-slider"]').element as HTMLInputElement
     expect(slider.style.getPropertyValue('--bpmn-path-fill')).toBe('34%')
+  })
+
+  it('takes fixed slider bounds from ranges', async () => {
+    const wrapper = await mountRendered({ variables: { orderTotal: 1290 }, ranges: { orderTotal: { max: 8000, step: 100 } } })
+
+    expect(pathSimulation.deriveVariables).toHaveBeenLastCalledWith({ orderTotal: 1290 }, { ranges: { orderTotal: { max: 8000, step: 100 } } })
+    expect(wrapper.find('input[name="orderTotal-slider"]').attributes()).toMatchObject({ min: '0', max: '8000', step: '100' })
   })
 
   it('marks the path again when a switch is toggled', async () => {
