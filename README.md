@@ -4,11 +4,11 @@
 [![license](https://img.shields.io/badge/license-MIT-blue)](https://github.com/emaarco/slidev-addon-diagram-js/blob/main/LICENSE)
 [![demo](https://img.shields.io/badge/demo-live-blue)](https://emaarco.github.io/slidev-addon-diagram-js/)
 
+![A Slidev deck in the browser runs a BPMN token simulation, evaluates a DMN decision, shows a Wardley Map, a team topology and an Event Storming board, then renames a task in the fullscreen modeler and the slide updates](./docs/hero.gif)
+
 Stop pasting flat screenshots of your diagrams into slides. 🎯 This [Slidev](https://sli.dev/) addon embeds the **real** models — BPMN processes, DMN decisions, Team Topologies, Wardley Maps and Event Storming boards — rendered live from their source files.
 
 Present them as crisp static SVGs that survive PDF and PNG export, or open a **live modeler** and build the diagram in front of your audience, mid-talk. ✨
-
-![BPMN diagram rendered live in Slidev](./docs/bpmn-example.png)
 
 > **Coming from `slidev-addon-bpmn` or `slidev-addon-dmn`?** This package replaces both — your slides need no changes. See the [migration guide](./docs/migrating.md).
 
