@@ -426,7 +426,9 @@ function updateFromText(field: PathVariable, event: Event): void {
   transform: rotate(45deg);
 }
 
+/* As wide as "false", so toggling a switch never reflows the controls. */
 .bpmn-path-check-value {
+  min-width: 2.6em;
   color: var(--bpmn-path-muted, #6b6666);
   font-variant-numeric: tabular-nums;
 }
