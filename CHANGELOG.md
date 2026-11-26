@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.12.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.11.1...v2.12.0) (2026-11-26)
+
+
+### Features
+
+* run multi-instance activities and conditional flows with bpmn-js-data-simulation 0.6.0 and fix slider ranges ([#208](https://github.com/emaarco/slidev-addon-diagram-js/issues/208)) ([ff4a8d8](https://github.com/emaarco/slidev-addon-diagram-js/commit/ff4a8d84aefab04968a9730ee3678543a75d36a6))
+
 ## [2.11.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.11.0...v2.11.1) (2026-11-26)
 
 
