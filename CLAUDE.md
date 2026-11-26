@@ -119,7 +119,7 @@ Every component is a thin wrapper that hands a notation object to a shared UI co
 | Interface | Implemented by | Used by |
 |---|---|---|
 | `StaticNotation` — `rendering: 'static'`, `exportSvg(source, container)` | `BpmnDiagramNotation`, `DrdDiagramNotation`, `TeamTopologiesNotation`, `WardleyMapNotation`, `EventStormingNotation` | `StaticDiagram.vue` |
-| `LiveNotation` — `rendering: 'live'`, `createViewer(container)` → `LiveViewer { show, fit?, destroy }` | `BpmnModelerNotation`, `BpmnTokenSimulationNotation`, `DmnModelerNotation`, `DecisionTableNotation` | `LiveDiagram.vue`, `EmbeddedViewer` |
+| `LiveNotation` — `rendering: 'live'`, `createViewer(container)` → `LiveViewer { show, fit?, destroy }` | `BpmnModelerNotation`, `BpmnTokenSimulationNotation`, `BpmnPathSimulationNotation`, `DmnModelerNotation`, `DecisionTableNotation` | `LiveDiagram.vue`, `EmbeddedViewer` |
 | `ModelerNotation` — `blankSource`, `hasPropertiesPanel?`, `openModeler(source, { canvas, propertiesPanel? })` → `ModelerSession { exportChanges, resized?, destroy }` | `BpmnModelerNotation`, `DmnModelerNotation`, the three Miragon notations | `DiagramModeler.vue` |
 
 `DiagramModeler` picks the preview from the `rendering` discriminant: a live viewer for BPMN and
@@ -144,6 +144,15 @@ and `components/wardley-maps/`.
   `scenariosFilePath` it adds `@emaarco/bpmn-js-data-simulation`; the scenarios are loaded once
   when the first viewer is created. The Expand button opens a second `EmbeddedViewer` in a
   `FullscreenOverlay`.
+- **`BpmnPathSimulation.vue`** — `LiveDiagram` with `BpmnPathSimulationNotation`: a plain viewer with
+  the `PathSimulationModule` of `@emaarco/bpmn-js-data-simulation`, no token simulation. Its
+  `BpmnPathSimulationViewer` hands itself to the component through the notation's `onShown` once it
+  has imported; the component takes the viewer on LiveDiagram's `rendered` and calls `simulate()` on
+  every change of the variables (a theme switch builds a new viewer and marks the path again).
+  `PathVariableFields` derives a control per variable the conditions read (ported from the
+  data-simulation demo's `WhatIfFields`) and prefills from a scenario. `steps` registers slide clicks
+  through `useSlideContext().$clicksContext`, like the toolkit's stepped `Figure`. The decision list
+  is built from `div`s with list roles, because deck themes style every `ul`/`li` in a slide.
 - **`BpmnModeler.vue`** — `DiagramModeler` with `BpmnModelerNotation`. `engine` (`"zeebe"` |
   `"camunda7"`) mounts the properties panel; the engine wiring lives in `src/bpmn/engines/`
   (one `BpmnEngine` file per engine, registered in `engines/bpmnEngines.ts`, which also derives

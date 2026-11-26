@@ -3,7 +3,7 @@ import type { LiveViewer } from '../shared/lib/notation'
 import { fitDiagram } from '../shared/lib/utils/fitDiagram'
 
 export class BpmnLiveViewer implements LiveViewer {
-  private readonly viewer: InstanceType<typeof BpmnViewer>
+  protected readonly viewer: InstanceType<typeof BpmnViewer>
 
   constructor(
     protected readonly container: HTMLElement,

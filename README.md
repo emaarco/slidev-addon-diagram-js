@@ -17,7 +17,7 @@ A screenshot of a process is out of date the moment the model changes, and it ca
 ## ✨ What you get
 
 - **Sharp in every export.** The static viewers render to SVG, so diagrams stay crisp in Slidev's PDF and PNG export.
-- **Walk the room through it.** Run tokens through a BPMN process, or evaluate a DMN decision with inputs from the audience.
+- **Walk the room through it.** Run tokens through a BPMN process, show which path it takes for the data the audience picks, or evaluate a DMN decision with their inputs.
 - **Edit mid-talk.** Open a fullscreen modeler from the slide, change the model, and the slide shows the change until you reload the deck.
 - **Fits your deck.** Diagrams follow Slidev's dark mode, or you pin them with `theme="light"` or `theme="dark"`.
 
@@ -27,7 +27,7 @@ Each notation has a static viewer for exports and a modeler for live editing; it
 
 | Notation | File | Components | Docs |
 |---|---|---|---|
-| BPMN 2.0 | `.bpmn` | `<Bpmn>`, `<BpmnTokenSimulation>`, `<BpmnModeler>` | [BPMN](./docs/bpmn.md) |
+| BPMN 2.0 | `.bpmn` | `<Bpmn>`, `<BpmnTokenSimulation>`, `<BpmnPathSimulation>`, `<BpmnModeler>` | [BPMN](./docs/bpmn.md) |
 | DMN 1.3 | `.dmn` | `<DmnDrd>`, `<DmnTable>`, `<DmnSimulate>`, `<DmnModeler>` | [DMN](./docs/dmn.md) |
 | Team Topologies | `.tt` | `<TeamTopologies>`, `<TeamTopologiesModeler>` | [Team Topologies](./docs/team-topologies.md) |
 | Wardley Maps | `.owm` | `<WardleyMap>`, `<WardleyMapModeler>` | [Wardley Maps](./docs/wardley-maps.md) |

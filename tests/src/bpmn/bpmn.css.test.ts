@@ -15,4 +15,8 @@ describe('bpmn.css', () => {
       /\.diagram-theme-dark \.transaction-boundary\.transaction-boundary \{\s*--transaction-boundary-background-color: #6B8AFF;/,
     )
   })
+
+  it('draws the simulated path in the lighter Miragon blue on the dark theme', () => {
+    expect(bpmnCss).toMatch(/\.diagram-theme-dark \{\s*--bds-path-taken: #6b8aff;/)
+  })
 })

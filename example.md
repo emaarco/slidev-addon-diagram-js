@@ -32,7 +32,7 @@ Every notation is rendered from its source file. Pick the component that fits th
 
 | Notation | Static | Simulation | Modeler |
 |---|---|---|---|
-| BPMN | `Bpmn` | `BpmnTokenSimulation` | `BpmnModeler` |
+| BPMN | `Bpmn` | `BpmnTokenSimulation`, `BpmnPathSimulation` | `BpmnModeler` |
 | DMN | `DmnDrd`, `DmnTable` | `DmnSimulate` | `DmnModeler` |
 | Team Topologies | `TeamTopologies` | | `TeamTopologiesModeler` |
 | Wardley Maps | `WardleyMap` | | `WardleyMapModeler` |
@@ -170,6 +170,58 @@ accent: blue
 With `engine="camunda7"`, the scenario mocks the score and JUEL picks the flow.
 
 <BpmnTokenSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" scenariosFilePath="/loan-approval.scenarios.json" height="320px" />
+
+---
+layout: content
+title: Path simulation
+eyebrow: Bpmn-Path-Simulation
+accent: blue
+---
+
+Move the order total: the gateways decide at once, no token needed.
+
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" :measures="{ 'Lead time (days)': 'sim:duration' }" height="210px" />
+
+---
+layout: content
+title: Path simulation on clicks
+eyebrow: Bpmn-Path-Simulation
+accent: blue
+---
+
+With `steps`, each click changes the data: a large order, then extras.
+
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 1290, creditworthy: true, approved: true, insurance: false, accessories: [] }" :steps="[{ orderTotal: 6800 }, { insurance: true, accessories: ['lock'] }]" controls="none" showDecisions :measures="{ 'Lead time (days)': 'sim:duration' }" height="230px" />
+
+---
+layout: content
+title: Path simulation (Camunda 7)
+eyebrow: Bpmn-Path-Simulation
+accent: blue
+---
+
+With `engine="camunda7"`, JUEL conditions decide the path.
+
+<BpmnPathSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" :variables="{ score: 640 }" showDecisions height="230px" />
+
+---
+layout: content
+title: The BpmnPathSimulation component
+eyebrow: Bpmn-Path-Simulation
+accent: blue
+---
+
+Marks the path the gateways take for given data, without the token simulation.
+
+| Prop | Type | Description |
+|---|---|---|
+| `engine` | `zeebe` \| `camunda7` | Expression language of the conditions (default zeebe) |
+| `variables`, `scenariosFilePath` | object, string | The data to start from |
+| `controls` | `auto` \| `none` \| string[] | Controls for the variables the conditions read |
+| `steps` | object[] | Variables applied click by click |
+| `measures`, `showDecisions` | object, boolean | Sums along the path, gateway outcomes |
+
+`<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 6800 }" />`
 
 ---
 layout: content

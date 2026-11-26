@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="definitions_bikeOrder" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:definitions xmlns:sim="http://example.org/simulation" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="definitions_bikeOrder" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
   <bpmn:process id="bikeOrder" name="Bike order" isExecutable="true">
     <bpmn:startEvent id="startEvent_orderReceived" name="Order received">
       <bpmn:outgoing>flow_orderReceivedToCheckCreditRating</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="serviceTask_checkCreditRating" name="Check credit rating">
+    <bpmn:serviceTask id="serviceTask_checkCreditRating" name="Check credit rating" sim:duration="1">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="checkCreditRating" />
         <zeebe:ioMapping>
@@ -27,7 +27,7 @@
       <bpmn:incoming>flow_approvedToBeforeShipOrder</bpmn:incoming>
       <bpmn:outgoing>flow_beforeShipOrderToShipOrder</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="serviceTask_shipOrder" name="Ship order">
+    <bpmn:serviceTask id="serviceTask_shipOrder" name="Ship order" sim:duration="2">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="shipOrder" />
       </bpmn:extensionElements>
@@ -40,7 +40,7 @@
       <bpmn:outgoing>flow_extrasToPackAccessories</bpmn:outgoing>
       <bpmn:outgoing>flow_extrasToExtrasDone</bpmn:outgoing>
     </bpmn:inclusiveGateway>
-    <bpmn:serviceTask id="serviceTask_addInsurance" name="Add insurance">
+    <bpmn:serviceTask id="serviceTask_addInsurance" name="Add insurance" sim:duration="1">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="addInsurance" />
       </bpmn:extensionElements>
@@ -61,7 +61,7 @@
     <bpmn:sequenceFlow id="flow_extrasToAddInsurance" name="insurance" sourceRef="gateway_extras" targetRef="serviceTask_addInsurance">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=insurance</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:serviceTask id="serviceTask_packAccessories" name="Pack accessories">
+    <bpmn:serviceTask id="serviceTask_packAccessories" name="Pack accessories" sim:duration="1">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="packAccessories" />
       </bpmn:extensionElements>
@@ -78,7 +78,7 @@
     <bpmn:sequenceFlow id="flow_creditOkToBeforeShipOrder" name="yes" sourceRef="gateway_creditOk" targetRef="gateway_beforeShipOrder">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=creditworthy and orderTotal &lt;= 5000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="userTask_reviewOrder" name="Review order">
+    <bpmn:userTask id="userTask_reviewOrder" name="Review order" sim:duration="3">
       <bpmn:extensionElements>
         <zeebe:userTask />
         <zeebe:formDefinition formId="reviewOrder" />
