@@ -37,6 +37,7 @@ The `Build` workflow runs these on every pull request; run them locally before y
 | `npm run lint` | oxlint: correctness rules and the class-first rules of `tools/oxlint/` |
 | `npm run lint:deps` | dependency-cruiser: module boundaries from `.dependency-cruiser.cjs` |
 | `npm run knip` | unused files, exports and dependencies |
+| `npm run lint:bpmn` | bpmnlint: the demo models in `public/` against the strict Miragon rules |
 | `npm test` | the vitest suites under `tests/` |
 | `npm run build` | builds the example deck |
 

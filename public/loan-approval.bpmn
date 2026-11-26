@@ -1,95 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_LoanApproval" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.40.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
-  <bpmn:process id="loan-approval" name="Loan Approval" isExecutable="true">
-    <bpmn:startEvent id="StartEvent_LoanRequested" name="Loan&#10;requested">
-      <bpmn:outgoing>Flow_ToScore</bpmn:outgoing>
+  <bpmn:process id="loanApproval" name="Loan Approval" isExecutable="true" camunda:historyTimeToLive="180">
+    <bpmn:startEvent id="startEvent_loanRequested" name="Loan&#10;requested" camunda:asyncBefore="true">
+      <bpmn:outgoing>flow_loanRequestedToScoreApplicant</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:serviceTask id="Activity_ScoreApplicant" name="Score applicant" camunda:expression="${scoringService.score(applicantId)}" camunda:resultVariable="score">
-      <bpmn:incoming>Flow_ToScore</bpmn:incoming>
-      <bpmn:outgoing>Flow_ToDecision</bpmn:outgoing>
+    <bpmn:serviceTask id="serviceTask_scoreApplicant" name="Score applicant" camunda:expression="${scoringService.score(applicantId)}" camunda:resultVariable="score" camunda:asyncBefore="true">
+      <bpmn:incoming>flow_loanRequestedToScoreApplicant</bpmn:incoming>
+      <bpmn:outgoing>flow_scoreApplicantToScoreOk</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_Decision" name="Score&#10;ok?">
-      <bpmn:incoming>Flow_ToDecision</bpmn:incoming>
-      <bpmn:outgoing>Flow_Approved</bpmn:outgoing>
-      <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>
+    <bpmn:exclusiveGateway id="gateway_scoreOk" name="Score ok?">
+      <bpmn:incoming>flow_scoreApplicantToScoreOk</bpmn:incoming>
+      <bpmn:outgoing>flow_scoreOkToApproveLoan</bpmn:outgoing>
+      <bpmn:outgoing>flow_scoreOkToLoanRejected</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:userTask id="Activity_ApproveLoan" name="Approve loan" camunda:assignee="clerk">
-      <bpmn:incoming>Flow_Approved</bpmn:incoming>
-      <bpmn:outgoing>Flow_ToEndApproved</bpmn:outgoing>
+    <bpmn:userTask id="userTask_approveLoan" name="Approve loan" camunda:assignee="clerk" camunda:asyncAfter="true">
+      <bpmn:incoming>flow_scoreOkToApproveLoan</bpmn:incoming>
+      <bpmn:outgoing>flow_approveLoanToLoanApproved</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:endEvent id="EndEvent_Approved" name="Loan&#10;approved">
-      <bpmn:incoming>Flow_ToEndApproved</bpmn:incoming>
+    <bpmn:endEvent id="endEvent_loanApproved" name="Loan&#10;approved">
+      <bpmn:incoming>flow_approveLoanToLoanApproved</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:endEvent id="EndEvent_Rejected" name="Loan&#10;rejected">
-      <bpmn:incoming>Flow_Rejected</bpmn:incoming>
+    <bpmn:endEvent id="endEvent_loanRejected" name="Loan&#10;rejected">
+      <bpmn:incoming>flow_scoreOkToLoanRejected</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_ToScore" sourceRef="StartEvent_LoanRequested" targetRef="Activity_ScoreApplicant" />
-    <bpmn:sequenceFlow id="Flow_ToDecision" sourceRef="Activity_ScoreApplicant" targetRef="Gateway_Decision" />
-    <bpmn:sequenceFlow id="Flow_Approved" name="yes" sourceRef="Gateway_Decision" targetRef="Activity_ApproveLoan">
+    <bpmn:sequenceFlow id="flow_loanRequestedToScoreApplicant" sourceRef="startEvent_loanRequested" targetRef="serviceTask_scoreApplicant" />
+    <bpmn:sequenceFlow id="flow_scoreApplicantToScoreOk" sourceRef="serviceTask_scoreApplicant" targetRef="gateway_scoreOk" />
+    <bpmn:sequenceFlow id="flow_scoreOkToApproveLoan" name="yes" sourceRef="gateway_scoreOk" targetRef="userTask_approveLoan">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${score &gt;= 700}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_Rejected" name="no" sourceRef="Gateway_Decision" targetRef="EndEvent_Rejected">
+    <bpmn:sequenceFlow id="flow_scoreOkToLoanRejected" name="no" sourceRef="gateway_scoreOk" targetRef="endEvent_loanRejected">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${score &lt; 700}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_ToEndApproved" sourceRef="Activity_ApproveLoan" targetRef="EndEvent_Approved" />
+    <bpmn:sequenceFlow id="flow_approveLoanToLoanApproved" sourceRef="userTask_approveLoan" targetRef="endEvent_loanApproved" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="loan-approval">
-      <bpmndi:BPMNShape id="StartEvent_LoanRequested_di" bpmnElement="StartEvent_LoanRequested">
-        <dc:Bounds x="172" y="162" width="36" height="36" />
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="loanApproval">
+      <bpmndi:BPMNShape id="startEvent_loanRequested_di" bpmnElement="startEvent_loanRequested">
+        <dc:Bounds x="80" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="166" y="205" width="49" height="27" />
+          <dc:Bounds x="61" y="144" width="75" height="28" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_ScoreApplicant_di" bpmnElement="Activity_ScoreApplicant">
-        <dc:Bounds x="260" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="serviceTask_scoreApplicant_di" bpmnElement="serviceTask_scoreApplicant">
+        <dc:Bounds x="176" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_Decision_di" bpmnElement="Gateway_Decision" isMarkerVisible="true">
-        <dc:Bounds x="415" y="155" width="50" height="50" />
+      <bpmndi:BPMNShape id="gateway_scoreOk_di" bpmnElement="gateway_scoreOk" isMarkerVisible="true">
+        <dc:Bounds x="336" y="95" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="418" y="118" width="44" height="27" />
+          <dc:Bounds x="324" y="75" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_ApproveLoan_di" bpmnElement="Activity_ApproveLoan">
-        <dc:Bounds x="520" y="140" width="100" height="80" />
+      <bpmndi:BPMNShape id="userTask_approveLoan_di" bpmnElement="userTask_approveLoan">
+        <dc:Bounds x="446" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_Approved_di" bpmnElement="EndEvent_Approved">
-        <dc:Bounds x="682" y="162" width="36" height="36" />
+      <bpmndi:BPMNShape id="endEvent_loanApproved_di" bpmnElement="endEvent_loanApproved">
+        <dc:Bounds x="606" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="676" y="205" width="49" height="27" />
+          <dc:Bounds x="590" y="144" width="68" height="28" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_Rejected_di" bpmnElement="EndEvent_Rejected">
-        <dc:Bounds x="422" y="272" width="36" height="36" />
+      <bpmndi:BPMNShape id="endEvent_loanRejected_di" bpmnElement="endEvent_loanRejected">
+        <dc:Bounds x="478" y="220" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="416" y="315" width="49" height="27" />
+          <dc:Bounds x="462" y="262" width="68" height="28" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_ToScore_di" bpmnElement="Flow_ToScore">
-        <di:waypoint x="208" y="180" />
-        <di:waypoint x="260" y="180" />
+      <bpmndi:BPMNEdge id="flow_loanRequestedToScoreApplicant_di" bpmnElement="flow_loanRequestedToScoreApplicant">
+        <di:waypoint x="116" y="120" />
+        <di:waypoint x="176" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ToDecision_di" bpmnElement="Flow_ToDecision">
-        <di:waypoint x="360" y="180" />
-        <di:waypoint x="415" y="180" />
+      <bpmndi:BPMNEdge id="flow_scoreApplicantToScoreOk_di" bpmnElement="flow_scoreApplicantToScoreOk">
+        <di:waypoint x="276" y="120" />
+        <di:waypoint x="336" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_Approved_di" bpmnElement="Flow_Approved">
-        <di:waypoint x="465" y="180" />
-        <di:waypoint x="520" y="180" />
+      <bpmndi:BPMNEdge id="flow_scoreOkToApproveLoan_di" bpmnElement="flow_scoreOkToApproveLoan">
+        <di:waypoint x="386" y="120" />
+        <di:waypoint x="446" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="484" y="162" width="17" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_Rejected_di" bpmnElement="Flow_Rejected">
-        <di:waypoint x="440" y="205" />
-        <di:waypoint x="440" y="272" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="446" y="230" width="13" height="14" />
+          <dc:Bounds x="394" y="102" width="33" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_ToEndApproved_di" bpmnElement="Flow_ToEndApproved">
-        <di:waypoint x="620" y="180" />
-        <di:waypoint x="682" y="180" />
+      <bpmndi:BPMNEdge id="flow_scoreOkToLoanRejected_di" bpmnElement="flow_scoreOkToLoanRejected">
+        <di:waypoint x="361" y="145" />
+        <di:waypoint x="361" y="238" />
+        <di:waypoint x="478" y="238" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="369" y="220" width="26" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_approveLoanToLoanApproved_di" bpmnElement="flow_approveLoanToLoanApproved">
+        <di:waypoint x="546" y="120" />
+        <di:waypoint x="606" y="120" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

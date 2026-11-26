@@ -5,7 +5,7 @@
       "name": "Good score",
       "description": "The scoring service returns 720, so the loan goes to approval.",
       "taskResults": {
-        "Activity_ScoreApplicant": { "score": 720 }
+        "serviceTask_scoreApplicant": { "score": 720 }
       }
     },
     {
@@ -13,7 +13,7 @@
       "name": "Bad score",
       "description": "The scoring service returns 540, so the loan is rejected.",
       "taskResults": {
-        "Activity_ScoreApplicant": { "score": 540 }
+        "serviceTask_scoreApplicant": { "score": 540 }
       }
     }
   ]

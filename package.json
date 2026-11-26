@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint:deps": "depcruise components src --config .dependency-cruiser.cjs --output-type err",
+    "lint:bpmn": "bpmnlint public/newsletter.bpmn public/bike-order.bpmn && bpmnlint -c .bpmnlintrc.camunda7.json public/loan-approval.bpmn",
     "knip": "knip",
     "knip:fix": "knip --fix",
     "lint": "oxlint components src setup"
@@ -40,10 +41,12 @@
     "zeebe-bpmn-moddle": "2.0.0"
   },
   "devDependencies": {
+    "@miragon/bpmnlint-plugin-rules": "0.24.0",
     "@miragon/slidev-toolkit": "1.36.0",
     "@slidev/cli": "53.1.0",
     "@vitejs/plugin-vue": "6.0.11",
     "@vue/test-utils": "2.6.0",
+    "bpmnlint": "12.2.0",
     "dependency-cruiser": "18.8.0",
     "jsdom": "31.0.0",
     "knip": "6.46.1",
