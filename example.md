@@ -28,15 +28,17 @@ eyebrow: Overview
 accent: blue
 ---
 
-Every notation is rendered from its source file. Pick the component that fits the moment.
-
 | Notation | Static | Simulation | Modeler |
 |---|---|---|---|
-| BPMN | `Bpmn` | `BpmnTokenSimulation`, `BpmnPathSimulation` | `BpmnModeler` |
+| BPMN | `Bpmn` | `BpmnTokenSimulation`<br>`BpmnPathSimulation` | `BpmnModeler` |
 | DMN | `DmnDrd`, `DmnTable` | `DmnSimulate` | `DmnModeler` |
 | Team Topologies | `TeamTopologies` | | `TeamTopologiesModeler` |
 | Wardley Maps | `WardleyMap` | | `WardleyMapModeler` |
 | Event Storming | `EventStorming` | | `EventStormingModeler` |
+
+<!--
+Every notation is rendered from its source file. Pick the component that fits the moment.
+-->
 
 ---
 layout: content
@@ -158,7 +160,7 @@ accent: blue
 
 With `engine="zeebe"`, FEEL conditions and io mappings decide the path.
 
-<BpmnTokenSimulation bpmnFilePath="/bike-order.bpmn" engine="zeebe" scenariosFilePath="/bike-order.scenarios.json" height="320px" />
+<BpmnTokenSimulation bpmnFilePath="/bike-order.bpmn" engine="zeebe" scenariosFilePath="/bike-order.scenarios.json" height="300px" />
 
 ---
 layout: content
@@ -169,7 +171,7 @@ accent: blue
 
 With `engine="camunda7"`, the scenario mocks the score and JUEL picks the flow.
 
-<BpmnTokenSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" scenariosFilePath="/loan-approval.scenarios.json" height="320px" />
+<BpmnTokenSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" scenariosFilePath="/loan-approval.scenarios.json" height="300px" />
 
 ---
 layout: content
@@ -224,16 +226,17 @@ eyebrow: Bpmn-Path-Simulation
 accent: blue
 ---
 
-Marks the path the gateways take for given data, without the token simulation.
+Marks the path the gateways take for the given data, without a token.
 
 | Prop | Type | Description |
 |---|---|---|
-| `engine` | `zeebe` \| `camunda7` | Expression language of the conditions (default zeebe) |
-| `variables`, `scenariosFilePath` | object, string | The data to start from |
-| `controls` | `auto` \| `none` \| string[] | Controls for the variables the conditions read |
-| `steps` | object[] | Variables applied click by click |
+| `engine` | `zeebe`, `camunda7` | FEEL or JUEL conditions |
+| `variables` | object | The data to start from |
+| `scenariosFilePath` | string | Or a scenario file |
+| `controls` | `auto`, `none`, list | Controls below the diagram |
+| `steps` | object[] | Variables per slide click |
 
-`<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 6800 }" />`
+`<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" height="300px" />`
 
 ---
 layout: content
@@ -289,7 +292,7 @@ accent: blue
 With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette, menus and properties panel.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <BpmnModeler bpmnFilePath="/newsletter.bpmn" engine="zeebe" tokenSimulation height="300px" theme="dark" />
+  <BpmnModeler bpmnFilePath="/newsletter.bpmn" engine="zeebe" tokenSimulation height="270px" theme="dark" />
 </div>
 
 ---
@@ -374,10 +377,9 @@ Renders a decision table directly as HTML, so the rules stay crisp and readable.
 | `decisionId` | string | Which decision to show (default first found) |
 | `showAnnotations` | boolean | Show the annotations column (default false) |
 | `showDrdButton` | boolean | Add a View DRD button (default false) |
-| `fontSize` | string | Table font size (default 12px) |
-| `height` | string | Canvas height (default auto) |
+| `fontSize`, `height` | string | Table font size (default 12px), height (default auto) |
 
-`<DmnTable dmnFilePath="/example.dmn" height="340px" />`
+`<DmnTable dmnFilePath="/example.dmn" />`
 
 ---
 layout: dmn
@@ -399,7 +401,7 @@ eyebrow: Dmn-Simulate
 accent: green
 ---
 
-Simulate a decision. Feed inputs in, evaluate them with FEEL, and highlight the firing rule.
+Feed inputs in, evaluate them with FEEL, highlight the firing rule.
 
 | Prop | Type | Description |
 |---|---|---|
@@ -407,8 +409,7 @@ Simulate a decision. Feed inputs in, evaluate them with FEEL, and highlight the 
 | `decisionId` | string | Which decision to evaluate (default first found) |
 | `showDrdButton` | boolean | Add a View DRD button (default false) |
 | `showAnnotations` | boolean | Show the annotations column (default false) |
-| `fullscreenFontSize` | string | Table font size in fullscreen (default 12px) |
-| `fontSize` | string | Table font size (default 12px) |
+| `fontSize` | string | Table font size (also `fullscreenFontSize`) |
 
 `<DmnSimulate dmnFilePath="/example.dmn" height="300px" />`
 
@@ -467,7 +468,7 @@ A full modeler canvas for workshops. Omit the file for a blank canvas, or set an
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default 500px) |
 
-`<DmnModeler dmnFilePath="/example.dmn" engine="camunda" height="320px" />`
+`<DmnModeler dmnFilePath="/example.dmn" engine="camunda" />`
 
 ---
 layout: content
@@ -479,7 +480,7 @@ accent: blue
 With `theme="dark"`, the DRD preview turns light on dark, and the fullscreen modeler follows: requirement diagram, decision tables and properties panel.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <DmnModeler dmnFilePath="/example.dmn" engine="camunda" height="300px" theme="dark" />
+  <DmnModeler dmnFilePath="/example.dmn" engine="camunda" height="270px" theme="dark" />
 </div>
 
 ---
@@ -521,7 +522,7 @@ Renders a Team Topologies document as a static, inline SVG. Ideal for print and 
 | `height` | string | Canvas height (default auto) |
 | `theme` | light / dark | Light lines and text for dark slides |
 
-`<TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="300px" />`
+`<TeamTopologies teamTopologiesFilePath="/online-shop.tt" />`
 
 ---
 layout: content
@@ -533,7 +534,7 @@ accent: blue
 With `theme="dark"`, text, lines and grid turn light on a dark canvas. Notation colours stay as they are.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="300px" theme="dark" />
+  <TeamTopologies teamTopologiesFilePath="/online-shop.tt" height="270px" theme="dark" />
 </div>
 
 ---
@@ -556,7 +557,7 @@ eyebrow: Team-Topologies-Modeler
 accent: blue
 ---
 
-A preview in the slide and a full modeler behind the Edit button. Edits show up in the preview once you close it.
+A preview with a full modeler behind Edit; edits show once you close it.
 
 | Prop | Type | Description |
 |---|---|---|
@@ -565,7 +566,7 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `height` | string | Canvas height (default 500px) |
 | `theme` | light / dark | Dark preview and fullscreen modeler |
 
-`<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="300px" />`
+`<TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" />`
 
 ---
 layout: content
@@ -577,7 +578,7 @@ accent: blue
 With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette and context pad.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="300px" theme="dark" />
+  <TeamTopologiesModeler teamTopologiesFilePath="/online-shop.tt" height="270px" theme="dark" />
 </div>
 
 ---
@@ -631,7 +632,7 @@ accent: blue
 With `theme="dark"`, text, lines and grid turn light on a dark canvas. Notation colours stay as they are.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <WardleyMap wardleyMapFilePath="/tea-shop.owm" height="300px" theme="dark" />
+  <WardleyMap wardleyMapFilePath="/tea-shop.owm" height="270px" theme="dark" />
 </div>
 
 ---
@@ -654,7 +655,7 @@ eyebrow: Wardley-Map-Modeler
 accent: blue
 ---
 
-A preview in the slide and a full modeler behind the Edit button. Edits show up in the preview once you close it.
+A preview with a full modeler behind Edit; edits show once you close it.
 
 | Prop | Type | Description |
 |---|---|---|
@@ -675,7 +676,7 @@ accent: blue
 With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette and context pad.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="300px" theme="dark" />
+  <WardleyMapModeler wardleyMapFilePath="/tea-shop.owm" height="270px" theme="dark" />
 </div>
 
 ---
@@ -718,7 +719,7 @@ Renders an Event Storming board as a static, inline SVG. Ideal for print and PDF
 | `theme` | light / dark | Light lines and text for dark slides |
 | `typeCaptions` | boolean | Sticky type under each text (default true) |
 
-`<EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" />`
+`<EventStorming eventStormingFilePath="/order-checkout.storm" />`
 
 ---
 layout: mermaid
@@ -743,7 +744,7 @@ accent: blue
 With `theme="dark"`, text, lines and grid turn light on a dark canvas. Notation colours stay as they are.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" theme="dark" />
+  <EventStorming eventStormingFilePath="/order-checkout.storm" height="270px" theme="dark" />
 </div>
 
 ---
@@ -766,7 +767,7 @@ eyebrow: Event-Storming-Modeler
 accent: blue
 ---
 
-A preview in the slide and a full modeler behind the Edit button. Edits show up in the preview once you close it.
+A preview with a full modeler behind Edit; edits show once you close it.
 
 | Prop | Type | Description |
 |---|---|---|
@@ -775,7 +776,7 @@ A preview in the slide and a full modeler behind the Edit button. Edits show up 
 | `height` | string | Canvas height (default 500px) |
 | `theme` | light / dark | Dark preview and fullscreen modeler |
 
-`<EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="300px" />`
+`<EventStormingModeler eventStormingFilePath="/order-checkout.storm" />`
 
 ---
 layout: content
@@ -787,7 +788,7 @@ accent: blue
 With `theme="dark"`, the fullscreen modeler behind Edit turns dark too: canvas, palette and context pad.
 
 <div style="background: #1e1e1e; border-radius: 12px; padding: 8px">
-  <EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="300px" theme="dark" />
+  <EventStormingModeler eventStormingFilePath="/order-checkout.storm" height="270px" theme="dark" />
 </div>
 
 ---
