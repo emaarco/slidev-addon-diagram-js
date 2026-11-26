@@ -652,8 +652,22 @@ Renders an Event Storming board as a static, inline SVG. Ideal for print and PDF
 | `width` | string | Canvas width (default 100%) |
 | `height` | string | Canvas height (default auto) |
 | `theme` | light / dark | Light lines and text for dark slides |
+| `typeCaptions` | boolean | Sticky type under each text (default true) |
 
 `<EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" />`
+
+---
+layout: mermaid
+title: Without type captions
+eyebrow: Event-Storming
+accent: blue
+---
+
+<EventStorming eventStormingFilePath="/order-checkout.storm" height="300px" :typeCaptions="false" />
+
+::caption::
+
+With `:typeCaptions="false"` the stickies show only their text. The colour already tells the type.
 
 ---
 layout: content

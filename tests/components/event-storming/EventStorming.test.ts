@@ -1,19 +1,23 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 
-const { mockImportDSL, mockSaveSVG, mockDestroy, MockViewer } = vi.hoisted(() => ({
+const { mockImportDSL, mockSaveSVG, mockDestroy, mockSetTypeCaptionsVisible, mockContentBounds, MockViewer } = vi.hoisted(() => ({
   mockImportDSL: vi.fn(),
   mockSaveSVG: vi.fn(),
   mockDestroy: vi.fn(),
+  mockSetTypeCaptionsVisible: vi.fn(),
+  mockContentBounds: vi.fn(),
   MockViewer: vi.fn(),
 }))
 
-vi.mock('@miragon/event-storming-renderer', () => ({ Viewer: MockViewer }))
+vi.mock('@miragon/event-storming-renderer', () => ({ Viewer: MockViewer, saveSVG: mockSaveSVG }))
 
 import EventStorming from '../../../components/event-storming/EventStorming.vue'
 
 const SAMPLE_SVG = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="50" height="50"/></svg>'
 const BOARD_DSL = 'title Order Checkout\nevent Order Placed [620, 300]'
+const BOARD_BOUNDS = { x: 604, y: 284, width: 192, height: 132 }
+const CANVAS = { name: 'canvas' }
 
 function mockFetchSuccess(source = BOARD_DSL) {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
@@ -25,11 +29,17 @@ function mockFetchSuccess(source = BOARD_DSL) {
 describe('EventStorming.vue', () => {
   beforeEach(() => {
     mockImportDSL.mockResolvedValue({ warnings: [] })
-    mockSaveSVG.mockResolvedValue({ svg: SAMPLE_SVG })
+    mockSaveSVG.mockReturnValue({ svg: SAMPLE_SVG })
+    mockContentBounds.mockReturnValue(BOARD_BOUNDS)
+    const services: Record<string, unknown> = {
+      canvas: CANVAS,
+      boardBounds: { contentBounds: mockContentBounds },
+      eventStormingViewOptions: { setTypeCaptionsVisible: mockSetTypeCaptionsVisible },
+    }
     MockViewer.mockImplementation(function () {
       return {
         importDSL: mockImportDSL,
-        saveSVG: mockSaveSVG,
+        get: (name: string) => services[name],
         destroy: mockDestroy,
       }
     })
@@ -64,6 +74,35 @@ describe('EventStorming.vue', () => {
 
     const [{ additionalModules }] = MockViewer.mock.calls[0]
     expect(additionalModules).toEqual([expect.objectContaining({ commandStack: expect.anything() })])
+  })
+
+  it('frames the exported SVG closely around the board', async () => {
+    mockFetchSuccess()
+
+    mount(EventStorming, { props: { eventStormingFilePath: 'checkout.storm' } })
+    await flushPromises()
+
+    expect(mockContentBounds).toHaveBeenCalledWith(16)
+    expect(mockSaveSVG).toHaveBeenCalledWith(CANVAS, BOARD_BOUNDS)
+  })
+
+  it('shows the type captions on the stickies by default', async () => {
+    mockFetchSuccess()
+
+    mount(EventStorming, { props: { eventStormingFilePath: 'checkout.storm' } })
+    await flushPromises()
+
+    expect(mockSetTypeCaptionsVisible).toHaveBeenCalledWith(true)
+  })
+
+  it('hides the type captions before the board is drawn with typeCaptions=false', async () => {
+    mockFetchSuccess()
+
+    mount(EventStorming, { props: { eventStormingFilePath: 'checkout.storm', typeCaptions: false } })
+    await flushPromises()
+
+    expect(mockSetTypeCaptionsVisible).toHaveBeenCalledWith(false)
+    expect(mockSetTypeCaptionsVisible.mock.invocationCallOrder[0]).toBeLessThan(mockImportDSL.mock.invocationCallOrder[0])
   })
 
   it('applies default and custom sizes to the wrapper', async () => {
@@ -115,7 +154,7 @@ describe('EventStorming.vue', () => {
     mockImportDSL.mockImplementation(() => {
       const [{ container }] = MockViewer.mock.calls[0]
       container.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg"><text style="fill: #1D1D1D">Label</text></svg>'
-      mockSaveSVG.mockImplementation(async () => ({ svg: container.innerHTML }))
+      mockSaveSVG.mockImplementation(() => ({ svg: container.innerHTML }))
     })
 
     const wrapper = mount(EventStorming, { props: { eventStormingFilePath: 'checkout.storm', theme: 'dark' } })

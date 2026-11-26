@@ -12,7 +12,7 @@ const { mockViewerImport, mockSaveSVG, mockViewerDestroy, MockViewer, mockModele
   MockModeler: vi.fn(),
 }))
 
-vi.mock('@miragon/event-storming-renderer', () => ({ Viewer: MockViewer, Modeler: MockModeler }))
+vi.mock('@miragon/event-storming-renderer', () => ({ Viewer: MockViewer, Modeler: MockModeler, saveSVG: mockSaveSVG }))
 vi.mock('@slidev/client', () => ({ onSlideEnter: vi.fn() }))
 
 import EventStormingModeler from '../../../components/event-storming/EventStormingModeler.vue'
@@ -40,9 +40,14 @@ describe('EventStormingModeler.vue', () => {
   }
 
   beforeEach(() => {
-    mockSaveSVG.mockResolvedValue({ svg: SAMPLE_SVG })
+    mockSaveSVG.mockReturnValue({ svg: SAMPLE_SVG })
+    const viewerServices: Record<string, unknown> = {
+      canvas: {},
+      boardBounds: { contentBounds: () => ({ x: 0, y: 0, width: 100, height: 100 }) },
+      eventStormingViewOptions: { setTypeCaptionsVisible: () => {} },
+    }
     MockViewer.mockImplementation(function () {
-      return { importDSL: mockViewerImport, saveSVG: mockSaveSVG, destroy: mockViewerDestroy }
+      return { importDSL: mockViewerImport, get: (name: string) => viewerServices[name], destroy: mockViewerDestroy }
     })
     mockModelerExport.mockReturnValue(FILE_SOURCE)
     MockModeler.mockImplementation(function () {

@@ -19,11 +19,13 @@ const props = withDefaults(defineProps<{
   width?: string
   height?: string
   theme?: DiagramThemeName
+  typeCaptions?: boolean
 }>(), {
   width: '100%',
   height: 'auto',
+  typeCaptions: true,
 })
 
 const theme = new DocumentTheme(() => props.theme).name
-const notation = computed(() => new EventStormingNotation(new DiagramTheme(theme.value)))
+const notation = computed(() => new EventStormingNotation(new DiagramTheme(theme.value), props.typeCaptions))
 </script>
