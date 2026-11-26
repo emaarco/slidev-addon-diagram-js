@@ -78,17 +78,10 @@ For a fixed story, give `steps`: every slide click applies the next set of varia
   :variables="{ orderTotal: 1290, creditworthy: true, approved: true, insurance: false, accessories: [] }"
   :steps="[{ orderTotal: 6800 }, { insurance: true, accessories: ['lock'] }]"
   controls="none"
-  showDecisions
 />
 ```
 
-`measures` sums a numeric attribute of the elements on the path, for example a lead time. Declare its namespace in the model (`xmlns:sim="http://example.org/simulation"`) and set it on the tasks (`<bpmn:task sim:duration="2">`); elements without it count as 0:
-
-```vue
-<BpmnPathSimulation bpmnFilePath="./bike-order.bpmn" :measures="{ 'Lead time (days)': 'sim:duration' }" />
-```
-
-Mappings and task results are not applied along the path, so pass every variable the conditions read (a scenario's task results are run through the output mappings once, when it is picked). Gateways whose condition cannot be evaluated stop the path; `showDecisions` tells why.
+Mappings and task results are not applied along the path, so pass every variable the conditions read (a scenario's task results are run through the output mappings once, when it is picked). A gateway that cannot decide, because a variable is missing or a condition cannot be evaluated, stops the path and turns red; a notice below the diagram says why.
 
 **Props:**
 
@@ -100,14 +93,12 @@ Mappings and task results are not applied along the path, so pass every variable
 | `scenariosFilePath` | `string` | — | A [scenario file](https://github.com/emaarco/bpmn-js-data-simulation/blob/main/docs/scenarios.md) to start from its first scenario, with a dropdown when it holds several |
 | `controls` | `'auto' \| 'none' \| string[]` | `'auto'` | Which variables get a control: every variable the conditions read, none, or the listed ones |
 | `steps` | `object[]` | — | Variables applied one slide click after the other, each on top of the ones before |
-| `measures` | `Record<string, string>` | — | Label → numeric attribute summed along the path, e.g. `{ 'Lead time (days)': 'sim:duration' }` |
-| `showDecisions` | `boolean` | `false` | Lists each gateway on the path with the flows it took, or why it could not decide |
 | `width` | `string` | `'100%'` | Width of the component |
 | `height` | `string` | `'400px'` | Height of the diagram; the controls sit below it |
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size |
 | `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck. `'dark'` draws the diagram for dark slides and the path in a lighter blue. |
 
-The controls and results sit in a strip below the diagram, in the deck's font. Put the component in a frame such as the Miragon toolkit's `<DiagramFrame>` and both read as one card. The path colour is `--bds-path-taken`, the fade of everything else `--bds-path-skipped-opacity`. The strip takes its colours from `--bpmn-path-text`, `--bpmn-path-muted`, `--bpmn-path-line`, `--bpmn-path-outline`, `--bpmn-path-field`, `--bpmn-path-chip`, `--bpmn-path-accent`, `--bpmn-path-focus`, `--bpmn-path-danger` and `--bpmn-path-danger-surface` (light defaults from the Miragon design system); set them on any ancestor to match a deck theme.
+The controls sit in a strip below the diagram, in the deck's font. Put the component in a frame such as the Miragon toolkit's `<DiagramFrame>` and both read as one card. The path colour is `--bds-path-taken`, the fade of everything else `--bds-path-skipped-opacity`. The strip takes its colours from `--bpmn-path-text`, `--bpmn-path-muted`, `--bpmn-path-line`, `--bpmn-path-outline`, `--bpmn-path-field`, `--bpmn-path-accent`, `--bpmn-path-focus`, `--bpmn-path-danger` and `--bpmn-path-danger-surface` (light defaults from the Miragon design system); set them on any ancestor to match a deck theme.
 
 ## `<BpmnModeler>` — Live modeler
 

@@ -181,7 +181,7 @@ accent: blue
 Move the order total: the gateways decide at once, no token needed.
 
 <DiagramFrame padding="compact">
-<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" :measures="{ 'Lead time (days)': 'sim:duration' }" height="200px" />
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" height="220px" />
 </DiagramFrame>
 
 ---
@@ -194,7 +194,7 @@ accent: blue
 With `steps`, each click changes the data: a large order, then extras.
 
 <DiagramFrame padding="compact">
-<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 1290, creditworthy: true, approved: true, insurance: false, accessories: [] }" :steps="[{ orderTotal: 6800 }, { insurance: true, accessories: ['lock'] }]" controls="none" showDecisions :measures="{ 'Lead time (days)': 'sim:duration' }" height="220px" />
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 1290, creditworthy: true, approved: true, insurance: false, accessories: [] }" :steps="[{ orderTotal: 6800 }, { insurance: true, accessories: ['lock'] }]" controls="none" height="280px" />
 </DiagramFrame>
 
 ---
@@ -207,7 +207,7 @@ accent: blue
 <SplitView ratio="1.3/1">
 <template #visual>
 <DiagramFrame padding="compact">
-<BpmnPathSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" :variables="{ score: 640 }" showDecisions height="200px" />
+<BpmnPathSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" :variables="{ score: 640 }" height="200px" />
 </DiagramFrame>
 </template>
 
@@ -232,7 +232,6 @@ Marks the path the gateways take for given data, without the token simulation.
 | `variables`, `scenariosFilePath` | object, string | The data to start from |
 | `controls` | `auto` \| `none` \| string[] | Controls for the variables the conditions read |
 | `steps` | object[] | Variables applied click by click |
-| `measures`, `showDecisions` | object, boolean | Sums along the path, gateway outcomes |
 
 `<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 6800 }" />`
 

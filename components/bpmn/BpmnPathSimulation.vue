@@ -10,6 +10,11 @@
 
     <p v-if="scenarioError" class="text-red-500">{{ scenarioError }}</p>
 
+    <!-- Only the one thing the marked path cannot say: why a gateway did not decide. -->
+    <p v-for="gateway in stuckGateways" :key="gateway.id" class="bpmn-path-stuck" role="status">
+      <span class="bpmn-path-stuck-gateway">{{ gateway.name }}</span> {{ gateway.reason }}
+    </p>
+
     <div v-if="hasPanel" class="bpmn-path-panel">
       <div v-if="scenarios.length > 1 || fields.length" class="bpmn-path-inputs">
         <label v-if="scenarios.length > 1" class="bpmn-path-field">
@@ -62,22 +67,6 @@
         </template>
       </div>
 
-      <div v-if="measureRows.length || decisionRows.length" class="bpmn-path-results">
-        <div v-if="measureRows.length" class="bpmn-path-measures">
-          <div v-for="row in measureRows" :key="row.label" class="bpmn-path-stat">
-            <span class="bpmn-path-label">{{ row.label }}</span>
-            <span class="bpmn-path-stat-value">{{ row.value }}</span>
-          </div>
-        </div>
-
-        <!-- Divs with list roles: deck themes style every ul/li in a slide as bullets. -->
-        <div v-if="decisionRows.length" class="bpmn-path-decisions" role="list" aria-label="Gateway decisions">
-          <div v-for="row in decisionRows" :key="row.gatewayId" class="bpmn-path-decision" :class="{ 'is-stuck': row.stuck }" role="listitem">
-            <span class="bpmn-path-gateway">{{ row.gateway }}</span>
-            <span class="bpmn-path-outcome">{{ row.outcome }}</span>
-          </div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -111,8 +100,6 @@ const props = withDefaults(defineProps<{
   scenariosFilePath?: string
   controls?: 'auto' | 'none' | string[]
   steps?: Variables[]
-  measures?: Record<string, string>
-  showDecisions?: boolean
   width?: string
   height?: string
   maxScale?: number
@@ -120,7 +107,6 @@ const props = withDefaults(defineProps<{
 }>(), {
   engine: 'zeebe',
   controls: 'auto',
-  showDecisions: false,
   width: '100%',
   height: '400px',
 })
@@ -164,24 +150,16 @@ const fields = computed<PathVariableField[]>(() => {
   return controls === 'auto' ? derived : derived.filter(field => controls.includes(field.name))
 })
 
-const measureRows = computed(() => Object.entries(props.measures ?? {}).map(([label, attribute]) => ({
-  label,
-  value: path.value?.measures[attribute] ?? 0,
-})))
-
-const decisionRows = computed(() => {
+// Gateways on the path that could not decide, with the reason the path simulation gives.
+const stuckGateways = computed(() => {
   const activeViewer = viewer.value
-  if (!props.showDecisions || !activeViewer || !path.value) return []
-  return Object.entries(path.value.decisions).map(([gatewayId, decision]) => ({
-    gatewayId,
-    gateway: activeViewer.elementName(gatewayId),
-    outcome: decision.stuckReason ?? decision.takenFlowIds.map(id => activeViewer.elementName(id)).join(', '),
-    stuck: Boolean(decision.stuckReason),
-  }))
+  if (!activeViewer || !path.value) return []
+  return Object.entries(path.value.decisions)
+    .filter(([, decision]) => decision.stuckReason)
+    .map(([id, decision]) => ({ id, name: activeViewer.elementName(id), reason: decision.stuckReason! }))
 })
 
-const hasPanel = computed(() =>
-  scenarios.value.length > 1 || fields.value.length > 0 || measureRows.value.length > 0 || decisionRows.value.length > 0)
+const hasPanel = computed(() => scenarios.value.length > 1 || fields.value.length > 0)
 
 watch(values, simulate)
 
@@ -213,7 +191,7 @@ function resetValues(): void {
 
 function simulate(): void {
   if (!viewer.value) return
-  path.value = viewer.value.simulate(values.value, Object.values(props.measures ?? {}))
+  path.value = viewer.value.simulate(values.value)
 }
 
 function update(name: string, value: unknown): void {
@@ -271,7 +249,6 @@ function updateFromText(field: PathVariableField, event: Event): void {
   --bpmn-path-line: #464646;
   --bpmn-path-outline: #8f8a8a;
   --bpmn-path-field: #1d1d1d;
-  --bpmn-path-chip: #383838;
   --bpmn-path-accent: #6b8aff;
   --bpmn-path-focus: #6b8aff;
   --bpmn-path-danger: #fb6d73;
@@ -295,24 +272,11 @@ function updateFromText(field: PathVariableField, event: Event): void {
   border-top: 1px solid var(--bpmn-path-line, #e6e2e2);
 }
 
-.bpmn-path-inputs,
-.bpmn-path-results,
-.bpmn-path-measures {
+.bpmn-path-inputs {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 10px 20px;
-}
-
-.bpmn-path-results {
-  margin-left: auto;
-}
-
-/* Without controls the results span the panel: measures left, decisions right. */
-.bpmn-path-results:only-child {
-  flex: 1;
-  margin-left: 0;
-  justify-content: space-between;
 }
 
 .bpmn-path-field {
@@ -467,56 +431,16 @@ function updateFromText(field: PathVariableField, event: Event): void {
   font-variant-numeric: tabular-nums;
 }
 
-.bpmn-path-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.bpmn-path-stat .bpmn-path-label {
-  color: var(--bpmn-path-muted, #6b6666);
-}
-
-.bpmn-path-stat-value {
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 26px;
-  font-variant-numeric: tabular-nums;
-}
-
-.bpmn-path-decisions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.bpmn-path-decision {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  height: 26px;
-  padding: 0 10px;
+.bpmn-path-stuck {
+  margin: 6px 5px 0;
+  padding: 6px 10px;
+  border: 1px solid var(--bpmn-path-danger, #cd1839);
+  border-left-width: 4px;
   border-radius: 6px;
-  background: var(--bpmn-path-chip, #eef1fd);
-  white-space: nowrap;
-}
-
-.bpmn-path-gateway {
-  font-weight: 600;
-}
-
-.bpmn-path-gateway::after {
-  content: ' →';
-  font-weight: 400;
-  color: var(--bpmn-path-muted, #6b6666);
-}
-
-.bpmn-path-decision.is-stuck {
   background: var(--bpmn-path-danger-surface, #fbeef0);
-  box-shadow: inset 3px 0 0 var(--bpmn-path-danger, #cd1839);
 }
 
-.bpmn-path-decision.is-stuck .bpmn-path-outcome {
-  color: var(--bpmn-path-danger, #cd1839);
+.bpmn-path-stuck-gateway {
+  font-weight: 600;
 }
 </style>

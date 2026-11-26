@@ -47,8 +47,7 @@ function simulatePath(variables: Variables): SimulatedPath {
   const decision = typeof orderTotal === 'number'
     ? { flows: [], takenFlowIds: [orderTotal > 5000 ? 'Flow_Review' : 'Flow_Approved'] }
     : { flows: [], takenFlowIds: [], stuckReason: 'orderTotal is missing' }
-  const duration = typeof orderTotal === 'number' && orderTotal > 5000 ? 5 : 2
-  return { taken: [], skipped: [], decisions: { Gateway_Credit: decision }, measures: { 'sim:duration': duration } }
+  return { taken: [], skipped: [], decisions: { Gateway_Credit: decision }, measures: {} }
 }
 
 const pathSimulation = { simulate: vi.fn(simulatePath), getEngine: () => zeebeEngine }
@@ -110,7 +109,7 @@ describe('BpmnPathSimulation.vue', () => {
   it('marks the path for the given variables once the diagram is rendered', async () => {
     await mountRendered({ variables: { orderTotal: 6800, creditworthy: true } })
 
-    expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800, creditworthy: true }, { measures: [] })
+    expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800, creditworthy: true })
   })
 
   it('offers a control for every variable the conditions read, by its value', async () => {
@@ -229,31 +228,28 @@ describe('BpmnPathSimulation.vue', () => {
     })
   })
 
-  it('shows the measures summed along the path', async () => {
-    const wrapper = await mountRendered({ variables: { orderTotal: 6800 }, measures: { 'Lead time (days)': 'sim:duration' } })
+  it('says why a gateway on the path cannot decide', async () => {
+    const wrapper = await mountRendered({ controls: 'none' })
 
-    expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800 }, { measures: ['sim:duration'] })
-    expect(wrapper.find('.bpmn-path-measures').text()).toBe('Lead time (days)5')
+    const notice = wrapper.find('.bpmn-path-stuck')
+    expect(notice.attributes('role')).toBe('status')
+    expect(notice.text()).toBe('Credit OK? orderTotal is missing')
   })
 
-  it('lists the gateway decisions by name with showDecisions', async () => {
-    const wrapper = await mountRendered({ variables: { orderTotal: 6800 }, showDecisions: true })
-
-    expect(wrapper.find('.bpmn-path-decision').text()).toBe('Credit OK?large order')
-  })
-
-  it('lists why a gateway cannot decide', async () => {
-    const wrapper = await mountRendered({ showDecisions: true, controls: 'none' })
-
-    const decision = wrapper.find('.bpmn-path-decision')
-    expect(decision.classes()).toContain('is-stuck')
-    expect(decision.text()).toBe('Credit OK?orderTotal is missing')
-  })
-
-  it('lists no decisions by default', async () => {
+  it('shows no notice while every gateway decides', async () => {
     const wrapper = await mountRendered({ variables: { orderTotal: 6800 } })
 
-    expect(wrapper.find('.bpmn-path-decisions').exists()).toBe(false)
+    expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
+  })
+
+  it('drops the notice once the missing variable is set', async () => {
+    const wrapper = await mountRendered()
+    expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(true)
+
+    await wrapper.find('input[name="orderTotal"]').setValue('1290')
+
+    expect(lastSimulatedVariables()).toEqual({ orderTotal: 1290 })
+    expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
   })
 
   it('marks the path on the new viewer when the deck turns dark', async () => {

@@ -18,8 +18,8 @@ export class BpmnPathSimulationViewer extends BpmnLiveViewer {
     this.onShown(this)
   }
 
-  simulate(variables: Variables, measures: string[]): SimulatedPath {
-    return this.pathSimulation().simulate(variables, { measures })
+  simulate(variables: Variables): SimulatedPath {
+    return this.pathSimulation().simulate(variables)
   }
 
   variableFields(): PathVariableFields {

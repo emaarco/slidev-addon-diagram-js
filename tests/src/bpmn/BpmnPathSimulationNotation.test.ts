@@ -19,7 +19,7 @@ import { BpmnPathSimulationViewer } from '../../../src/bpmn/BpmnPathSimulationVi
 import { bpmnJs, SMALL_DIAGRAM } from './fakeBpmnJs'
 import { BIKE_ORDER, fakeElementRegistry } from './fakeElementRegistry'
 
-const PATH = { taken: ['Start'], skipped: [], decisions: {}, measures: { 'sim:duration': 3 } }
+const PATH = { taken: ['Start'], skipped: [], decisions: {}, measures: {} }
 
 function notation(options: Partial<ConstructorParameters<typeof BpmnPathSimulationNotation>[0]> = {}) {
   return new BpmnPathSimulationNotation({ engine: 'zeebe', onShown: vi.fn(), ...options })
@@ -82,11 +82,11 @@ describe('BpmnPathSimulationNotation', () => {
     expect(bpmnJs.lastViewer().fittedViewbox()).toMatchObject({ width: 800, height: 500 })
   })
 
-  it('simulates the path for the variables and sums the measures', async () => {
+  it('simulates the path for the variables', async () => {
     const viewer = await createViewer()
 
-    expect(viewer.simulate({ orderTotal: 6800 }, ['sim:duration'])).toBe(PATH)
-    expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800 }, { measures: ['sim:duration'] })
+    expect(viewer.simulate({ orderTotal: 6800 })).toBe(PATH)
+    expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800 })
   })
 
   it('derives the variable fields from the diagram', async () => {

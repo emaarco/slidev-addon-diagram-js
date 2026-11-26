@@ -151,8 +151,8 @@ and `components/wardley-maps/`.
   every change of the variables (a theme switch builds a new viewer and marks the path again).
   `PathVariableFields` derives a control per variable the conditions read (ported from the
   data-simulation demo's `WhatIfFields`) and prefills from a scenario. `steps` registers slide clicks
-  through `useSlideContext().$clicksContext`, like the toolkit's stepped `Figure`. The decision list
-  is built from `div`s with list roles, because deck themes style every `ul`/`li` in a slide.
+  through `useSlideContext().$clicksContext`, like the toolkit's stepped `Figure`. The marked path is
+  the result; only a gateway that cannot decide gets a notice below the diagram, with its reason.
 - **`BpmnModeler.vue`** — `DiagramModeler` with `BpmnModelerNotation`. `engine` (`"zeebe"` |
   `"camunda7"`) mounts the properties panel; the engine wiring lives in `src/bpmn/engines/`
   (one `BpmnEngine` file per engine, registered in `engines/bpmnEngines.ts`, which also derives
