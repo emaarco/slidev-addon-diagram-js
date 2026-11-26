@@ -36,11 +36,14 @@ npm run lint:deps
 
 # Find unused files, exports and dependencies (knip)
 npm run knip
+
+# Lint the demo BPMN models (bpmnlint + @miragon/bpmnlint-plugin-rules, strict)
+npm run lint:bpmn
 ```
 
 ## Code Hygiene
 
-Three static-analysis gates run in the `Build` CI workflow (`.github/workflows/build.yml`):
+Four static-analysis gates run in the `Build` CI workflow (`.github/workflows/build.yml`):
 
 - **`lint`** (oxlint, config in `.oxlintrc.json`) — correctness rules, `max-classes-per-file: 1`, and
   `architecture/no-top-level-functions` (`tools/oxlint/architecture-plugin.mjs`).
@@ -50,7 +53,15 @@ Three static-analysis gates run in the `Build` CI workflow (`.github/workflows/b
   and `components/**/*.vue` (the published surface external decks import). `@slidev/client`
   and `@slidev/types` come from the `@slidev/cli` peer dependency, and
   `@miragon/slidev-toolkit` is the theme in `example.md`'s frontmatter — all three are
-  imported outside what knip can see, so they're listed under `ignoreDependencies`.
+  imported outside what knip can see, so they're listed under `ignoreDependencies`
+  (as is `@miragon/bpmnlint-plugin-rules`, which only `.bpmnlintrc` names).
+- **`lint:bpmn`** (bpmnlint) — the demo models in `public/` against `bpmnlint:recommended`,
+  `@miragon/rules/strict` and the engine's `camunda-compat` layer: Zeebe models with `.bpmnlintrc`,
+  Camunda 7 models with `.bpmnlintrc.camunda7.json` (one config cannot load both moddle extensions).
+  The script names each model, so a new `.bpmn` in `public/` goes into `lint:bpmn` under its engine.
+  `no-inclusive-gateway` is off: the bike order needs one to show the data simulation's OR join.
+  Change models with the bpmn CLI (`npx -y @miragon/bpmn-cli`), not by hand; renaming an element
+  also renames it in the `*.scenarios.json` next to the model (task results are keyed by element id).
 
 **Classes first, helpers in `utils/`.** Behaviour in `.ts` files lives in classes, one per file,
 named like the file. Stateless helper functions live in a `utils/` folder of their layer

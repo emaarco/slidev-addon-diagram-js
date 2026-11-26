@@ -6,3 +6,6 @@ dist/
 .claude/logs/
 .context/
 .gstack/
+
+# Renders of the bpmn CLI
+.bpmn-render/

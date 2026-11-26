@@ -21,7 +21,9 @@ const config: KnipConfig = {
   // peer dependency, so they're imported but intentionally not direct deps.
   // @miragon/slidev-toolkit is the theme referenced in example.md's YAML
   // frontmatter, which knip can't parse (there is no Slidev markdown plugin).
-  ignoreDependencies: ['@slidev/client', '@slidev/types', '@miragon/slidev-toolkit'],
+  // @miragon/bpmnlint-plugin-rules is loaded by bpmnlint from the `plugin:` entry
+  // in .bpmnlintrc, which knip does not read.
+  ignoreDependencies: ['@slidev/client', '@slidev/types', '@miragon/slidev-toolkit', '@miragon/bpmnlint-plugin-rules'],
 }
 
 export default config

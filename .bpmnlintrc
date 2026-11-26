@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "bpmnlint:recommended",
+    "plugin:@miragon/rules/strict",
+    "plugin:camunda-compat/camunda-cloud-8-11"
+  ],
+  "moddleExtensions": {
+    "zeebe": "zeebe-bpmn-moddle/resources/zeebe.json"
+  },
+  "rules": {
+    "no-inclusive-gateway": "off"
+  }
+}
