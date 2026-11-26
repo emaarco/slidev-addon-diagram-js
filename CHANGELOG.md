@@ -26,6 +26,18 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.10.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.9.0...v2.10.0) (2026-11-26)
+
+
+### Features
+
+* frame Event Storming boards closely and let decks hide the type captions ([#197](https://github.com/emaarco/slidev-addon-diagram-js/issues/197)) ([48ef398](https://github.com/emaarco/slidev-addon-diagram-js/commit/48ef3983d6267933b8f9a07a0f019289558f61a3)), closes [#157](https://github.com/emaarco/slidev-addon-diagram-js/issues/157)
+
+
+### Bug Fixes
+
+* **deps:** bump the npm-minor-patch group with 14 updates ([#193](https://github.com/emaarco/slidev-addon-diagram-js/issues/193)) ([67bdf0a](https://github.com/emaarco/slidev-addon-diagram-js/commit/67bdf0a2184d08aab4244d00cb35f3aa19563086))
+
 ## [2.9.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.8.0...v2.9.0) (2026-11-19)
 
 
