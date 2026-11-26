@@ -98,7 +98,15 @@ describe('BpmnPathSimulationNotation', () => {
     const viewer = await createViewer()
 
     expect(viewer.variablesReadByConditions({ orderTotal: 6800 })).toBe(VARIABLES)
-    expect(pathSimulation.deriveVariables).toHaveBeenCalledWith({ orderTotal: 6800 })
+    expect(pathSimulation.deriveVariables).toHaveBeenCalledWith({ orderTotal: 6800 }, { ranges: undefined })
+  })
+
+  it('hands fixed slider ranges to the path simulation', async () => {
+    const viewer = await createViewer()
+
+    viewer.variablesReadByConditions({ orderTotal: 6800 }, { orderTotal: { max: 8000 } })
+
+    expect(pathSimulation.deriveVariables).toHaveBeenCalledWith({ orderTotal: 6800 }, { ranges: { orderTotal: { max: 8000 } } })
   })
 
   it('asks the path simulation for the variables of a scenario', async () => {

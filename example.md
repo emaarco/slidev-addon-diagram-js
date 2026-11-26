@@ -183,7 +183,7 @@ accent: blue
 Move the order total: the gateways decide at once, no token needed.
 
 <DiagramFrame padding="compact">
-<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" height="220px" />
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" :ranges="{ orderTotal: { max: 8000, step: 100 } }" height="220px" />
 </DiagramFrame>
 
 ---
