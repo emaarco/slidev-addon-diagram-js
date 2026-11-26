@@ -125,143 +125,141 @@
       <bpmndi:BPMNShape id="BPMNShape_gateway_creditOk" bpmnElement="gateway_creditOk" isMarkerVisible="true">
         <dc:Bounds x="336" y="95" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="320" y="75" width="82" height="14" />
+          <dc:Bounds x="367" y="75" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_gateway_beforeShipOrder" bpmnElement="gateway_beforeShipOrder" isMarkerVisible="true">
-        <dc:Bounds x="761" y="95" width="50" height="50" />
+        <dc:Bounds x="606" y="95" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_serviceTask_shipOrder" bpmnElement="serviceTask_shipOrder">
-        <dc:Bounds x="871" y="80" width="100" height="80" />
+        <dc:Bounds x="716" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_gateway_extras" bpmnElement="gateway_extras">
-        <dc:Bounds x="1031" y="95" width="50" height="50" />
+        <dc:Bounds x="876" y="95" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1026" y="75" width="61" height="14" />
+          <dc:Bounds x="907" y="75" width="61" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_serviceTask_addInsurance" bpmnElement="serviceTask_addInsurance">
-        <dc:Bounds x="1186" y="80" width="100" height="80" />
+        <dc:Bounds x="1031" y="80" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_gateway_extrasDone" bpmnElement="gateway_extrasDone">
-        <dc:Bounds x="1346" y="95" width="50" height="50" />
+        <dc:Bounds x="1191" y="95" width="50" height="50" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_endEvent_orderShipped" bpmnElement="endEvent_orderShipped">
-        <dc:Bounds x="1456" y="102" width="36" height="36" />
+        <dc:Bounds x="1301" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1444" y="144" width="61" height="28" />
+          <dc:Bounds x="1289" y="144" width="61" height="28" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_serviceTask_packAccessories" bpmnElement="serviceTask_packAccessories">
-        <dc:Bounds x="1186" y="360" width="100" height="80" />
+        <dc:Bounds x="1031" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_userTask_reviewOrder" bpmnElement="userTask_reviewOrder">
-        <dc:Bounds x="491" y="220" width="100" height="80" />
+        <dc:Bounds x="446" y="230" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_gateway_approved" bpmnElement="gateway_approved" isMarkerVisible="true">
-        <dc:Bounds x="651" y="235" width="50" height="50" />
+        <dc:Bounds x="606" y="245" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="593" y="219" width="75" height="14" />
+          <dc:Bounds x="548" y="229" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_endEvent_orderRejectedInReview" bpmnElement="endEvent_orderRejectedInReview">
-        <dc:Bounds x="768" y="242" width="36" height="36" />
+        <dc:Bounds x="723" y="252" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="742" y="284" width="89" height="42" />
+          <dc:Bounds x="697" y="294" width="89" height="42" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_endEvent_orderRejected" bpmnElement="endEvent_orderRejected">
-        <dc:Bounds x="523" y="382" width="36" height="36" />
+        <dc:Bounds x="446" y="-48" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="507" y="424" width="68" height="28" />
+          <dc:Bounds x="430" y="-6" width="68" height="28" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_extrasDoneToOrderShipped" bpmnElement="flow_extrasDoneToOrderShipped">
-        <di:waypoint x="1396" y="120" />
-        <di:waypoint x="1456" y="120" />
+        <di:waypoint x="1241" y="120" />
+        <di:waypoint x="1301" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_addInsuranceToExtrasDone" bpmnElement="flow_addInsuranceToExtrasDone">
-        <di:waypoint x="1286" y="120" />
-        <di:waypoint x="1346" y="120" />
+        <di:waypoint x="1131" y="120" />
+        <di:waypoint x="1191" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_extrasToAddInsurance" bpmnElement="flow_extrasToAddInsurance">
-        <di:waypoint x="1081" y="120" />
-        <di:waypoint x="1186" y="120" />
+        <di:waypoint x="926" y="120" />
+        <di:waypoint x="1031" y="120" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1089" y="102" width="75" height="14" />
+          <dc:Bounds x="934" y="102" width="75" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_packAccessoriesToExtrasDone" bpmnElement="flow_packAccessoriesToExtrasDone">
-        <di:waypoint x="1286" y="400" />
-        <di:waypoint x="1371" y="400" />
-        <di:waypoint x="1371" y="145" />
+        <di:waypoint x="1131" y="270" />
+        <di:waypoint x="1216" y="270" />
+        <di:waypoint x="1216" y="145" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_extrasToPackAccessories" bpmnElement="flow_extrasToPackAccessories">
-        <di:waypoint x="1056" y="145" />
-        <di:waypoint x="1056" y="400" />
-        <di:waypoint x="1186" y="400" />
+        <di:waypoint x="901" y="145" />
+        <di:waypoint x="901" y="270" />
+        <di:waypoint x="1031" y="270" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1064" y="382" width="89" height="14" />
+          <dc:Bounds x="909" y="252" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_extrasToExtrasDone" bpmnElement="flow_extrasToExtrasDone">
-        <di:waypoint x="1056" y="145" />
-        <di:waypoint x="1056" y="260" />
-        <di:waypoint x="1371" y="260" />
-        <di:waypoint x="1371" y="145" />
+        <di:waypoint x="901" y="95" />
+        <di:waypoint x="901" y="-30" />
+        <di:waypoint x="1216" y="-30" />
+        <di:waypoint x="1216" y="95" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1064" y="242" width="40" height="14" />
+          <dc:Bounds x="909" y="-48" width="40" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_shipOrderToExtras" bpmnElement="flow_shipOrderToExtras">
-        <di:waypoint x="971" y="120" />
-        <di:waypoint x="1031" y="120" />
+        <di:waypoint x="816" y="120" />
+        <di:waypoint x="876" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_beforeShipOrderToShipOrder" bpmnElement="flow_beforeShipOrderToShipOrder">
-        <di:waypoint x="811" y="120" />
-        <di:waypoint x="871" y="120" />
+        <di:waypoint x="656" y="120" />
+        <di:waypoint x="716" y="120" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_creditOkToBeforeShipOrder" bpmnElement="flow_creditOkToBeforeShipOrder">
         <di:waypoint x="386" y="120" />
-        <di:waypoint x="761" y="120" />
+        <di:waypoint x="606" y="120" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="394" y="102" width="33" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_approvedToBeforeShipOrder" bpmnElement="flow_approvedToBeforeShipOrder">
-        <di:waypoint x="676" y="235" />
-        <di:waypoint x="676" y="190" />
-        <di:waypoint x="786" y="190" />
-        <di:waypoint x="786" y="145" />
+        <di:waypoint x="631" y="245" />
+        <di:waypoint x="631" y="145" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="684" y="172" width="33" height="14" />
+          <dc:Bounds x="637" y="193" width="33" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_approvedToOrderRejectedInReview" bpmnElement="flow_approvedToOrderRejectedInReview">
-        <di:waypoint x="701" y="260" />
-        <di:waypoint x="768" y="260" />
+        <di:waypoint x="656" y="270" />
+        <di:waypoint x="723" y="270" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="709" y="242" width="26" height="14" />
+          <dc:Bounds x="664" y="252" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_reviewOrderToApproved" bpmnElement="flow_reviewOrderToApproved">
-        <di:waypoint x="591" y="260" />
-        <di:waypoint x="651" y="260" />
+        <di:waypoint x="546" y="270" />
+        <di:waypoint x="606" y="270" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_creditOkToReviewOrder" bpmnElement="flow_creditOkToReviewOrder">
         <di:waypoint x="361" y="145" />
-        <di:waypoint x="361" y="260" />
-        <di:waypoint x="491" y="260" />
+        <di:waypoint x="361" y="270" />
+        <di:waypoint x="446" y="270" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="369" y="242" width="89" height="14" />
+          <dc:Bounds x="349" y="274" width="89" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_creditOkToOrderRejected" bpmnElement="flow_creditOkToOrderRejected">
-        <di:waypoint x="361" y="145" />
-        <di:waypoint x="361" y="400" />
-        <di:waypoint x="523" y="400" />
+        <di:waypoint x="361" y="95" />
+        <di:waypoint x="361" y="-30" />
+        <di:waypoint x="446" y="-30" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="369" y="382" width="26" height="14" />
+          <dc:Bounds x="369" y="-48" width="26" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_flow_checkCreditRatingToCreditOk" bpmnElement="flow_checkCreditRatingToCreditOk">

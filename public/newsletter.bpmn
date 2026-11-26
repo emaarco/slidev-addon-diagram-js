@@ -161,9 +161,9 @@
         <di:waypoint x="738" y="203" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Event_0i6u6yw_di" bpmnElement="event_afterThreeDays">
-        <dc:Bounds x="767" y="313" width="36" height="36" />
+        <dc:Bounds x="738" y="313" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="807" y="333" width="61" height="28" />
+          <dc:Bounds x="778" y="333" width="61" height="28" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Event_00z7r9k_di" bpmnElement="startEvent_submitNewsletterForm">
@@ -189,8 +189,8 @@
         <di:waypoint x="1030" y="203" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow_afterThreeDaysToAbortRegistration_di" bpmnElement="flow_afterThreeDaysToAbortRegistration">
-        <di:waypoint x="785" y="349" />
-        <di:waypoint x="785" y="450" />
+        <di:waypoint x="756" y="349" />
+        <di:waypoint x="756" y="450" />
         <di:waypoint x="870" y="450" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
