@@ -58,3 +58,8 @@
   --token-simulation-inactive-outgoing-flow-stroke-color: #808080;
   --token-simulation-highlighted-scope-fill-color: #2e2e2e;
 }
+
+/* Path simulation (BpmnPathSimulation): the taken path in the lighter Miragon blue on the dark theme. */
+.diagram-theme-dark {
+  --bds-path-taken: #6b8aff;
+}

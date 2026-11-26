@@ -21,6 +21,8 @@ export const bpmnJs = {
   viewbox: LARGE_DIAGRAM as Viewbox,
   savedXml: '<definitions>edited</definitions>' as string | undefined,
   importError: null as Error | null,
+  // Further services every new diagram hands out, e.g. the path simulation.
+  services: {} as Record<string, unknown>,
 
   reset(): void {
     this.viewers = []
@@ -28,6 +30,7 @@ export const bpmnJs = {
     this.viewbox = LARGE_DIAGRAM
     this.savedXml = '<definitions>edited</definitions>'
     this.importError = null
+    this.services = {}
   },
 
   lastViewer(): FakeBpmnDiagram {
@@ -53,7 +56,7 @@ function createFakeBpmnDiagram(options: Record<string, any>) {
       listeners.set(event, [...(listeners.get(event) ?? []), listener])
     }),
   }
-  const services: Record<string, unknown> = { canvas, eventBus, transactionBoundaries }
+  const services: Record<string, unknown> = { canvas, eventBus, transactionBoundaries, ...bpmnJs.services }
 
   return {
     options,
