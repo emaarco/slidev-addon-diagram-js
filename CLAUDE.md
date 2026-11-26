@@ -173,6 +173,10 @@ implementing `StaticNotation` and `ModelerNotation`.
   `serializeDocument()`.
 - **Wardley Maps** (OWM text) and **Event Storming** boards (`.storm` text) go through
   `importDSL()` / `exportDSL()`.
+- `EventStormingNotation` exports through the renderer's `saveSVG(canvas, bounds)` with
+  `boardBounds.contentBounds(16)`: the viewer's own `saveSVG()` frames a board with 120 px, which
+  left it small on a slide. `typeCaptions` (`<EventStorming>` prop) is set on
+  `eventStormingViewOptions` before the import.
 - The read-only `Viewer` of `@miragon/wardley-renderer` and `@miragon/event-storming-renderer`
   clears a `commandStack` on import without registering one, so both notations pass diagram-js's
   command module via `additionalModules`. Drop that once the renderers register it themselves;

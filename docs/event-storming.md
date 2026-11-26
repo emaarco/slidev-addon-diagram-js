@@ -22,6 +22,7 @@ Renders the file as a static SVG, the same way `<Bpmn>` does, so it also works i
 | `width` | `string` | `'100%'` | Maximum width of the diagram |
 | `height` | `string` | `'auto'` | Height of the diagram |
 | `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck: dark while `<html>` has the `dark` class (Slidev's dark mode), light otherwise, redrawn when it switches. `'light'` or `'dark'` pins it. `'dark'` draws text, lines and grid light on a dark canvas, for dark slides. Stickies keep their colours, with their dark text. |
+| `typeCaptions` | `boolean` | `true` | Prints the sticky type ("Domain Event", "Hotspot", …) at the bottom of each sticky. Set `:typeCaptions="false"` when the audience reads the type from the colour. |
 
 ## `<EventStormingModeler>` — Live modeler
 
