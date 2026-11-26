@@ -25,7 +25,7 @@
         </label>
 
         <template v-for="field in fields" :key="field.name">
-          <label v-if="field.control.kind === 'boolean'" class="bpmn-path-field bpmn-path-field--boolean">
+          <label v-if="field.type === 'boolean'" class="bpmn-path-field bpmn-path-field--boolean">
             <span class="bpmn-path-label">{{ field.name }}</span>
             <span class="bpmn-path-check">
               <input type="checkbox" :name="field.name" :checked="values[field.name] === true" @change="updateFromCheckbox(field.name, $event)" />
@@ -33,7 +33,7 @@
             </span>
           </label>
 
-          <div v-else-if="field.control.kind === 'number'" class="bpmn-path-field bpmn-path-field--number">
+          <div v-else-if="field.type === 'number'" class="bpmn-path-field bpmn-path-field--number">
             <span class="bpmn-path-label-row">
               <span class="bpmn-path-label">{{ field.name }}</span>
               <input
@@ -51,9 +51,9 @@
               class="bpmn-path-slider"
               :name="`${field.name}-slider`"
               :aria-label="field.name"
-              :min="field.control.min"
-              :max="field.control.max"
-              :step="field.control.step"
+              :min="field.range.min"
+              :max="field.range.max"
+              :step="field.range.step"
               :value="values[field.name]"
               :style="{ '--bpmn-path-fill': `${sliderFill(field)}%` }"
               @input="updateFromNumber(field.name, $event)"
@@ -75,6 +75,7 @@
 import { computed, onUnmounted, ref, shallowRef, useId, watch } from 'vue'
 import { useSlideContext } from '@slidev/client'
 import {
+  type PathVariable,
   type Scenario,
   ScenarioParser,
   type SimulatedPath,
@@ -86,7 +87,6 @@ import '../../src/bpmn/bpmn.css'
 import { BpmnPathSimulationNotation } from '../../src/bpmn/BpmnPathSimulationNotation'
 import type { BpmnPathSimulationViewer } from '../../src/bpmn/BpmnPathSimulationViewer'
 import type { Engine } from '../../src/bpmn/engines/bpmnEngines'
-import type { PathVariableField } from '../../src/bpmn/PathVariableFields'
 import { parseMaxScale } from '../../src/bpmn/utils/parseMaxScale'
 import { DiagramFileLoader } from '../../src/shared/lib/DiagramFileLoader'
 import { DiagramTheme, type DiagramThemeName } from '../../src/shared/lib/DiagramTheme'
@@ -143,9 +143,9 @@ if (props.steps?.length) {
   })
 }
 
-const fields = computed<PathVariableField[]>(() => {
+const fields = computed<PathVariable[]>(() => {
   if (!viewer.value || props.controls === 'none') return []
-  const derived = viewer.value.variableFields().derive(values.value)
+  const derived = viewer.value.variablesReadByConditions(values.value)
   const controls = props.controls
   return controls === 'auto' ? derived : derived.filter(field => controls.includes(field.name))
 })
@@ -184,7 +184,7 @@ async function loadScenarios(): Promise<void> {
 // The scenario's variables over the `variables` prop, then every step up to the current click.
 function resetValues(): void {
   const scenario = scenarios.value.find(candidate => candidate.id === selectedScenarioId.value)
-  const prefilled = viewer.value && scenarios.value.length ? viewer.value.variableFields().prefill(scenario, scenarios.value) : {}
+  const prefilled = viewer.value && scenarios.value.length ? viewer.value.variablesOf(scenario, scenarios.value) : {}
   const reachedSteps = (props.steps ?? []).slice(0, currentClick())
   values.value = Object.assign({ ...props.variables, ...prefilled }, ...reachedSteps)
 }
@@ -208,22 +208,22 @@ function updateFromNumber(name: string, event: Event): void {
 }
 
 // How far the slider is filled, in percent of its range.
-function sliderFill(field: PathVariableField): number {
-  if (field.control.kind !== 'number') return 0
-  const { min, max } = field.control
+function sliderFill(field: PathVariable): number {
+  if (field.type !== 'number') return 0
+  const { min, max } = field.range
   const value = Number(values.value[field.name])
   return Number.isFinite(value) ? Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100)) : 0
 }
 
-function startField(field: PathVariableField): StartField {
-  return { name: field.name, type: field.control.kind === 'json' ? 'json' : 'auto', usedBy: [] }
+function startField(field: PathVariable): StartField {
+  return { name: field.name, type: field.type === 'json' ? 'json' : 'auto', usedBy: [] }
 }
 
-function formatText(field: PathVariableField): string {
+function formatText(field: PathVariable): string {
   return String(codec.format(startField(field), values.value[field.name]))
 }
 
-function updateFromText(field: PathVariableField, event: Event): void {
+function updateFromText(field: PathVariable, event: Event): void {
   const input = event.target as HTMLInputElement
   const parsed = codec.parse(startField(field), input.value)
   input.classList.toggle('is-invalid', !parsed.ok)

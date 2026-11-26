@@ -149,8 +149,8 @@ and `components/wardley-maps/`.
   `BpmnPathSimulationViewer` hands itself to the component through the notation's `onShown` once it
   has imported; the component takes the viewer on LiveDiagram's `rendered` and calls `simulate()` on
   every change of the variables (a theme switch builds a new viewer and marks the path again).
-  `PathVariableFields` derives a control per variable the conditions read (ported from the
-  data-simulation demo's `WhatIfFields`) and prefills from a scenario. `steps` registers slide clicks
+  The controls come from the service's `deriveVariables(values)` (one `PathVariable` per variable the
+  conditions read, a slider range for numbers) and a scenario's values from `variablesOf(scenario, fallbacks)`. `steps` registers slide clicks
   through `useSlideContext().$clicksContext`, like the toolkit's stepped `Figure`. The marked path is
   the result; only a gateway that cannot decide gets a notice below the diagram, with its reason.
 - **`BpmnModeler.vue`** — `DiagramModeler` with `BpmnModelerNotation`. `engine` (`"zeebe"` |

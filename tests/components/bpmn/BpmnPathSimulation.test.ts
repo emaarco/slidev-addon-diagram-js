@@ -27,10 +27,10 @@ vi.mock('@slidev/client', () => ({
   useSlideContext: () => ({ $clicks: slide.clicks, $clicksContext: { register: slide.register, unregister: slide.unregister } }),
 }))
 
-import { type SimulatedPath, type Variables, zeebeEngine } from '@emaarco/bpmn-js-data-simulation'
+import type { PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
 import BpmnPathSimulation from '../../../components/bpmn/BpmnPathSimulation.vue'
 import { bpmnJs } from '../../src/bpmn/fakeBpmnJs'
-import { BIKE_ORDER, fakeElementRegistry } from '../../src/bpmn/fakeElementRegistry'
+import { BIKE_ORDER_NAMES, fakeElementRegistry } from '../../src/bpmn/fakeElementRegistry'
 
 enableAutoUnmount(afterEach)
 
@@ -50,7 +50,25 @@ function simulatePath(variables: Variables): SimulatedPath {
   return { taken: [], skipped: [], decisions: { Gateway_Credit: decision }, measures: {} }
 }
 
-const pathSimulation = { simulate: vi.fn(simulatePath), getEngine: () => zeebeEngine }
+// The variables the bike order's conditions read, typed by their value like the path simulation does.
+function deriveVariables(values: Variables): PathVariable[] {
+  return ['creditworthy', 'orderTotal', 'accessories', 'customer'].map((name): PathVariable => {
+    const value = values[name]
+    if (typeof value === 'boolean') return { name, type: 'boolean' }
+    if (typeof value === 'number') return { name, type: 'number', range: { min: 0, max: 20000, step: 200 } }
+    if (value === undefined || typeof value === 'string') return { name, type: 'text' }
+    return { name, type: 'json' }
+  })
+}
+
+// A scenario's variables and task results over the other scenarios, with creditworthy as the output mapping computes it.
+function variablesOf(scenario: Scenario | undefined, fallbacks: readonly Scenario[]): Variables {
+  const flatten = (candidate?: Scenario) => ({ ...candidate?.variables, ...Object.assign({}, ...Object.values(candidate?.taskResults ?? {})) })
+  const variables: Variables = { ...Object.assign({}, ...fallbacks.map(flatten)), ...flatten(scenario) }
+  return typeof variables.score === 'number' ? { ...variables, creditworthy: variables.score >= 600 } : variables
+}
+
+const pathSimulation = { simulate: vi.fn(simulatePath), deriveVariables: vi.fn(deriveVariables), variablesOf: vi.fn(variablesOf) }
 
 function mockFetchFiles(files: Record<string, string>) {
   vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
@@ -88,7 +106,7 @@ function fieldNames(wrapper: VueWrapper): string[] {
 describe('BpmnPathSimulation.vue', () => {
   beforeEach(() => {
     bpmnJs.reset()
-    bpmnJs.services = { pathSimulation, elementRegistry: fakeElementRegistry(BIKE_ORDER) }
+    bpmnJs.services = { pathSimulation, elementRegistry: fakeElementRegistry(BIKE_ORDER_NAMES) }
     slide.clicks = ref(0)
     slide.register = vi.fn()
     slide.unregister = vi.fn()
@@ -175,6 +193,9 @@ describe('BpmnPathSimulation.vue', () => {
     it('starts from the first scenario after its task results ran through the output mappings', async () => {
       await mountRendered({ scenariosFilePath: 'test.scenarios.json', variables: { insurance: false } })
 
+      const [scenario, fallbacks] = pathSimulation.variablesOf.mock.lastCall!
+      expect(scenario?.id).toBe('small-order')
+      expect(fallbacks.map(candidate => candidate.id)).toEqual(['small-order', 'large-order'])
       expect(lastSimulatedVariables()).toEqual({ insurance: false, orderTotal: 1290, accessories: [], score: 720, creditworthy: true })
     })
 

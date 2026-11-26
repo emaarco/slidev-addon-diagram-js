@@ -1,6 +1,9 @@
-import type { PathSimulation, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
+import type { PathSimulation, PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
 import { BpmnLiveViewer } from './BpmnLiveViewer'
-import { type ElementRegistry, PathVariableFields } from './PathVariableFields'
+
+interface ElementRegistry {
+  get(id: string): { businessObject: { name?: unknown } } | undefined
+}
 
 /** A bpmn-js viewer with the path simulation: marks the path the gateways take for given variables. */
 export class BpmnPathSimulationViewer extends BpmnLiveViewer {
@@ -22,8 +25,14 @@ export class BpmnPathSimulationViewer extends BpmnLiveViewer {
     return this.pathSimulation().simulate(variables)
   }
 
-  variableFields(): PathVariableFields {
-    return new PathVariableFields(this.elementRegistry(), this.pathSimulation().getEngine())
+  // The variables the gateway conditions read, each typed by its current value.
+  variablesReadByConditions(values: Variables): PathVariable[] {
+    return this.pathSimulation().deriveVariables(values)
+  }
+
+  // The scenario's variables after the diagram's output mappings, the other scenarios filling the gaps.
+  variablesOf(scenario: Scenario | undefined, scenarios: readonly Scenario[]): Variables {
+    return this.pathSimulation().variablesOf(scenario, scenarios)
   }
 
   // The element's name, or its id when it has none.

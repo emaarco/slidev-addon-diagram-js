@@ -12,12 +12,11 @@ vi.mock('../../../src/bpmn/engines/camunda7', () => ({
   camunda7Engine: { additionalModules: ['camunda7-module'], moddleExtensions: { camunda: { name: 'camunda' } } },
 }))
 
-import { zeebeEngine } from '@emaarco/bpmn-js-data-simulation'
 import { DiagramTheme } from '../../../src/shared/lib/DiagramTheme'
 import { BpmnPathSimulationNotation } from '../../../src/bpmn/BpmnPathSimulationNotation'
 import { BpmnPathSimulationViewer } from '../../../src/bpmn/BpmnPathSimulationViewer'
 import { bpmnJs, SMALL_DIAGRAM } from './fakeBpmnJs'
-import { BIKE_ORDER, fakeElementRegistry } from './fakeElementRegistry'
+import { BIKE_ORDER_NAMES, fakeElementRegistry } from './fakeElementRegistry'
 
 const PATH = { taken: ['Start'], skipped: [], decisions: {}, measures: {} }
 
@@ -30,11 +29,17 @@ async function createViewer(options?: Parameters<typeof notation>[0]): Promise<B
 }
 
 describe('BpmnPathSimulationNotation', () => {
-  const pathSimulation = { simulate: vi.fn(() => PATH), getEngine: () => zeebeEngine }
+  const VARIABLES = [{ name: 'orderTotal', type: 'number', range: { min: 0, max: 20000, step: 200 } }]
+  const SCENARIO = { id: 'small-order', name: 'Small order', variables: { orderTotal: 1290 }, taskResults: {} }
+  const pathSimulation = {
+    simulate: vi.fn(() => PATH),
+    deriveVariables: vi.fn(() => VARIABLES),
+    variablesOf: vi.fn(() => ({ orderTotal: 1290, creditworthy: true })),
+  }
 
   beforeEach(() => {
     bpmnJs.reset()
-    bpmnJs.services = { pathSimulation, elementRegistry: fakeElementRegistry(BIKE_ORDER) }
+    bpmnJs.services = { pathSimulation, elementRegistry: fakeElementRegistry(BIKE_ORDER_NAMES) }
   })
 
   it('names its diagram kind BPMN', () => {
@@ -89,10 +94,18 @@ describe('BpmnPathSimulationNotation', () => {
     expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800 })
   })
 
-  it('derives the variable fields from the diagram', async () => {
+  it('asks the path simulation for the variables the conditions read', async () => {
     const viewer = await createViewer()
 
-    expect(viewer.variableFields().derive({}).map(field => field.name)).toContain('orderTotal')
+    expect(viewer.variablesReadByConditions({ orderTotal: 6800 })).toBe(VARIABLES)
+    expect(pathSimulation.deriveVariables).toHaveBeenCalledWith({ orderTotal: 6800 })
+  })
+
+  it('asks the path simulation for the variables of a scenario', async () => {
+    const viewer = await createViewer()
+
+    expect(viewer.variablesOf(SCENARIO, [SCENARIO])).toEqual({ orderTotal: 1290, creditworthy: true })
+    expect(pathSimulation.variablesOf).toHaveBeenCalledWith(SCENARIO, [SCENARIO])
   })
 
   it('names an element by its name, or by its id without one', async () => {
