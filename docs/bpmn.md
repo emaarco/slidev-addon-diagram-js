@@ -107,7 +107,7 @@ Mappings and task results are not applied along the path, so pass every variable
 | `maxScale` | `number` | `2` | Cap on how far a small diagram is enlarged past its native size |
 | `theme` | `'light' \| 'dark'` | the deck's mode | Unset, the diagram follows the deck. `'dark'` draws the diagram for dark slides and the path in a lighter blue. |
 
-The path colour is `--bds-path-taken`, the fade of everything else `--bds-path-skipped-opacity`. The controls take their colours from `--bpmn-path-text`, `--bpmn-path-muted`, `--bpmn-path-border`, `--bpmn-path-surface`, `--bpmn-path-accent` and `--bpmn-path-danger`; set them on any ancestor to match a deck theme.
+The controls and results sit in a strip below the diagram, in the deck's font. Put the component in a frame such as the Miragon toolkit's `<DiagramFrame>` and both read as one card. The path colour is `--bds-path-taken`, the fade of everything else `--bds-path-skipped-opacity`. The strip takes its colours from `--bpmn-path-text`, `--bpmn-path-muted`, `--bpmn-path-line`, `--bpmn-path-outline`, `--bpmn-path-field`, `--bpmn-path-chip`, `--bpmn-path-accent`, `--bpmn-path-focus`, `--bpmn-path-danger` and `--bpmn-path-danger-surface` (light defaults from the Miragon design system); set them on any ancestor to match a deck theme.
 
 ## `<BpmnModeler>` — Live modeler
 

@@ -11,50 +11,71 @@
     <p v-if="scenarioError" class="text-red-500">{{ scenarioError }}</p>
 
     <div v-if="hasPanel" class="bpmn-path-panel">
-      <label v-if="scenarios.length > 1" class="bpmn-path-field">
-        <span class="bpmn-path-name">Scenario</span>
-        <select v-model="selectedScenarioId" @change="resetValues">
-          <option v-for="scenario in scenarios" :key="scenario.id" :value="scenario.id">{{ scenario.name }}</option>
-        </select>
-      </label>
+      <div v-if="scenarios.length > 1 || fields.length" class="bpmn-path-inputs">
+        <label v-if="scenarios.length > 1" class="bpmn-path-field">
+          <span class="bpmn-path-label">Scenario</span>
+          <select v-model="selectedScenarioId" class="bpmn-path-input" @change="resetValues">
+            <option v-for="scenario in scenarios" :key="scenario.id" :value="scenario.id">{{ scenario.name }}</option>
+          </select>
+        </label>
 
-      <label v-for="field in fields" :key="field.name" class="bpmn-path-field" :class="`bpmn-path-field--${field.control.kind}`">
-        <span class="bpmn-path-name">{{ field.name }}</span>
-        <input
-          v-if="field.control.kind === 'boolean'"
-          type="checkbox"
-          role="switch"
-          :name="field.name"
-          :checked="values[field.name] === true"
-          @change="updateFromCheckbox(field.name, $event)"
-        />
-        <template v-else-if="field.control.kind === 'number'">
-          <input
-            type="range"
-            :name="`${field.name}-slider`"
-            :min="field.control.min"
-            :max="field.control.max"
-            :step="field.control.step"
-            :value="values[field.name]"
-            @input="updateFromNumber(field.name, $event)"
-          />
-          <input type="number" step="any" :name="field.name" :value="values[field.name]" @input="updateFromNumber(field.name, $event)" />
+        <template v-for="field in fields" :key="field.name">
+          <label v-if="field.control.kind === 'boolean'" class="bpmn-path-field bpmn-path-field--boolean">
+            <span class="bpmn-path-label">{{ field.name }}</span>
+            <span class="bpmn-path-check">
+              <input type="checkbox" :name="field.name" :checked="values[field.name] === true" @change="updateFromCheckbox(field.name, $event)" />
+              <span class="bpmn-path-check-value">{{ values[field.name] === true }}</span>
+            </span>
+          </label>
+
+          <div v-else-if="field.control.kind === 'number'" class="bpmn-path-field bpmn-path-field--number">
+            <span class="bpmn-path-label-row">
+              <span class="bpmn-path-label">{{ field.name }}</span>
+              <input
+                type="number"
+                step="any"
+                class="bpmn-path-value"
+                :name="field.name"
+                :aria-label="field.name"
+                :value="values[field.name]"
+                @input="updateFromNumber(field.name, $event)"
+              />
+            </span>
+            <input
+              type="range"
+              class="bpmn-path-slider"
+              :name="`${field.name}-slider`"
+              :aria-label="field.name"
+              :min="field.control.min"
+              :max="field.control.max"
+              :step="field.control.step"
+              :value="values[field.name]"
+              :style="{ '--bpmn-path-fill': `${sliderFill(field)}%` }"
+              @input="updateFromNumber(field.name, $event)"
+            />
+          </div>
+
+          <label v-else class="bpmn-path-field">
+            <span class="bpmn-path-label">{{ field.name }}</span>
+            <input type="text" class="bpmn-path-input" :name="field.name" :value="formatText(field)" @input="updateFromText(field, $event)" />
+          </label>
         </template>
-        <input v-else type="text" :name="field.name" :value="formatText(field)" @input="updateFromText(field, $event)" />
-      </label>
+      </div>
 
-      <dl v-if="measureRows.length" class="bpmn-path-measures">
-        <div v-for="row in measureRows" :key="row.label">
-          <dt>{{ row.label }}</dt>
-          <dd>{{ row.value }}</dd>
+      <div v-if="measureRows.length || decisionRows.length" class="bpmn-path-results">
+        <div v-if="measureRows.length" class="bpmn-path-measures">
+          <div v-for="row in measureRows" :key="row.label" class="bpmn-path-stat">
+            <span class="bpmn-path-label">{{ row.label }}</span>
+            <span class="bpmn-path-stat-value">{{ row.value }}</span>
+          </div>
         </div>
-      </dl>
 
-      <!-- Divs with list roles: deck themes style every ul/li in a slide as bullets. -->
-      <div v-if="decisionRows.length" class="bpmn-path-decisions" role="list">
-        <div v-for="row in decisionRows" :key="row.gatewayId" class="bpmn-path-decision" :class="{ 'is-stuck': row.stuck }" role="listitem">
-          <span class="bpmn-path-gateway">{{ row.gateway }}</span>
-          <span class="bpmn-path-outcome">{{ row.outcome }}</span>
+        <!-- Divs with list roles: deck themes style every ul/li in a slide as bullets. -->
+        <div v-if="decisionRows.length" class="bpmn-path-decisions" role="list" aria-label="Gateway decisions">
+          <div v-for="row in decisionRows" :key="row.gatewayId" class="bpmn-path-decision" :class="{ 'is-stuck': row.stuck }" role="listitem">
+            <span class="bpmn-path-gateway">{{ row.gateway }}</span>
+            <span class="bpmn-path-outcome">{{ row.outcome }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -208,6 +229,14 @@ function updateFromNumber(name: string, event: Event): void {
   if (!Number.isNaN(number)) update(name, number)
 }
 
+// How far the slider is filled, in percent of its range.
+function sliderFill(field: PathVariableField): number {
+  if (field.control.kind !== 'number') return 0
+  const { min, max } = field.control
+  const value = Number(values.value[field.name])
+  return Number.isFinite(value) ? Math.min(100, Math.max(0, ((value - min) / (max - min)) * 100)) : 0
+}
+
 function startField(field: PathVariableField): StartField {
   return { name: field.name, type: field.control.kind === 'json' ? 'json' : 'auto', usedBy: [] }
 }
@@ -225,97 +254,251 @@ function updateFromText(field: PathVariableField, event: Event): void {
 </script>
 
 <style scoped>
-/* Colours come from --bpmn-path-* custom properties, so a theme can restyle the panel from any ancestor. */
+/* Colours follow the roles of the Miragon design system (--cd-ui-*). A deck theme restyles the panel
+   by setting the --bpmn-path-* custom properties on any ancestor; the dark theme sets them here. */
 .bpmn-path-simulation {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.4;
   color: var(--bpmn-path-text, #1d1d1d);
 }
 
 .bpmn-path-simulation.diagram-theme-dark {
-  --bpmn-path-text: #e6e6e6;
-  --bpmn-path-muted: #b3b3b3;
-  --bpmn-path-border: #4d4d4d;
-  --bpmn-path-surface: #262626;
+  --bpmn-path-text: #ffffff;
+  --bpmn-path-muted: #bbbbbb;
+  --bpmn-path-line: #464646;
+  --bpmn-path-outline: #8f8a8a;
+  --bpmn-path-field: #1d1d1d;
+  --bpmn-path-chip: #383838;
   --bpmn-path-accent: #6b8aff;
-  --bpmn-path-danger: #ff8787;
+  --bpmn-path-focus: #6b8aff;
+  --bpmn-path-danger: #fb6d73;
+  --bpmn-path-danger-surface: #282828;
+}
+
+/* bpmn.io watermark; shrink so it stays subordinate, as in the modeler preview. */
+.bpmn-path-simulation :deep(.bjs-powered-by) {
+  transform: scale(0.6);
+  transform-origin: bottom right;
 }
 
 .bpmn-path-panel {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 8px 16px;
-  padding: 0 5px;
-  font-size: 12px;
+  justify-content: space-between;
+  gap: 10px 24px;
+  margin: 2px 5px 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--bpmn-path-line, #e6e2e2);
+}
+
+.bpmn-path-inputs,
+.bpmn-path-results,
+.bpmn-path-measures {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 20px;
+}
+
+.bpmn-path-results {
+  margin-left: auto;
+}
+
+/* Without controls the results span the panel: measures left, decisions right. */
+.bpmn-path-results:only-child {
+  flex: 1;
+  margin-left: 0;
+  justify-content: space-between;
 }
 
 .bpmn-path-field {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
-.bpmn-path-field--boolean {
-  align-items: flex-start;
-}
-
-.bpmn-path-name {
-  font-size: 11px;
+.bpmn-path-label {
   font-weight: 600;
-  color: var(--bpmn-path-muted, #5b5b5b);
+  white-space: nowrap;
 }
 
-.bpmn-path-field input[type='number'],
-.bpmn-path-field input[type='text'],
-.bpmn-path-field select {
-  font: inherit;
-  width: 110px;
-  padding: 3px 6px;
-  border: 1px solid var(--bpmn-path-border, #d4d4d4);
-  border-radius: 4px;
-  background: var(--bpmn-path-surface, #ffffff);
-  color: inherit;
-}
-
-.bpmn-path-field select {
-  width: auto;
-}
-
-.bpmn-path-field input[type='range'],
-.bpmn-path-field input[type='checkbox'] {
-  accent-color: var(--bpmn-path-accent, #335de5);
-}
-
-.bpmn-path-field input.is-invalid {
-  border-color: var(--bpmn-path-danger, #c92a2a);
-}
-
-.bpmn-path-measures {
+.bpmn-path-label-row {
   display: flex;
-  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bpmn-path-input,
+.bpmn-path-value {
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 8px;
+  font: inherit;
+  color: inherit;
+  background: var(--bpmn-path-field, #f9f7f7);
+  border: 1px solid var(--bpmn-path-outline, #8f8a8a);
+  border-radius: 6px;
+}
+
+.bpmn-path-input {
+  min-width: 120px;
+}
+
+.bpmn-path-value {
+  width: 72px;
+  height: 22px;
+  padding: 0 6px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  -moz-appearance: textfield;
+}
+
+.bpmn-path-value::-webkit-inner-spin-button,
+.bpmn-path-value::-webkit-outer-spin-button {
+  -webkit-appearance: none;
   margin: 0;
 }
 
-.bpmn-path-measures dt {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--bpmn-path-muted, #5b5b5b);
+.bpmn-path-input:focus,
+.bpmn-path-value:focus {
+  border-color: var(--bpmn-path-accent, #335de5);
 }
 
-.bpmn-path-measures dd {
+.bpmn-path-input:focus-visible,
+.bpmn-path-value:focus-visible,
+.bpmn-path-slider:focus-visible,
+.bpmn-path-check input:focus-visible {
+  outline: 2px solid var(--bpmn-path-focus, #2b50d4);
+  outline-offset: 2px;
+}
+
+.bpmn-path-input.is-invalid {
+  border-color: var(--bpmn-path-danger, #cd1839);
+}
+
+/* Slider: a thin track filled in the accent up to the value, a round thumb. */
+.bpmn-path-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 180px;
+  height: 28px;
   margin: 0;
-  font-size: 16px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.bpmn-path-slider::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--bpmn-path-accent, #335de5) var(--bpmn-path-fill), var(--bpmn-path-line, #e6e2e2) var(--bpmn-path-fill));
+}
+
+.bpmn-path-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--bpmn-path-accent, #335de5) var(--bpmn-path-fill), var(--bpmn-path-line, #e6e2e2) var(--bpmn-path-fill));
+}
+
+.bpmn-path-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: var(--bpmn-path-accent, #335de5);
+  border: 2px solid var(--bpmn-path-field, #f9f7f7);
+  box-shadow: 0 0 0 1px var(--bpmn-path-accent, #335de5);
+}
+
+.bpmn-path-slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bpmn-path-accent, #335de5);
+  border: 2px solid var(--bpmn-path-field, #f9f7f7);
+  box-shadow: 0 0 0 1px var(--bpmn-path-accent, #335de5);
+}
+
+/* Checkbox: inset like a field, checked shows the tick and border in the accent, no blue fill. */
+.bpmn-path-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.bpmn-path-check input {
+  -webkit-appearance: none;
+  appearance: none;
+  position: relative;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  background: var(--bpmn-path-field, #f9f7f7);
+  border: 1.5px solid var(--bpmn-path-outline, #8f8a8a);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.bpmn-path-check input:checked {
+  border-color: var(--bpmn-path-accent, #335de5);
+}
+
+.bpmn-path-check input:checked::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid var(--bpmn-path-accent, #335de5);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.bpmn-path-check-value {
+  color: var(--bpmn-path-muted, #6b6666);
+  font-variant-numeric: tabular-nums;
+}
+
+.bpmn-path-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.bpmn-path-stat .bpmn-path-label {
+  color: var(--bpmn-path-muted, #6b6666);
+}
+
+.bpmn-path-stat-value {
+  font-size: 20px;
   font-weight: 700;
-  color: var(--bpmn-path-accent, #335de5);
+  line-height: 26px;
+  font-variant-numeric: tabular-nums;
 }
 
 .bpmn-path-decisions {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px 12px;
+  gap: 6px;
+}
+
+.bpmn-path-decision {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: var(--bpmn-path-chip, #eef1fd);
+  white-space: nowrap;
 }
 
 .bpmn-path-gateway {
@@ -323,11 +506,17 @@ function updateFromText(field: PathVariableField, event: Event): void {
 }
 
 .bpmn-path-gateway::after {
-  content: ' → ';
-  color: var(--bpmn-path-muted, #5b5b5b);
+  content: ' →';
+  font-weight: 400;
+  color: var(--bpmn-path-muted, #6b6666);
 }
 
-.bpmn-path-decisions .is-stuck .bpmn-path-outcome {
-  color: var(--bpmn-path-danger, #c92a2a);
+.bpmn-path-decision.is-stuck {
+  background: var(--bpmn-path-danger-surface, #fbeef0);
+  box-shadow: inset 3px 0 0 var(--bpmn-path-danger, #cd1839);
+}
+
+.bpmn-path-decision.is-stuck .bpmn-path-outcome {
+  color: var(--bpmn-path-danger, #cd1839);
 }
 </style>

@@ -83,7 +83,7 @@ function lastSimulatedVariables(): Variables {
 }
 
 function fieldNames(wrapper: VueWrapper): string[] {
-  return wrapper.findAll('.bpmn-path-field .bpmn-path-name').map(name => name.text())
+  return wrapper.findAll('.bpmn-path-inputs .bpmn-path-label').map(name => name.text())
 }
 
 describe('BpmnPathSimulation.vue', () => {
@@ -129,6 +129,13 @@ describe('BpmnPathSimulation.vue', () => {
 
     expect(lastSimulatedVariables()).toEqual({ orderTotal: 7000, creditworthy: true })
     expect((wrapper.find('input[name="orderTotal"]').element as HTMLInputElement).value).toBe('7000')
+  })
+
+  it('fills the slider track up to the value', async () => {
+    const wrapper = await mountRendered({ variables: { orderTotal: 6800 } })
+
+    const slider = wrapper.find('input[name="orderTotal-slider"]').element as HTMLInputElement
+    expect(slider.style.getPropertyValue('--bpmn-path-fill')).toBe('34%')
   })
 
   it('marks the path again when a switch is toggled', async () => {

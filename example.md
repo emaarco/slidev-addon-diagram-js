@@ -180,7 +180,9 @@ accent: blue
 
 Move the order total: the gateways decide at once, no token needed.
 
-<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" :measures="{ 'Lead time (days)': 'sim:duration' }" height="210px" />
+<DiagramFrame padding="compact">
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" :measures="{ 'Lead time (days)': 'sim:duration' }" height="200px" />
+</DiagramFrame>
 
 ---
 layout: content
@@ -191,7 +193,9 @@ accent: blue
 
 With `steps`, each click changes the data: a large order, then extras.
 
-<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 1290, creditworthy: true, approved: true, insurance: false, accessories: [] }" :steps="[{ orderTotal: 6800 }, { insurance: true, accessories: ['lock'] }]" controls="none" showDecisions :measures="{ 'Lead time (days)': 'sim:duration' }" height="230px" />
+<DiagramFrame padding="compact">
+<BpmnPathSimulation bpmnFilePath="/bike-order.bpmn" :variables="{ orderTotal: 1290, creditworthy: true, approved: true, insurance: false, accessories: [] }" :steps="[{ orderTotal: 6800 }, { insurance: true, accessories: ['lock'] }]" controls="none" showDecisions :measures="{ 'Lead time (days)': 'sim:duration' }" height="220px" />
+</DiagramFrame>
 
 ---
 layout: content
@@ -200,9 +204,18 @@ eyebrow: Bpmn-Path-Simulation
 accent: blue
 ---
 
-With `engine="camunda7"`, JUEL conditions decide the path.
+<SplitView ratio="1.3/1">
+<template #visual>
+<DiagramFrame padding="compact">
+<BpmnPathSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" :variables="{ score: 640 }" showDecisions height="200px" />
+</DiagramFrame>
+</template>
 
-<BpmnPathSimulation bpmnFilePath="/loan-approval.bpmn" engine="camunda7" :variables="{ score: 640 }" showDecisions height="230px" />
+- `engine="camunda7"` reads **JUEL**
+- The slider spans the `700` it is compared with
+- No token simulation, so it fits a **column**
+
+</SplitView>
 
 ---
 layout: content
