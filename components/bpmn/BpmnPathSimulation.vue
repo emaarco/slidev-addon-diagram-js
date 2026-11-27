@@ -16,10 +16,11 @@
     </p>
 
     <div v-if="hasPanel" class="bpmn-path-panel">
-      <div v-if="scenarios.length > 1 || fields.length" class="bpmn-path-inputs">
-        <label v-if="scenarios.length > 1" class="bpmn-path-field">
+      <div v-if="hasScenarioChoice || fields.length" class="bpmn-path-inputs">
+        <label v-if="hasScenarioChoice" class="bpmn-path-field">
           <span class="bpmn-path-label">Scenario</span>
           <select v-model="selectedScenarioId" class="bpmn-path-input" @change="resetValues">
+            <option :value="NO_DATA">No data</option>
             <option v-for="scenario in scenarios" :key="scenario.id" :value="scenario.id">{{ scenario.name }}</option>
           </select>
         </label>
@@ -101,6 +102,7 @@ const props = withDefaults(defineProps<{
   scenariosFilePath?: string
   controls?: 'auto' | 'none' | string[]
   ranges?: Record<string, Partial<NumberRange>>
+  scenario?: string
   steps?: Variables[]
   width?: string
   height?: string
@@ -113,6 +115,8 @@ const props = withDefaults(defineProps<{
   height: '400px',
 })
 
+// The dropdown value for no data (`scenario="none"`): an unmarked diagram without controls.
+const NO_DATA = ''
 const codec = new StartFieldCodec()
 const scenariosLoader = new DiagramFileLoader('BPMN')
 const theme = new DocumentTheme(() => props.theme).name
@@ -132,6 +136,7 @@ const selectedScenarioId = ref('')
 const scenarioError = ref<string | null>(null)
 const values = shallowRef<Variables>({})
 const path = shallowRef<SimulatedPath | null>(null)
+const showsNoData = computed(() => scenarios.value.length > 0 && selectedScenarioId.value === NO_DATA)
 
 let currentClick = () => 0
 if (props.steps?.length) {
@@ -146,7 +151,7 @@ if (props.steps?.length) {
 }
 
 const fields = computed<PathVariable[]>(() => {
-  if (!viewer.value || props.controls === 'none') return []
+  if (!viewer.value || props.controls === 'none' || showsNoData.value) return []
   const derived = viewer.value.variablesReadByConditions(values.value, props.ranges)
   const controls = props.controls
   return controls === 'auto' ? derived : derived.filter(field => controls.includes(field.name))
@@ -161,7 +166,9 @@ const stuckGateways = computed(() => {
     .map(([id, decision]) => ({ id, name: activeViewer.elementName(id), reason: decision.stuckReason! }))
 })
 
-const hasPanel = computed(() => scenarios.value.length > 1 || fields.value.length > 0)
+// One scenario alone needs no dropdown, unless the slide starts without data and has to reach it.
+const hasScenarioChoice = computed(() => scenarios.value.length > 1 || (scenarios.value.length > 0 && props.scenario === 'none'))
+const hasPanel = computed(() => hasScenarioChoice.value || fields.value.length > 0)
 
 watch(values, simulate)
 
@@ -177,10 +184,19 @@ async function loadScenarios(): Promise<void> {
   if (!props.scenariosFilePath) return
   try {
     scenarios.value = new ScenarioParser().parse(JSON.parse(await scenariosLoader.fetchFile(props.scenariosFilePath)))
-    selectedScenarioId.value = scenarios.value[0]?.id ?? ''
+    selectedScenarioId.value = initialScenarioId()
   } catch (error) {
     scenarioError.value = `Failed to load the scenarios: ${error instanceof Error ? error.message : String(error)}`
   }
+}
+
+function initialScenarioId(): string {
+  if (props.scenario === 'none') return NO_DATA
+  const firstId = scenarios.value[0]?.id ?? NO_DATA
+  if (props.scenario === undefined) return firstId
+  if (scenarios.value.some(candidate => candidate.id === props.scenario)) return props.scenario
+  scenarioError.value = `Unknown scenario "${props.scenario}", starting from "${firstId}"`
+  return firstId
 }
 
 // The scenario's variables over the `variables` prop, then every step up to the current click.
@@ -193,6 +209,11 @@ function resetValues(): void {
 
 function simulate(): void {
   if (!viewer.value) return
+  if (showsNoData.value) {
+    viewer.value.clear()
+    path.value = null
+    return
+  }
   path.value = viewer.value.simulate(values.value)
 }
 

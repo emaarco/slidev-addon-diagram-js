@@ -68,7 +68,7 @@ function variablesOf(scenario: Scenario | undefined, fallbacks: readonly Scenari
   return typeof variables.score === 'number' ? { ...variables, creditworthy: variables.score >= 600 } : variables
 }
 
-const pathSimulation = { simulate: vi.fn(simulatePath), deriveVariables: vi.fn(deriveVariables), variablesOf: vi.fn(variablesOf) }
+const pathSimulation = { simulate: vi.fn(simulatePath), deriveVariables: vi.fn(deriveVariables), variablesOf: vi.fn(variablesOf), clear: vi.fn() }
 
 function mockFetchFiles(files: Record<string, string>) {
   vi.stubGlobal('fetch', vi.fn().mockImplementation((url: string) => {
@@ -212,6 +212,49 @@ describe('BpmnPathSimulation.vue', () => {
       await wrapper.find('select').setValue('large-order')
 
       expect(lastSimulatedVariables()).toMatchObject({ orderTotal: 6890, score: 680 })
+    })
+
+    it('starts from the scenario named by scenario', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'large-order' })
+
+      expect((wrapper.find('select').element as HTMLSelectElement).value).toBe('large-order')
+      expect(lastSimulatedVariables()).toMatchObject({ orderTotal: 6890, score: 680 })
+    })
+
+    it('reports a scenario the file does not hold and starts from the first one', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'medium-order' })
+
+      expect(wrapper.text()).toContain('Unknown scenario "medium-order"')
+      expect(lastSimulatedVariables()).toMatchObject({ orderTotal: 1290 })
+    })
+
+    it('offers "No data" before the scenarios', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json' })
+
+      expect(wrapper.findAll('option').map(option => option.text())).toEqual(['No data', 'Small order', 'Large order'])
+    })
+
+    it('starts without data with scenario="none": no path, no controls', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none' })
+
+      expect(pathSimulation.simulate).not.toHaveBeenCalled()
+      expect(pathSimulation.clear).toHaveBeenCalled()
+      expect(wrapper.find('select').element.selectedOptions[0].text).toBe('No data')
+      expect(fieldNames(wrapper)).toEqual(['Scenario'])
+      expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
+    })
+
+    it('marks the path once a scenario is picked, and clears it again on "No data"', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none' })
+
+      await wrapper.find('select').setValue('large-order')
+      expect(lastSimulatedVariables()).toMatchObject({ orderTotal: 6890 })
+      expect(fieldNames(wrapper)).toContain('orderTotal')
+
+      pathSimulation.clear.mockClear()
+      await wrapper.find('select').setValue('')
+      expect(pathSimulation.clear).toHaveBeenCalled()
+      expect(fieldNames(wrapper)).toEqual(['Scenario'])
     })
 
     it('reports scenarios that cannot be loaded and still marks the path', async () => {
