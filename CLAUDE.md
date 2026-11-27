@@ -149,7 +149,7 @@ and `components/wardley-maps/`.
   `BpmnPathSimulationViewer` hands itself to the component through the notation's `onShown` once it
   has imported; the component takes the viewer on LiveDiagram's `rendered` and calls `simulate()` on
   every change of the variables (a theme switch builds a new viewer and marks the path again).
-  The controls come from the service's `deriveVariables(values, { ranges })` (one `PathVariable` per variable the
+  The controls (`src/bpmn/ui/PathSimulationPanel.vue`, shared with `BpmnModeler`) come from the service's `deriveVariables(values, { ranges })` (one `PathVariable` per variable the
   conditions read, a slider range for numbers, fixed by the `ranges` prop) and a scenario's values from `variablesOf(scenario, fallbacks)`. The dropdown's first entry, "No data" (`scenario="none"`
   starts there), empties the controls: they show unset (typed from the conditions upstream) while variables without a control
   keep their value from `variables` or the scenarios, the diagram is unmarked (`clear()`) until a control is set, and a gateway that only waits for `missingVariables` gets no notice. `steps` registers slide clicks
@@ -162,7 +162,10 @@ and `components/wardley-maps/`.
   the token simulation to preview and modeler. `transactionBoundaries` shows the
   `camunda-transaction-boundaries` overlay; it only takes effect with an engine whose
   `supportsTransactionBoundaries` is set (`camunda7`, which reads `camunda:asyncBefore`/`asyncAfter`).
-  `BpmnModelerSession` builds the modeler config and tracks `commandStack.changed`.
+  `BpmnModelerSession` builds the modeler config and tracks `commandStack.changed`. `pathSimulation` adds the
+  `PathSimulationModule` to preview and modeler: both hand their `DiagramPathSimulation` (a `PathSimulationTarget`) to
+  the component, which renders `src/bpmn/ui/PathSimulationPanel.vue` in `DiagramModeler`'s `panel` slot; the slot sits
+  below the preview and is teleported into the fullscreen modeler while it is open, and every edit re-simulates.
 
 ### DMN (`components/dmn/`, `src/dmn/`)
 

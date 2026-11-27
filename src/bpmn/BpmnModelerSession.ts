@@ -1,23 +1,42 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import tokenSimulationModeler from 'bpmn-js-token-simulation'
+import { PathSimulationModule } from '@emaarco/bpmn-js-data-simulation'
 import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { ModelerContainers, ModelerSession } from '../shared/lib/notation'
 import { fitDiagram } from '../shared/lib/utils/fitDiagram'
+import { DiagramPathSimulation } from './DiagramPathSimulation'
 import { type Engine, bpmnEngines } from './engines/bpmnEngines'
+import type { PathSimulationTarget } from './PathSimulationTarget'
+
+export interface BpmnModelerPathOptions {
+  // The expression language the conditions are read in.
+  engine: Engine
+  // The diagram the path is marked on: the preview's viewer, the open modeler, or null once that is gone.
+  onTarget: (target: PathSimulationTarget | null, of: 'preview' | 'modeler') => void
+  // Every edit in the modeler, so the path follows it.
+  onModelChanged: () => void
+}
 
 export interface BpmnModelerOptions {
   engine?: Engine
   tokenSimulation: boolean
   transactionBoundaries: boolean
+  pathSimulation?: BpmnModelerPathOptions
   maxScale?: number
 }
 
 export class BpmnModelerSession implements ModelerSession {
   private hasChanges = false
 
-  private constructor(private readonly modeler: InstanceType<typeof BpmnModeler>) {
+  private constructor(
+    private readonly modeler: InstanceType<typeof BpmnModeler>,
+    private readonly pathOptions?: BpmnModelerPathOptions,
+  ) {
     const eventBus = modeler.get('eventBus') as any
-    eventBus.on('commandStack.changed', () => { this.hasChanges = true })
+    eventBus.on('commandStack.changed', () => {
+      this.hasChanges = true
+      pathOptions?.onModelChanged()
+    })
   }
 
   static async open(source: string, containers: ModelerContainers, options: BpmnModelerOptions, theme = new DiagramTheme()): Promise<BpmnModelerSession> {
@@ -29,9 +48,10 @@ export class BpmnModelerSession implements ModelerSession {
       throw err
     }
 
-    const session = new BpmnModelerSession(modeler)
+    const session = new BpmnModelerSession(modeler, options.pathSimulation)
     session.fit(options.maxScale)
     if (options.transactionBoundaries) session.showTransactionBoundaries(options.engine)
+    options.pathSimulation?.onTarget(new DiagramPathSimulation(name => modeler.get(name)), 'modeler')
     return session
   }
 
@@ -46,6 +66,7 @@ export class BpmnModelerSession implements ModelerSession {
   }
 
   destroy(): void {
+    this.pathOptions?.onTarget(null, 'modeler')
     this.modeler.destroy()
   }
 
@@ -79,6 +100,10 @@ export class BpmnModelerSession implements ModelerSession {
     }
     if (containers.propertiesPanel) config.propertiesPanel = { parent: containers.propertiesPanel }
     if (options.tokenSimulation) additionalModules.push(tokenSimulationModeler)
+    if (options.pathSimulation) {
+      additionalModules.push(PathSimulationModule)
+      config.dataSimulation = { engine: options.pathSimulation.engine }
+    }
     if (additionalModules.length) config.additionalModules = additionalModules
 
     return config

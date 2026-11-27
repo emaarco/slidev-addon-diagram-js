@@ -55,9 +55,11 @@ describe('DiagramModeler.vue', () => {
   function mountModeler(
     props: { filePath?: string; propertiesPanelOpen?: boolean; theme?: 'light' | 'dark' } = { filePath: 'board.storm' },
     notation: ModelerNotation & PreviewNotation = staticNotation(),
+    slots: Record<string, string> = {},
   ) {
     wrapper = mount(DiagramModeler, {
       attachTo: document.body,
+      slots,
       props: {
         ...props,
         notation,
@@ -150,6 +152,40 @@ describe('DiagramModeler.vue', () => {
     expect(fetchSpy).not.toHaveBeenCalled()
     expect(exportSvg.mock.calls[0][0]).toBe('title New Board')
     expect(findButton('Edit')).toBeDefined()
+  })
+
+  describe('with a panel', () => {
+    const PANEL = { panel: `<template #panel="{ inFullscreen }"><p class="test-panel">{{ inFullscreen ? 'fullscreen' : 'preview' }}</p></template>` }
+
+    async function mountWithPanel() {
+      mockFetchSuccess()
+      mountModeler({ filePath: 'board.storm' }, staticNotation(), PANEL)
+      await flushPromises()
+    }
+
+    function panelHost(): HTMLElement | null {
+      return document.body.querySelector('.diagram-modeler-panel-host')
+    }
+
+    it('shows the panel below the preview, which keeps the height', async () => {
+      await mountWithPanel()
+
+      const panel = wrapper.find('.test-panel')
+      expect(panel.text()).toBe('preview')
+      expect(wrapper.find('.diagram-modeler-preview').attributes('style')).toContain('height: 500px')
+      expect((wrapper.element as HTMLElement).style.height).toBe('')
+    })
+
+    it('moves the panel into the fullscreen modeler and back on close', async () => {
+      await mountWithPanel()
+
+      await openModelerFullscreen()
+      expect(panelHost()?.querySelector('.test-panel')?.textContent).toBe('fullscreen')
+      expect(wrapper.find('.test-panel').exists()).toBe(false)
+
+      await closeModeler()
+      expect(wrapper.find('.test-panel').text()).toBe('preview')
+    })
   })
 
   it('opens the modeler fullscreen with the rendered source', async () => {

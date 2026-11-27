@@ -1,41 +1,50 @@
 <template>
-  <div class="diagram-modeler" :class="{ 'diagram-theme-dark': props.theme === 'dark' }" :style="{ width: props.width, height: props.height }">
-    <LiveDiagram
-      v-if="props.notation.rendering === 'live'"
-      :notation="props.notation"
-      :filePath="props.filePath"
-      :source="previewSource"
-      width="100%"
-      height="100%"
-      @rendered="rememberRenderedSource"
-    />
-    <StaticDiagram
-      v-else
-      :notation="props.notation"
-      :filePath="props.filePath"
-      :source="previewSource"
-      width="100%"
-      height="100%"
-      @rendered="rememberRenderedSource"
-    />
+  <div class="diagram-modeler" :class="{ 'diagram-theme-dark': props.theme === 'dark' }" :style="{ width: props.width, height: $slots.panel ? undefined : props.height }">
+    <!-- With a panel the height is the preview's, and the panel adds its own below. -->
+    <div class="diagram-modeler-preview" :style="{ height: $slots.panel ? props.height : '100%' }">
+      <LiveDiagram
+        v-if="props.notation.rendering === 'live'"
+        :notation="props.notation"
+        :filePath="props.filePath"
+        :source="previewSource"
+        width="100%"
+        height="100%"
+        @rendered="rememberRenderedSource"
+      />
+      <StaticDiagram
+        v-else
+        :notation="props.notation"
+        :filePath="props.filePath"
+        :source="previewSource"
+        width="100%"
+        height="100%"
+        @rendered="rememberRenderedSource"
+      />
 
-    <ToolbarButton
-      v-if="renderedSource !== null"
-      title="Open modeler"
-      label="Edit"
-      :position="{ top: '12px', right: '12px', zIndex: 10 }"
-      @click="openFullscreen"
-    >
-      <template #icon>
-        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-        </svg>
-      </template>
-    </ToolbarButton>
+      <ToolbarButton
+        v-if="renderedSource !== null"
+        title="Open modeler"
+        label="Edit"
+        :position="{ top: '12px', right: '12px', zIndex: 10 }"
+        @click="openFullscreen"
+      >
+        <template #icon>
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </template>
+      </ToolbarButton>
+    </div>
+
+    <!-- A strip below the preview, e.g. simulation controls. It moves into the fullscreen modeler while that is open. -->
+    <Teleport v-if="$slots.panel" defer :to="panelHostRef" :disabled="!isFullscreen || !panelHostRef">
+      <slot name="panel" :inFullscreen="isFullscreen" />
+    </Teleport>
 
     <FullscreenOverlay :open="isFullscreen" :theme="props.theme">
       <div ref="modelerCanvasRef" class="diagram-modeler-canvas"></div>
+      <div v-if="$slots.panel" ref="panelHostRef" class="diagram-modeler-panel-host"></div>
 
       <template #toolbar>
         <ToolbarButton title="Close modeler" label="Close" @click="closeFullscreen">
@@ -101,6 +110,7 @@ const isFullscreen = ref(false)
 const isPanelOpen = ref(props.propertiesPanelOpen)
 const modelerCanvasRef = ref<HTMLDivElement | null>(null)
 const propertiesPanelRef = ref<HTMLDivElement | null>(null)
+const panelHostRef = ref<HTMLDivElement | null>(null)
 const modelerStylesheet = props.modelerStyles ? new PageStylesheet(props.modelerStyles) : null
 let modelerSession: ModelerSession | null = null
 let latestOpenRequest = 0
@@ -176,7 +186,7 @@ onUnmounted(discardModelerSession)
 </script>
 
 <style scoped>
-.diagram-modeler {
+.diagram-modeler-preview {
   position: relative;
 }
 
@@ -189,6 +199,33 @@ onUnmounted(discardModelerSession)
 .diagram-modeler-canvas {
   width: 100%;
   height: 100%;
+}
+
+/* The panel slot in fullscreen: a floating card at the bottom centre, clear of the palette on the left and as wide as
+   its content up to the canvas. */
+.diagram-modeler-panel-host {
+  position: absolute;
+  left: 100px;
+  right: 100px;
+  bottom: 16px;
+  width: fit-content;
+  max-width: calc(100% - 200px);
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border: 1px solid #e6e2e2;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgb(29 29 29 / 12%);
+}
+
+.diagram-modeler-panel-host:empty {
+  display: none;
+}
+
+.diagram-theme-dark .diagram-modeler-panel-host {
+  border-color: #464646;
+  background: #282828;
 }
 
 .diagram-modeler-properties-panel {
