@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.14.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.14.0...v2.14.1) (2026-11-27)
+
+
+### Bug Fixes
+
+* keep the variables without a control on "No data" and mark the path only once a control is set ([#214](https://github.com/emaarco/slidev-addon-diagram-js/issues/214)) ([e2e1495](https://github.com/emaarco/slidev-addon-diagram-js/commit/e2e1495ce3efc15100feb4d907fe13ec216313f1))
+
 ## [2.14.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.13.0...v2.14.0) (2026-11-27)
 
 
