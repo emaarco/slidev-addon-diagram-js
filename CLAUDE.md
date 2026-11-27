@@ -151,8 +151,8 @@ and `components/wardley-maps/`.
   every change of the variables (a theme switch builds a new viewer and marks the path again).
   The controls come from the service's `deriveVariables(values, { ranges })` (one `PathVariable` per variable the
   conditions read, a slider range for numbers, fixed by the `ranges` prop) and a scenario's values from `variablesOf(scenario, fallbacks)`. The dropdown's first entry, "No data" (`scenario="none"`
-  starts there), empties the values: the controls show unset (typed from the conditions upstream), the diagram is unmarked
-  (`clear()`) until a value is set, and a gateway that only waits for `missingVariables` gets no notice. `steps` registers slide clicks
+  starts there), empties the controls: they show unset (typed from the conditions upstream) while variables without a control
+  keep their value from `variables` or the scenarios, the diagram is unmarked (`clear()`) until a control is set, and a gateway that only waits for `missingVariables` gets no notice. `steps` registers slide clicks
   through `useSlideContext().$clicksContext`, like the toolkit's stepped `Figure`. The marked path is
   the result; only a gateway that cannot decide gets a notice below the diagram, with its reason.
 - **`BpmnModeler.vue`** — `DiagramModeler` with `BpmnModelerNotation`. `engine` (`"zeebe"` |
