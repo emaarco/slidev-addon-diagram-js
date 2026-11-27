@@ -98,8 +98,8 @@ Like the data simulation, the path follows conditional flows that leave an activ
 | `bpmnFilePath` | `string` | *required* | Path to the `.bpmn` file (relative to `public/`) |
 | `engine` | `'zeebe' \| 'camunda7'` | `'zeebe'` | How conditions are read: FEEL for Zeebe, the JUEL subset for Camunda 7 |
 | `variables` | `object` | `{}` | The variables to start from. A scenario overrides them. |
-| `scenariosFilePath` | `string` | — | A [scenario file](https://github.com/emaarco/bpmn-js-data-simulation/blob/main/docs/scenarios.md) to start from its first scenario, with a dropdown when it holds several; its first entry, "No data", clears the path |
-| `scenario` | `string` | — | The scenario to start from, by id; `'none'` starts without data: the diagram unmarked, no controls, and the dropdown on "No data" until a scenario is picked |
+| `scenariosFilePath` | `string` | — | A [scenario file](https://github.com/emaarco/bpmn-js-data-simulation/blob/main/docs/scenarios.md) to start from its first scenario, with a dropdown when it holds several; its first entry, "No data", empties the controls |
+| `scenario` | `string` | — | The scenario to start from, by id; `'none'` starts on "No data": every control unset and the diagram unmarked, so the model can be explained first. The path grows with each value set; a gateway that still waits for a value ends it without a notice. A scenario picked later fills the controls |
 | `controls` | `'auto' \| 'none' \| string[]` | `'auto'` | Which variables get a control: every variable the conditions read, none, or the listed ones |
 | `ranges` | `Record<string, { min?, max?, step? }>` | — | Fixed slider bounds per variable, e.g. `{ screeningScore: { max: 100 } }`; without them a slider spans up to twice the largest number the variable is compared with |
 | `steps` | `object[]` | — | Variables applied one slide click after the other, each on top of the ones before |

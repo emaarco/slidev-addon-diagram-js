@@ -29,8 +29,14 @@
           <label v-if="field.type === 'boolean'" class="bpmn-path-field bpmn-path-field--boolean">
             <span class="bpmn-path-label">{{ field.name }}</span>
             <span class="bpmn-path-check">
-              <input type="checkbox" :name="field.name" :checked="values[field.name] === true" @change="updateFromCheckbox(field.name, $event)" />
-              <span class="bpmn-path-check-value">{{ values[field.name] === true }}</span>
+              <input
+                type="checkbox"
+                :name="field.name"
+                :checked="values[field.name] === true"
+                :indeterminate="values[field.name] === undefined"
+                @change="updateFromCheckbox(field.name, $event)"
+              />
+              <span class="bpmn-path-check-value">{{ values[field.name] === undefined ? UNSET : values[field.name] === true }}</span>
             </span>
           </label>
 
@@ -50,12 +56,13 @@
             <input
               type="range"
               class="bpmn-path-slider"
+              :class="{ 'is-unset': values[field.name] === undefined }"
               :name="`${field.name}-slider`"
               :aria-label="field.name"
               :min="field.range.min"
               :max="field.range.max"
               :step="field.range.step"
-              :value="values[field.name]"
+              :value="values[field.name] ?? field.range.min"
               :style="{ '--bpmn-path-fill': `${sliderFill(field)}%` }"
               @input="updateFromNumber(field.name, $event)"
             />
@@ -115,8 +122,9 @@ const props = withDefaults(defineProps<{
   height: '400px',
 })
 
-// The dropdown value for no data (`scenario="none"`): an unmarked diagram without controls.
+// The dropdown value for no data (`scenario="none"`): every control unset, the diagram unmarked until one is set.
 const NO_DATA = ''
+const UNSET = '–'
 const codec = new StartFieldCodec()
 const scenariosLoader = new DiagramFileLoader('BPMN')
 const theme = new DocumentTheme(() => props.theme).name
@@ -151,18 +159,19 @@ if (props.steps?.length) {
 }
 
 const fields = computed<PathVariable[]>(() => {
-  if (!viewer.value || props.controls === 'none' || showsNoData.value) return []
+  if (!viewer.value || props.controls === 'none') return []
   const derived = viewer.value.variablesReadByConditions(values.value, props.ranges)
   const controls = props.controls
   return controls === 'auto' ? derived : derived.filter(field => controls.includes(field.name))
 })
 
-// Gateways on the path that could not decide, with the reason the path simulation gives.
+// Gateways on the path that could not decide, with the reason the path simulation gives. A gateway that only waits for
+// variables to be set is no error: the path ends there until they are.
 const stuckGateways = computed(() => {
   const activeViewer = viewer.value
   if (!activeViewer || !path.value) return []
   return Object.entries(path.value.decisions)
-    .filter(([, decision]) => decision.stuckReason)
+    .filter(([, decision]) => decision.stuckReason && !decision.missingVariables)
     .map(([id, decision]) => ({ id, name: activeViewer.elementName(id), reason: decision.stuckReason! }))
 })
 
@@ -201,6 +210,10 @@ function initialScenarioId(): string {
 
 // The scenario's variables over the `variables` prop, then every step up to the current click.
 function resetValues(): void {
+  if (showsNoData.value) {
+    values.value = {}
+    return
+  }
   const scenario = scenarios.value.find(candidate => candidate.id === selectedScenarioId.value)
   const prefilled = viewer.value && scenarios.value.length ? viewer.value.variablesOf(scenario, scenarios.value) : {}
   const reachedSteps = (props.steps ?? []).slice(0, currentClick())
@@ -209,7 +222,7 @@ function resetValues(): void {
 
 function simulate(): void {
   if (!viewer.value) return
-  if (showsNoData.value) {
+  if (Object.keys(values.value).length === 0) {
     viewer.value.clear()
     path.value = null
     return
@@ -411,6 +424,17 @@ function updateFromText(field: PathVariable, event: Event): void {
   box-shadow: 0 0 0 1px var(--bpmn-path-accent, #335de5);
 }
 
+/* Unset: a hollow thumb at the start until the slider is moved. */
+.bpmn-path-slider.is-unset::-webkit-slider-thumb {
+  background: var(--bpmn-path-field, #f9f7f7);
+  box-shadow: 0 0 0 1px var(--bpmn-path-outline, #8f8a8a);
+}
+
+.bpmn-path-slider.is-unset::-moz-range-thumb {
+  background: var(--bpmn-path-field, #f9f7f7);
+  box-shadow: 0 0 0 1px var(--bpmn-path-outline, #8f8a8a);
+}
+
 /* Checkbox: inset like a field, checked shows the tick and border in the accent, no blue fill. */
 .bpmn-path-check {
   display: flex;
@@ -447,6 +471,16 @@ function updateFromText(field: PathVariable, event: Event): void {
   border: solid var(--bpmn-path-accent, #335de5);
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
+}
+
+/* Unset: an outlined checkbox with a dash. */
+.bpmn-path-check input:indeterminate::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  top: 6px;
+  width: 7px;
+  border-top: 2px solid var(--bpmn-path-muted, #6b6666);
 }
 
 /* As wide as "false", so toggling a switch never reflows the controls. */
