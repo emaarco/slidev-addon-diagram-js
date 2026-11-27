@@ -141,10 +141,15 @@ const fields = computed<PathVariable[]>(() => {
   return props.target ? withControl(props.target.variablesReadByConditions(values.value, props.ranges)) : []
 })
 
+// The variables the conditions read when the target arrived. A listed `controls` picks among these; a variable an edit
+// adds later always gets a control, so a condition typed in the modeler can be tried at once.
+let variablesAtStart = new Set<string>()
+
 function withControl(variables: PathVariable[]): PathVariable[] {
   const controls = props.controls
   if (controls === 'none') return []
-  return controls === 'auto' ? variables : variables.filter(variable => controls.includes(variable.name))
+  if (controls === 'auto') return variables
+  return variables.filter(variable => controls.includes(variable.name) || !variablesAtStart.has(variable.name))
 }
 
 // Gateways on the path that could not decide, with the reason the path simulation gives. A gateway that only waits for
@@ -169,6 +174,7 @@ watch(() => props.target, async (target) => {
   if (!target) return
   if (hasStarted) return simulate()
   hasStarted = true
+  variablesAtStart = new Set(target.variablesReadByConditions({}).map(variable => variable.name))
   await loadScenarios()
   resetValues()
 }, { immediate: true })
@@ -287,6 +293,10 @@ function updateFromText(field: PathVariable, event: Event): void {
   align-items: flex-end;
   justify-content: space-between;
   gap: 10px 24px;
+  /* Clips the dividers before the first field of a row; the padding keeps the focus outlines inside. */
+  overflow: hidden;
+  padding-block: 4px;
+  margin-block: -4px;
 }
 
 .bpmn-path-panel--divided {
@@ -295,17 +305,23 @@ function updateFromText(field: PathVariable, event: Event): void {
   border-top: 1px solid var(--bpmn-path-line, #e6e2e2);
 }
 
+/* Fields side by side, each with a thin line on its left. The inputs reach 1px plus the field's padding past the panel's
+   left edge, which clips them, so the line before the first field of every row stays hidden. */
 .bpmn-path-inputs {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 10px 20px;
+  align-items: stretch;
+  row-gap: 10px;
+  margin-left: -17px;
 }
 
 .bpmn-path-field {
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   gap: 4px;
+  padding: 0 16px;
+  border-left: 1px solid var(--bpmn-path-line, #e6e2e2);
 }
 
 .bpmn-path-label {

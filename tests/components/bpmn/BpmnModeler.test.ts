@@ -211,7 +211,10 @@ describe('BpmnModeler.vue', () => {
       return mountAndRender({ bpmnFilePath: 'test.bpmn', engine: 'zeebe', pathSimulation: true, variables: { orderTotal: 1290 } })
     }
 
-    beforeEach(() => Object.values(pathSimulation).forEach(fn => fn.mockClear()))
+    beforeEach(() => {
+      Object.values(pathSimulation).forEach(fn => fn.mockClear())
+      pathSimulation.deriveVariables.mockReturnValue([{ name: 'orderTotal', type: 'number', range: { min: 0, max: 10000, step: 100 } }])
+    })
 
     it('marks the path on the preview with its controls below', async () => {
       const wrapper = await mountWithPath()
@@ -234,6 +237,24 @@ describe('BpmnModeler.vue', () => {
 
       expect(pathSimulation.simulate).toHaveBeenCalledTimes(simulations + 1)
       expect(pathSimulation.simulate).toHaveBeenLastCalledWith({ orderTotal: 1290 })
+    })
+
+    it('gives a variable an edit adds a control, even next to a listed controls', async () => {
+      bpmnJs.services = { pathSimulation, elementRegistry: { get: () => undefined } }
+      mockFetchSuccess()
+      await mountAndRender({ bpmnFilePath: 'test.bpmn', pathSimulation: true, controls: ['creditworthy'], variables: { orderTotal: 1290 } })
+      await click('Open modeler')
+      const labels = () => [...document.body.querySelectorAll('.diagram-modeler-panel-host .bpmn-path-label')].map(label => label.textContent)
+      expect(labels()).toEqual([])
+
+      pathSimulation.deriveVariables.mockReturnValue([
+        { name: 'orderTotal', type: 'number', range: { min: 0, max: 10000, step: 100 } },
+        { name: 'testSize', type: 'number', range: { min: 0, max: 10, step: 0.1 } },
+      ])
+      bpmnJs.lastModeler().fire('commandStack.changed')
+      await settle()
+
+      expect(labels()).toEqual(['testSize'])
     })
 
     it('shows no controls without pathSimulation', async () => {
