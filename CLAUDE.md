@@ -150,7 +150,8 @@ and `components/wardley-maps/`.
   has imported; the component takes the viewer on LiveDiagram's `rendered` and calls `simulate()` on
   every change of the variables (a theme switch builds a new viewer and marks the path again).
   The controls come from the service's `deriveVariables(values, { ranges })` (one `PathVariable` per variable the
-  conditions read, a slider range for numbers, fixed by the `ranges` prop) and a scenario's values from `variablesOf(scenario, fallbacks)`. `steps` registers slide clicks
+  conditions read, a slider range for numbers, fixed by the `ranges` prop) and a scenario's values from `variablesOf(scenario, fallbacks)`. The dropdown's first entry, "No data" (`scenario="none"`
+  starts there), hides the controls and clears the path with the service's `clear()`. `steps` registers slide clicks
   through `useSlideContext().$clicksContext`, like the toolkit's stepped `Figure`. The marked path is
   the result; only a gateway that cannot decide gets a notice below the diagram, with its reason.
 - **`BpmnModeler.vue`** — `DiagramModeler` with `BpmnModelerNotation`. `engine` (`"zeebe"` |

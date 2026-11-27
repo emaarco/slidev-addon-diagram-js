@@ -25,6 +25,11 @@ export class BpmnPathSimulationViewer extends BpmnLiveViewer {
     return this.pathSimulation().simulate(variables)
   }
 
+  // Removes the marked path.
+  clear(): void {
+    this.pathSimulation().clear()
+  }
+
   // The variables the conditions read, each typed by its current value; `ranges` fixes slider bounds.
   variablesReadByConditions(values: Variables, ranges?: Readonly<Record<string, Partial<NumberRange>>>): PathVariable[] {
     return this.pathSimulation().deriveVariables(values, { ranges })
