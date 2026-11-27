@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.15.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.14.1...v2.15.0) (2026-11-27)
+
+
+### Features
+
+* mark the path in BpmnModeler with pathSimulation and follow every edit ([#217](https://github.com/emaarco/slidev-addon-diagram-js/issues/217)) ([8ddf0c8](https://github.com/emaarco/slidev-addon-diagram-js/commit/8ddf0c825004f9b8a18ebf7c45d97d1a03ceb33b))
+
 ## [2.14.1](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.14.0...v2.14.1) (2026-11-27)
 
 
