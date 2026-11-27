@@ -122,7 +122,8 @@ const props = withDefaults(defineProps<{
   height: '400px',
 })
 
-// The dropdown value for no data (`scenario="none"`): every control unset, the diagram unmarked until one is set.
+// The dropdown value for no data (`scenario="none"`): every control unset, the diagram unmarked until one is set. The
+// variables without a control keep their value, so a fixed minimum still applies.
 const NO_DATA = ''
 const UNSET = '–'
 const codec = new StartFieldCodec()
@@ -145,6 +146,8 @@ const scenarioError = ref<string | null>(null)
 const values = shallowRef<Variables>({})
 const path = shallowRef<SimulatedPath | null>(null)
 const showsNoData = computed(() => scenarios.value.length > 0 && selectedScenarioId.value === NO_DATA)
+// Whether a control was set since the values were last reset; "No data" stays unmarked until then.
+const touched = ref(false)
 
 let currentClick = () => 0
 if (props.steps?.length) {
@@ -158,12 +161,13 @@ if (props.steps?.length) {
   })
 }
 
-const fields = computed<PathVariable[]>(() => {
-  if (!viewer.value || props.controls === 'none') return []
-  const derived = viewer.value.variablesReadByConditions(values.value, props.ranges)
+const fields = computed<PathVariable[]>(() => viewer.value ? withControl(viewer.value.variablesReadByConditions(values.value, props.ranges)) : [])
+
+function withControl(variables: PathVariable[]): PathVariable[] {
   const controls = props.controls
-  return controls === 'auto' ? derived : derived.filter(field => controls.includes(field.name))
-})
+  if (controls === 'none') return []
+  return controls === 'auto' ? variables : variables.filter(variable => controls.includes(variable.name))
+}
 
 // Gateways on the path that could not decide, with the reason the path simulation gives. A gateway that only waits for
 // variables to be set is no error: the path ends there until they are.
@@ -210,8 +214,9 @@ function initialScenarioId(): string {
 
 // The scenario's variables over the `variables` prop, then every step up to the current click.
 function resetValues(): void {
+  touched.value = false
   if (showsNoData.value) {
-    values.value = {}
+    values.value = withoutControls({ ...viewer.value?.variablesOf(undefined, scenarios.value), ...props.variables })
     return
   }
   const scenario = scenarios.value.find(candidate => candidate.id === selectedScenarioId.value)
@@ -220,9 +225,14 @@ function resetValues(): void {
   values.value = Object.assign({ ...props.variables, ...prefilled }, ...reachedSteps)
 }
 
+function withoutControls(variables: Variables): Variables {
+  const controlled = new Set(withControl(viewer.value?.variablesReadByConditions({}) ?? []).map(variable => variable.name))
+  return Object.fromEntries(Object.entries(variables).filter(([name]) => !controlled.has(name)))
+}
+
 function simulate(): void {
   if (!viewer.value) return
-  if (Object.keys(values.value).length === 0) {
+  if (Object.keys(values.value).length === 0 || (showsNoData.value && !touched.value)) {
     viewer.value.clear()
     path.value = null
     return
@@ -231,6 +241,7 @@ function simulate(): void {
 }
 
 function update(name: string, value: unknown): void {
+  touched.value = true
   values.value = { ...values.value, [name]: value }
 }
 

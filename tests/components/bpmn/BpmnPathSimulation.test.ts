@@ -256,14 +256,28 @@ describe('BpmnPathSimulation.vue', () => {
       expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
     })
 
-    it('marks the path from the first value set without data, the other variables staying unset', async () => {
+    it('marks the path from the first value set without data, the other controls staying unset', async () => {
       const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none' })
 
       await wrapper.find('input[name="creditworthy"]').setValue(true)
 
-      expect(lastSimulatedVariables()).toEqual({ creditworthy: true })
+      expect(lastSimulatedVariables()).toEqual({ score: 680, creditworthy: true })
       expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
       expect(wrapper.find('input[name="orderTotal-slider"]').classes()).toContain('is-unset')
+    })
+
+    it('keeps the variables without a control on "No data": from the variables, else from the scenarios', async () => {
+      const wrapper = await mountRendered({
+        scenariosFilePath: 'test.scenarios.json',
+        scenario: 'none',
+        controls: ['creditworthy'],
+        variables: { orderTotal: 900 },
+      })
+
+      expect(pathSimulation.simulate).not.toHaveBeenCalled()
+      await wrapper.find('input[name="creditworthy"]').setValue(true)
+
+      expect(lastSimulatedVariables()).toEqual({ orderTotal: 900, accessories: [], score: 680, creditworthy: true })
     })
 
     it('fills the controls from a picked scenario, and empties them again on "No data"', async () => {
