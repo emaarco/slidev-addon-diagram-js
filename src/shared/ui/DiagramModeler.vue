@@ -201,13 +201,17 @@ onUnmounted(discardModelerSession)
   height: 100%;
 }
 
-/* The panel slot in fullscreen: a floating card at the bottom centre, clear of the palette on the left. */
+/* The panel slot in fullscreen: a floating card at the bottom centre, clear of the palette on the left and as wide as
+   its content up to the canvas. */
 .diagram-modeler-panel-host {
   position: absolute;
-  left: 50%;
+  left: 100px;
+  right: 100px;
   bottom: 16px;
-  transform: translateX(-50%);
+  width: fit-content;
   max-width: calc(100% - 200px);
+  margin-inline: auto;
+  box-sizing: border-box;
   padding: 12px 16px;
   border: 1px solid #e6e2e2;
   border-radius: 12px;

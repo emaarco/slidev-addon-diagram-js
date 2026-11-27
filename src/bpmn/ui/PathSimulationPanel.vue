@@ -289,14 +289,6 @@ function updateFromText(field: PathVariable, event: Event): void {
 
 .bpmn-path-panel {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 10px 24px;
-  /* Clips the dividers before the first field of a row; the padding keeps the focus outlines inside. */
-  overflow: hidden;
-  padding-block: 4px;
-  margin-block: -4px;
 }
 
 .bpmn-path-panel--divided {
@@ -305,23 +297,36 @@ function updateFromText(field: PathVariable, event: Event): void {
   border-top: 1px solid var(--bpmn-path-line, #e6e2e2);
 }
 
-/* Fields side by side, each with a thin line on its left. The inputs reach 1px plus the field's padding past the panel's
-   left edge, which clips them, so the line before the first field of every row stays hidden. */
+/* One row of fields, never wrapped: a second row would grow past the slide. What does not fit scrolls sideways.
+   The padding keeps the focus outlines inside the scroll box. */
 .bpmn-path-inputs {
   display: flex;
-  flex-wrap: wrap;
   align-items: stretch;
-  row-gap: 10px;
-  margin-left: -17px;
+  min-width: 0;
+  overflow-x: auto;
+  padding-block: 4px;
+  margin-block: -4px;
+  scrollbar-width: thin;
 }
 
+/* Each field after the first is set off by a thin vertical line. */
 .bpmn-path-field {
+  flex: none;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   gap: 4px;
-  padding: 0 16px;
+  padding: 0 14px;
   border-left: 1px solid var(--bpmn-path-line, #e6e2e2);
+}
+
+.bpmn-path-field:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+
+.bpmn-path-field:last-child {
+  padding-right: 0;
 }
 
 .bpmn-path-label {
@@ -350,10 +355,11 @@ function updateFromText(field: PathVariable, event: Event): void {
 
 .bpmn-path-input {
   min-width: 120px;
+  max-width: 180px;
 }
 
 .bpmn-path-value {
-  width: 72px;
+  width: 64px;
   height: 22px;
   padding: 0 6px;
   text-align: right;
@@ -388,7 +394,7 @@ function updateFromText(field: PathVariable, event: Event): void {
 .bpmn-path-slider {
   -webkit-appearance: none;
   appearance: none;
-  width: 180px;
+  width: 140px;
   height: 28px;
   margin: 0;
   background: transparent;
