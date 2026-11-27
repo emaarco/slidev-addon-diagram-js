@@ -41,21 +41,28 @@ const SCENARIOS = {
   ],
 }
 
-// Routes the credit gateway like the bike order's conditions; a missing order total leaves it stuck.
+// Routes the credit gateway like the bike order's conditions: an unset order total makes it wait, any other value that is
+// no number leaves it stuck.
 function simulatePath(variables: Variables): SimulatedPath {
   const orderTotal = variables.orderTotal
   const decision = typeof orderTotal === 'number'
     ? { flows: [], takenFlowIds: [orderTotal > 5000 ? 'Flow_Review' : 'Flow_Approved'] }
-    : { flows: [], takenFlowIds: [], stuckReason: 'orderTotal is missing' }
+    : orderTotal === undefined
+      ? { flows: [], takenFlowIds: [], stuckReason: 'No variable found with name orderTotal', missingVariables: ['orderTotal'] }
+      : { flows: [], takenFlowIds: [], stuckReason: 'orderTotal is not a number' }
   return { taken: [], skipped: [], decisions: { Gateway_Credit: decision }, measures: {} }
 }
+
+// How the bike order's conditions use a variable that has no value yet.
+const TYPE_WITHOUT_VALUE: Record<string, 'boolean' | 'number'> = { creditworthy: 'boolean', orderTotal: 'number' }
 
 // The variables the bike order's conditions read, typed by their value like the path simulation does.
 function deriveVariables(values: Variables, options?: DeriveVariablesOptions): PathVariable[] {
   return ['creditworthy', 'orderTotal', 'accessories', 'customer'].map((name): PathVariable => {
     const value = values[name]
-    if (typeof value === 'boolean') return { name, type: 'boolean' }
-    if (typeof value === 'number') return { name, type: 'number', range: { min: 0, max: 20000, step: 200, ...options?.ranges?.[name] } }
+    const type = value === undefined ? TYPE_WITHOUT_VALUE[name] : typeof value
+    if (type === 'boolean') return { name, type: 'boolean' }
+    if (type === 'number') return { name, type: 'number', range: { min: 0, max: 20000, step: 200, ...options?.ranges?.[name] } }
     if (value === undefined || typeof value === 'string') return { name, type: 'text' }
     return { name, type: 'json' }
   })
@@ -234,27 +241,42 @@ describe('BpmnPathSimulation.vue', () => {
       expect(wrapper.findAll('option').map(option => option.text())).toEqual(['No data', 'Small order', 'Large order'])
     })
 
-    it('starts without data with scenario="none": no path, no controls', async () => {
-      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none' })
+    it('starts without data with scenario="none": the diagram unmarked, every control unset', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none', variables: { insurance: false } })
 
       expect(pathSimulation.simulate).not.toHaveBeenCalled()
       expect(pathSimulation.clear).toHaveBeenCalled()
       expect(wrapper.find('select').element.selectedOptions[0].text).toBe('No data')
-      expect(fieldNames(wrapper)).toEqual(['Scenario'])
+      expect(fieldNames(wrapper)).toEqual(['Scenario', 'creditworthy', 'orderTotal', 'accessories', 'customer'])
+      const creditworthy = wrapper.find('input[name="creditworthy"]').element as HTMLInputElement
+      expect(creditworthy.indeterminate).toBe(true)
+      expect(wrapper.find('.bpmn-path-check-value').text()).toBe('–')
+      expect((wrapper.find('input[name="orderTotal"]').element as HTMLInputElement).value).toBe('')
+      expect(wrapper.find('input[name="orderTotal-slider"]').classes()).toContain('is-unset')
       expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
     })
 
-    it('marks the path once a scenario is picked, and clears it again on "No data"', async () => {
+    it('marks the path from the first value set without data, the other variables staying unset', async () => {
+      const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none' })
+
+      await wrapper.find('input[name="creditworthy"]').setValue(true)
+
+      expect(lastSimulatedVariables()).toEqual({ creditworthy: true })
+      expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
+      expect(wrapper.find('input[name="orderTotal-slider"]').classes()).toContain('is-unset')
+    })
+
+    it('fills the controls from a picked scenario, and empties them again on "No data"', async () => {
       const wrapper = await mountRendered({ scenariosFilePath: 'test.scenarios.json', scenario: 'none' })
 
       await wrapper.find('select').setValue('large-order')
       expect(lastSimulatedVariables()).toMatchObject({ orderTotal: 6890 })
-      expect(fieldNames(wrapper)).toContain('orderTotal')
+      expect(wrapper.find('input[name="orderTotal-slider"]').classes()).not.toContain('is-unset')
 
       pathSimulation.clear.mockClear()
       await wrapper.find('select').setValue('')
       expect(pathSimulation.clear).toHaveBeenCalled()
-      expect(fieldNames(wrapper)).toEqual(['Scenario'])
+      expect((wrapper.find('input[name="orderTotal"]').element as HTMLInputElement).value).toBe('')
     })
 
     it('reports scenarios that cannot be loaded and still marks the path', async () => {
@@ -300,11 +322,18 @@ describe('BpmnPathSimulation.vue', () => {
   })
 
   it('says why a gateway on the path cannot decide', async () => {
-    const wrapper = await mountRendered({ controls: 'none' })
+    const wrapper = await mountRendered({ controls: 'none', variables: { orderTotal: 'unknown' } })
 
     const notice = wrapper.find('.bpmn-path-stuck')
     expect(notice.attributes('role')).toBe('status')
-    expect(notice.text()).toBe('Credit OK? orderTotal is missing')
+    expect(notice.text()).toBe('Credit OK? orderTotal is not a number')
+  })
+
+  it('shows no notice for a gateway that only waits for a variable to be set', async () => {
+    const wrapper = await mountRendered({ variables: { creditworthy: true } })
+
+    expect(lastSimulatedVariables()).toEqual({ creditworthy: true })
+    expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
   })
 
   it('shows no notice while every gateway decides', async () => {
@@ -313,8 +342,8 @@ describe('BpmnPathSimulation.vue', () => {
     expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(false)
   })
 
-  it('drops the notice once the missing variable is set', async () => {
-    const wrapper = await mountRendered()
+  it('drops the notice once the variable holds a number', async () => {
+    const wrapper = await mountRendered({ variables: { orderTotal: 'unknown' } })
     expect(wrapper.find('.bpmn-path-stuck').exists()).toBe(true)
 
     await wrapper.find('input[name="orderTotal"]').setValue('1290')

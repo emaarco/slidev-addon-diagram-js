@@ -233,7 +233,7 @@ Marks the path the gateways take for the given data, without a token.
 | `engine` | `zeebe`, `camunda7` | FEEL or JUEL conditions |
 | `variables` | object | The data to start from |
 | `scenariosFilePath` | string | Or a scenario file |
-| `scenario` | id, `none` | Start scenario, or no data |
+| `scenario` | id, `none` | Start scenario, or empty controls |
 | `controls` | `auto`, `none`, list | Controls below the diagram |
 | `steps` | object[] | Variables per slide click |
 

@@ -9,3 +9,6 @@ dist/
 
 # Renders of the bpmn CLI
 .bpmn-render/
+
+# Playwright MCP session output
+.playwright-mcp/

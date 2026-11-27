@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@bpmn-io/properties-panel": "3.60.1",
-    "@emaarco/bpmn-js-data-simulation": "0.6.0",
+    "@emaarco/bpmn-js-data-simulation": "0.7.0",
     "@emaarco/dmn-js-simulation": "0.4.1",
     "@miragon/event-storming-renderer": "0.10.0",
     "@miragon/team-topologies-renderer": "0.22.2",
