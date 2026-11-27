@@ -5,6 +5,10 @@ vi.mock('bpmn-js/lib/Viewer', async () => ({ default: (await import('../../src/b
 vi.mock('bpmn-js/lib/Modeler', async () => ({ default: (await import('../../src/bpmn/fakeBpmnJs')).FakeBpmnModeler }))
 vi.mock('bpmn-js-token-simulation', () => ({ default: 'token-simulation-modeler' }))
 vi.mock('bpmn-js-token-simulation/lib/viewer', () => ({ default: 'token-simulation-viewer' }))
+vi.mock('@emaarco/bpmn-js-data-simulation', async importOriginal => ({
+  ...await importOriginal<object>(),
+  PathSimulationModule: 'path-simulation',
+}))
 vi.mock('../../../src/bpmn/engines/zeebe', () => ({
   zeebeEngine: { additionalModules: ['zeebe-module'], moddleExtensions: { zeebe: {} }, supportsTransactionBoundaries: false },
 }))
@@ -190,6 +194,53 @@ describe('BpmnModeler.vue', () => {
       wrapper.unmount()
 
       expect(bpmnJs.lastViewer().destroy).toHaveBeenCalledOnce()
+    })
+  })
+
+  describe('with the path simulation', () => {
+    const pathSimulation = {
+      simulate: vi.fn(() => ({ taken: [], skipped: [], decisions: {}, measures: {} })),
+      clear: vi.fn(),
+      deriveVariables: vi.fn(() => [{ name: 'orderTotal', type: 'number', range: { min: 0, max: 10000, step: 100 } }]),
+      variablesOf: vi.fn(() => ({})),
+    }
+
+    async function mountWithPath() {
+      bpmnJs.services = { pathSimulation, elementRegistry: { get: () => undefined } }
+      mockFetchSuccess()
+      return mountAndRender({ bpmnFilePath: 'test.bpmn', engine: 'zeebe', pathSimulation: true, variables: { orderTotal: 1290 } })
+    }
+
+    beforeEach(() => Object.values(pathSimulation).forEach(fn => fn.mockClear()))
+
+    it('marks the path on the preview with its controls below', async () => {
+      const wrapper = await mountWithPath()
+
+      expect(bpmnJs.lastViewer().options.additionalModules).toEqual(['path-simulation'])
+      expect(pathSimulation.simulate).toHaveBeenLastCalledWith({ orderTotal: 1290 })
+      expect(wrapper.find('.diagram-modeler-preview + .bpmn-path-controls input[name="orderTotal"]').exists()).toBe(true)
+    })
+
+    it('takes the controls and the values into the fullscreen modeler and follows every edit', async () => {
+      await mountWithPath()
+
+      await click('Open modeler')
+      expect(document.body.querySelector('.diagram-modeler-panel-host input[name="orderTotal"]')).not.toBeNull()
+      expect(bpmnJs.lastModeler().options.additionalModules).toContain('path-simulation')
+      const simulations = pathSimulation.simulate.mock.calls.length
+
+      bpmnJs.lastModeler().fire('commandStack.changed')
+      await settle()
+
+      expect(pathSimulation.simulate).toHaveBeenCalledTimes(simulations + 1)
+      expect(pathSimulation.simulate).toHaveBeenLastCalledWith({ orderTotal: 1290 })
+    })
+
+    it('shows no controls without pathSimulation', async () => {
+      mockFetchSuccess()
+      const wrapper = await mountAndRender()
+
+      expect(wrapper.find('.bpmn-path-controls').exists()).toBe(false)
     })
   })
 

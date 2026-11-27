@@ -2,6 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('bpmn-js/lib/Modeler', async () => ({ default: (await import('./fakeBpmnJs')).FakeBpmnModeler }))
 vi.mock('bpmn-js-token-simulation', () => ({ default: 'token-simulation-modeler' }))
+vi.mock('@emaarco/bpmn-js-data-simulation', async importOriginal => ({
+  ...await importOriginal<object>(),
+  PathSimulationModule: 'path-simulation',
+}))
 vi.mock('../../../src/bpmn/engines/zeebe', () => ({
   zeebeEngine: { additionalModules: ['zeebe-module-a', 'zeebe-module-b'], moddleExtensions: { zeebe: { name: 'zeebe' } }, supportsTransactionBoundaries: false },
 }))
@@ -180,5 +184,44 @@ describe('BpmnModelerSession', () => {
     session.destroy()
 
     expect(bpmnJs.lastModeler().destroy).toHaveBeenCalledOnce()
+  })
+
+  describe('with the path simulation', () => {
+    const pathSimulation = { simulate: vi.fn(() => 'path') }
+    let onTarget: ReturnType<typeof vi.fn>
+    let onModelChanged: ReturnType<typeof vi.fn>
+
+    function openWithPath() {
+      onTarget = vi.fn()
+      onModelChanged = vi.fn()
+      bpmnJs.services = { pathSimulation }
+      return open({ pathSimulation: { engine: 'camunda7', onTarget, onModelChanged } })
+    }
+
+    it('adds the path simulation module for the engine', async () => {
+      await openWithPath()
+
+      expect(bpmnJs.lastModeler().options).toMatchObject({ additionalModules: ['path-simulation'], dataSimulation: { engine: 'camunda7' } })
+    })
+
+    it('hands its path simulation over once the diagram is open, and takes it back on destroy', async () => {
+      const session = await openWithPath()
+
+      const [target, of] = onTarget.mock.calls[0]
+      expect(of).toBe('modeler')
+      expect(target.simulate({ orderTotal: 1 })).toBe('path')
+
+      session.destroy()
+      expect(onTarget).toHaveBeenLastCalledWith(null, 'modeler')
+    })
+
+    it('reports every edit so the path can follow it', async () => {
+      await openWithPath()
+
+      bpmnJs.lastModeler().fire('commandStack.changed')
+      bpmnJs.lastModeler().fire('commandStack.changed')
+
+      expect(onModelChanged).toHaveBeenCalledTimes(2)
+    })
   })
 })

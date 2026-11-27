@@ -4,6 +4,10 @@ vi.mock('bpmn-js/lib/Viewer', async () => ({ default: (await import('./fakeBpmnJ
 vi.mock('bpmn-js/lib/Modeler', async () => ({ default: (await import('./fakeBpmnJs')).FakeBpmnModeler }))
 vi.mock('bpmn-js-token-simulation', () => ({ default: 'token-simulation-modeler' }))
 vi.mock('bpmn-js-token-simulation/lib/viewer', () => ({ default: 'token-simulation-viewer' }))
+vi.mock('@emaarco/bpmn-js-data-simulation', async importOriginal => ({
+  ...await importOriginal<object>(),
+  PathSimulationModule: 'path-simulation',
+}))
 vi.mock('../../../src/bpmn/engines/zeebe', () => ({
   zeebeEngine: { additionalModules: ['zeebe-module'], moddleExtensions: { zeebe: {} } },
 }))
@@ -57,6 +61,16 @@ describe('BpmnModelerNotation', () => {
       await new BpmnModelerNotation({ ...DEFAULT_OPTIONS, tokenSimulation: true }, new DiagramTheme('dark')).createViewer(container)
 
       expect(bpmnJs.lastViewer().options.bpmnRenderer).toEqual({ defaultFillColor: 'transparent', defaultStrokeColor: '#e6e6e6', defaultLabelColor: '#e6e6e6' })
+    })
+
+    it('previews with the path simulation and hands it over once the diagram is shown', async () => {
+      const onTarget = vi.fn()
+      const pathSimulation = { engine: 'camunda7' as const, onTarget, onModelChanged: vi.fn() }
+      const viewer = await new BpmnModelerNotation({ ...DEFAULT_OPTIONS, tokenSimulation: true, pathSimulation }).createViewer(container)
+
+      expect(bpmnJs.lastViewer().options).toMatchObject({ additionalModules: ['path-simulation'], dataSimulation: { engine: 'camunda7' } })
+      await viewer.show('<definitions/>')
+      expect(onTarget).toHaveBeenCalledWith(expect.objectContaining({ simulate: expect.any(Function) }), 'preview')
     })
 
     it('adds the token simulation viewer modules with token simulation', async () => {

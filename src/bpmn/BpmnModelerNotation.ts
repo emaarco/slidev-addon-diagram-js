@@ -2,6 +2,7 @@ import { DiagramTheme } from '../shared/lib/DiagramTheme'
 import type { LiveNotation, LiveViewer, ModelerContainers, ModelerNotation, ModelerSession } from '../shared/lib/notation'
 import { BpmnLiveViewer } from './BpmnLiveViewer'
 import { type BpmnModelerOptions, BpmnModelerSession } from './BpmnModelerSession'
+import { BpmnPathSimulationNotation } from './BpmnPathSimulationNotation'
 import { BpmnSimulationViewer } from './BpmnSimulationViewer'
 import { tokenSimulationViewerModules } from './tokenSimulationViewerModules'
 
@@ -35,6 +36,16 @@ export class BpmnModelerNotation implements LiveNotation, ModelerNotation {
 
   async createViewer(container: HTMLElement): Promise<LiveViewer> {
     const bpmnRenderer = this.theme.rendererColors()
+    const path = this.options.pathSimulation
+    if (path) {
+      // The path simulation takes the preview: its marks and the token simulation's would cover each other.
+      return new BpmnPathSimulationNotation({
+        engine: path.engine,
+        maxScale: this.options.maxScale,
+        theme: this.theme,
+        onShown: viewer => path.onTarget(viewer.pathSimulation, 'preview'),
+      }).createViewer(container)
+    }
     if (!this.options.tokenSimulation) return new BpmnLiveViewer(container, { bpmnRenderer }, this.options.maxScale)
     return new BpmnSimulationViewer(container, { additionalModules: tokenSimulationViewerModules, bpmnRenderer }, this.options.maxScale)
   }

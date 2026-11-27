@@ -1,12 +1,10 @@
-import type { NumberRange, PathSimulation, PathVariable, Scenario, SimulatedPath, Variables } from '@emaarco/bpmn-js-data-simulation'
 import { BpmnLiveViewer } from './BpmnLiveViewer'
-
-interface ElementRegistry {
-  get(id: string): { businessObject: { name?: unknown } } | undefined
-}
+import { DiagramPathSimulation } from './DiagramPathSimulation'
 
 /** A bpmn-js viewer with the path simulation: marks the path the gateways take for given variables. */
 export class BpmnPathSimulationViewer extends BpmnLiveViewer {
+  readonly pathSimulation = new DiagramPathSimulation(name => this.viewer.get(name))
+
   constructor(
     container: HTMLElement,
     viewerOptions: Record<string, unknown>,
@@ -19,38 +17,5 @@ export class BpmnPathSimulationViewer extends BpmnLiveViewer {
   override async show(source: string): Promise<void> {
     await super.show(source)
     this.onShown(this)
-  }
-
-  simulate(variables: Variables): SimulatedPath {
-    return this.pathSimulation().simulate(variables)
-  }
-
-  // Removes the marked path.
-  clear(): void {
-    this.pathSimulation().clear()
-  }
-
-  // The variables the conditions read, each typed by its current value; `ranges` fixes slider bounds.
-  variablesReadByConditions(values: Variables, ranges?: Readonly<Record<string, Partial<NumberRange>>>): PathVariable[] {
-    return this.pathSimulation().deriveVariables(values, { ranges })
-  }
-
-  // The scenario's variables after the diagram's output mappings, the other scenarios filling the gaps.
-  variablesOf(scenario: Scenario | undefined, scenarios: readonly Scenario[]): Variables {
-    return this.pathSimulation().variablesOf(scenario, scenarios)
-  }
-
-  // The element's name, or its id when it has none.
-  elementName(id: string): string {
-    const name = this.elementRegistry().get(id)?.businessObject.name
-    return typeof name === 'string' && name.trim() ? name.trim() : id
-  }
-
-  private pathSimulation(): PathSimulation {
-    return this.viewer.get('pathSimulation') as PathSimulation
-  }
-
-  private elementRegistry(): ElementRegistry {
-    return this.viewer.get('elementRegistry') as ElementRegistry
   }
 }

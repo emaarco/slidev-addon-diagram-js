@@ -90,21 +90,21 @@ describe('BpmnPathSimulationNotation', () => {
   it('simulates the path for the variables', async () => {
     const viewer = await createViewer()
 
-    expect(viewer.simulate({ orderTotal: 6800 })).toBe(PATH)
+    expect(viewer.pathSimulation.simulate({ orderTotal: 6800 })).toBe(PATH)
     expect(pathSimulation.simulate).toHaveBeenCalledWith({ orderTotal: 6800 })
   })
 
   it('asks the path simulation for the variables the conditions read', async () => {
     const viewer = await createViewer()
 
-    expect(viewer.variablesReadByConditions({ orderTotal: 6800 })).toBe(VARIABLES)
+    expect(viewer.pathSimulation.variablesReadByConditions({ orderTotal: 6800 })).toBe(VARIABLES)
     expect(pathSimulation.deriveVariables).toHaveBeenCalledWith({ orderTotal: 6800 }, { ranges: undefined })
   })
 
   it('hands fixed slider ranges to the path simulation', async () => {
     const viewer = await createViewer()
 
-    viewer.variablesReadByConditions({ orderTotal: 6800 }, { orderTotal: { max: 8000 } })
+    viewer.pathSimulation.variablesReadByConditions({ orderTotal: 6800 }, { orderTotal: { max: 8000 } })
 
     expect(pathSimulation.deriveVariables).toHaveBeenCalledWith({ orderTotal: 6800 }, { ranges: { orderTotal: { max: 8000 } } })
   })
@@ -112,15 +112,15 @@ describe('BpmnPathSimulationNotation', () => {
   it('asks the path simulation for the variables of a scenario', async () => {
     const viewer = await createViewer()
 
-    expect(viewer.variablesOf(SCENARIO, [SCENARIO])).toEqual({ orderTotal: 1290, creditworthy: true })
+    expect(viewer.pathSimulation.variablesOf(SCENARIO, [SCENARIO])).toEqual({ orderTotal: 1290, creditworthy: true })
     expect(pathSimulation.variablesOf).toHaveBeenCalledWith(SCENARIO, [SCENARIO])
   })
 
   it('names an element by its name, or by its id without one', async () => {
     const viewer = await createViewer()
 
-    expect(viewer.elementName('Gateway_Credit')).toBe('Credit OK?')
-    expect(viewer.elementName('Flow_Note')).toBe('Flow_Note')
-    expect(viewer.elementName('Unknown')).toBe('Unknown')
+    expect(viewer.pathSimulation.elementName('Gateway_Credit')).toBe('Credit OK?')
+    expect(viewer.pathSimulation.elementName('Flow_Note')).toBe('Flow_Note')
+    expect(viewer.pathSimulation.elementName('Unknown')).toBe('Unknown')
   })
 })

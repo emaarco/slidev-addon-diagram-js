@@ -221,6 +221,19 @@ accent: blue
 
 ---
 layout: content
+title: Edit the model, watch the path
+eyebrow: Bpmn-Modeler
+accent: blue
+---
+
+`pathSimulation` on the modeler: open **Edit**, change a condition, and the path follows.
+
+<DiagramFrame padding="compact">
+<BpmnModeler bpmnFilePath="/bike-order.bpmn" engine="zeebe" pathSimulation scenariosFilePath="/bike-order.scenarios.json" :controls="['orderTotal', 'creditworthy', 'insurance']" :ranges="{ orderTotal: { max: 8000, step: 100 } }" height="220px" />
+</DiagramFrame>
+
+---
+layout: content
 title: The BpmnPathSimulation component
 eyebrow: Bpmn-Path-Simulation
 accent: blue
