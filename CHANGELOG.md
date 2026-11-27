@@ -26,6 +26,13 @@
 
 * deploy live demo to GitHub Pages ([#27](https://github.com/emaarco/slidev-addon-bpmn/issues/27)) ([31b93b5](https://github.com/emaarco/slidev-addon-bpmn/commit/31b93b5a2af1899027dff55001e8b58e93099156))
 
+## [2.13.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.12.0...v2.13.0) (2026-11-27)
+
+
+### Features
+
+* let the path simulation start without data and return to it with a "No data" scenario ([#210](https://github.com/emaarco/slidev-addon-diagram-js/issues/210)) ([b670395](https://github.com/emaarco/slidev-addon-diagram-js/commit/b670395541139837fcd91e37bc9cda1a30156ba2))
+
 ## [2.12.0](https://github.com/emaarco/slidev-addon-diagram-js/compare/v2.11.1...v2.12.0) (2026-11-26)
 
 
